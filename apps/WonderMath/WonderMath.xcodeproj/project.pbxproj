@@ -14,6 +14,7 @@
 		16CDD129C9AD2463EF3788E9 /* WhyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1486827B228D298E72FDB29D /* WhyView.swift */; };
 		1FA3C8D058325926BAEE7EAB /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABE5A04AD5ED45469BB7628 /* Speech.swift */; };
 		24452802C10CAAB1A296BEE6 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264B705661D7EE126498BD2A /* Models.swift */; };
+		2808798D4A3B2B99B95B96B6 /* StarProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3629CAEF43FE0B571A00CEE6 /* StarProgress.swift */; };
 		2CC5B0034C88263E8FC29D87 /* CompanionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2E4B89506C1231D963C059 /* CompanionView.swift */; };
 		2FF045C6D12B1C07AE4E397E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43668FF204B3783CF1733CD6 /* OnboardingView.swift */; };
 		349AD3EAA305DC2D5000B24C /* WonderMathCore in Frameworks */ = {isa = PBXBuildFile; productRef = 81E01D315B2B1030134B97A6 /* WonderMathCore */; };
@@ -60,6 +61,7 @@
 		23654CF726A6F637F08C971D /* WonderMathUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = WonderMathUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		264B705661D7EE126498BD2A /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		2E6DCE0C122EC5EED80B25A4 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		3629CAEF43FE0B571A00CEE6 /* StarProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarProgress.swift; sourceTree = "<group>"; };
 		364644D26617DB5B90B5340C /* LocalizationEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationEnvironment.swift; sourceTree = "<group>"; };
 		43668FF204B3783CF1733CD6 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		4A0C7FC4EF811BE8BC82879C /* Taxonomy */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Taxonomy; path = WonderMath/Resources/Taxonomy; sourceTree = SOURCE_ROOT; };
@@ -191,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				BE34F3C7CE5D2A00667ADDDE /* ProgressService.swift */,
+				3629CAEF43FE0B571A00CEE6 /* StarProgress.swift */,
 			);
 			path = Adaptive;
 			sourceTree = "<group>";
@@ -387,6 +390,7 @@
 				81D52CAEF3D64B177763051D /* PuzzleView.swift in Sources */,
 				FF691A0AE6F9CD46ABE575D7 /* RootView.swift in Sources */,
 				1FA3C8D058325926BAEE7EAB /* Speech.swift in Sources */,
+				2808798D4A3B2B99B95B96B6 /* StarProgress.swift in Sources */,
 				86178DAC17EF8ACA407FCBE4 /* Theme.swift in Sources */,
 				12D40EAC6AFB7C57ED0703FC /* TopicPathView.swift in Sources */,
 				16CDD129C9AD2463EF3788E9 /* WhyView.swift in Sources */,

@@ -42,6 +42,15 @@ struct PuzzleView: View {
     }
 }
 
+private struct PlankDragState: Equatable {
+    let value: Int
+    let size: CGSize
+    let origin: CGPoint
+    var location: CGPoint
+    var isOverBridge: Bool
+    var isReturning: Bool
+}
+
 private struct PuzzlePlayScreen: View {
     @Environment(\.localizer) private var localizer
     @Environment(\.dismiss) private var dismiss
@@ -51,6 +60,8 @@ private struct PuzzlePlayScreen: View {
     @State private var showingWhy = false
     @State private var showReward = false
     @State private var speech = Speech()
+    @State private var activePlankDrag: PlankDragState?
+    @State private var bridgeDropFrame = CGRect.zero
     let profile: ChildProfile
     let appState: AppState
     let progressService: ProgressService
@@ -76,14 +87,25 @@ private struct PuzzlePlayScreen: View {
 
     var body: some View {
         GeometryReader { geometry in
+            let bridgeSize = CGSize(width: geometry.size.width, height: geometry.size.height * 0.64)
             ZStack {
                 VStack(spacing: 0) {
                     bridgeArea
-                        .frame(height: geometry.size.height * 0.64)
+                        .frame(height: bridgeSize.height)
                     tray
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .background(Theme.cream)
+                if let drag = activePlankDrag {
+                    plankCard(drag.value)
+                        .frame(width: drag.size.width, height: drag.size.height)
+                        .scaleEffect(1.08)
+                        .shadow(color: Theme.ink.opacity(0.28), radius: 14, x: 0, y: 10)
+                        .position(drag.location)
+                        .zIndex(2)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
                 if showReward, let result = session.result {
                     RewardOverlay(result: result, profile: profile, localizer: localizer,
                                   reduceMotion: reduceMotion) {
@@ -91,6 +113,16 @@ private struct PuzzlePlayScreen: View {
                     }
                     .transition(.opacity)
                 }
+            }
+            .coordinateSpace(name: "puzzle")
+            .onAppear {
+                bridgeDropFrame = CGRect(origin: .zero, size: bridgeSize)
+            }
+            .onChange(of: geometry.size) { _, size in
+                bridgeDropFrame = CGRect(
+                    origin: .zero,
+                    size: CGSize(width: size.width, height: size.height * 0.64)
+                )
             }
             .ignoresSafeArea()
         }
@@ -146,13 +178,6 @@ private struct PuzzlePlayScreen: View {
             }
         }
         .contentShape(Rectangle())
-        .dropDestination(for: String.self) { values, _ in
-            guard session.acceptsAnswers,
-                  let first = values.first, let number = Int(first) else { return false }
-            session.place(number)
-            scene.fill(gapWith: number)
-            return true
-        }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("bridge-drop-target")
     }
@@ -162,7 +187,7 @@ private struct PuzzlePlayScreen: View {
             helperBubble
             HStack(spacing: 12) {
                 ForEach(Array(session.choices.enumerated()), id: \.offset) { _, value in
-                    plankButton(value)
+                    plankView(value)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -264,32 +289,101 @@ private struct PuzzlePlayScreen: View {
         }
     }
 
-    private func plankButton(_ value: Int) -> some View {
+    private func plankView(_ value: Int) -> some View {
         let isCorrect = session.correctValueForUITesting == value
-        return Button {
-            guard session.acceptsAnswers else { return }
-            session.place(value)
-            scene.fill(gapWith: value)
-        } label: {
-            Text(localizer.format(value))
-                .font(Theme.roundedFont(28, weight: .heavy))
-                .frame(maxWidth: .infinity, minHeight: 68)
-                .foregroundStyle(.white)
-                .background(Theme.woodGradient, in: RoundedRectangle(cornerRadius: 15))
-                .overlay(RoundedRectangle(cornerRadius: 15).stroke(Theme.woodDark, lineWidth: 3))
-                .overlay(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 5).fill(Theme.woodDark)
-                        .frame(height: 6).padding(.horizontal, 5).offset(y: 4)
-                }
-                .shadow(color: Theme.ink.opacity(0.16), radius: 4, x: 0, y: 6)
+        return GeometryReader { geometry in
+            plankCard(value)
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .contentShape(Rectangle())
+                .onTapGesture { placePlank(value) }
+                .gesture(
+                    DragGesture(minimumDistance: 6, coordinateSpace: .named("puzzle"))
+                        .onChanged { drag in
+                            let frame = geometry.frame(in: .named("puzzle"))
+                            updatePlankDrag(value, size: geometry.size,
+                                            origin: CGPoint(x: frame.midX, y: frame.midY),
+                                            location: drag.location)
+                        }
+                        .onEnded { drag in
+                            endPlankDrag(value, location: drag.location)
+                        }
+                )
+                .opacity(activePlankDrag?.value == value && activePlankDrag?.isReturning == false ? 0.35 : 1)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(localizer.format(value))
+                .accessibilityIdentifier(isCorrect && appState.isUITesting ? "plank-correct" : "plank-\(value)")
+                .accessibilityValue(appState.isUITesting && isCorrect ? String(value) : "")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { placePlank(value) }
+                .disabled(!session.acceptsAnswers)
         }
-        .buttonStyle(.plain)
-        .draggable(String(value))
-        .disabled(!session.acceptsAnswers)
-        .opacity(session.acceptsAnswers ? 1 : 0.85)
-        .accessibilityLabel(localizer.format(value))
-        .accessibilityIdentifier(isCorrect && appState.isUITesting ? "plank-correct" : "plank-\(value)")
-        .accessibilityValue(appState.isUITesting && isCorrect ? String(value) : "")
+        .frame(maxWidth: .infinity, minHeight: 68, maxHeight: 68)
+    }
+
+    private func plankCard(_ value: Int) -> some View {
+        Text(localizer.format(value))
+            .font(Theme.roundedFont(28, weight: .heavy))
+            .frame(maxWidth: .infinity, minHeight: 68)
+            .foregroundStyle(.white)
+            .background(Theme.woodGradient, in: RoundedRectangle(cornerRadius: 15))
+            .overlay(RoundedRectangle(cornerRadius: 15).stroke(Theme.woodDark, lineWidth: 3))
+            .overlay(alignment: .bottom) {
+                RoundedRectangle(cornerRadius: 5).fill(Theme.woodDark)
+                    .frame(height: 6).padding(.horizontal, 5).offset(y: 4)
+            }
+            .shadow(color: Theme.ink.opacity(0.16), radius: 4, x: 0, y: 6)
+    }
+
+    private func placePlank(_ value: Int) {
+        guard session.acceptsAnswers else { return }
+        session.place(value)
+        scene.fill(gapWith: value)
+    }
+
+    private func updatePlankDrag(_ value: Int, size: CGSize, origin: CGPoint, location: CGPoint) {
+        guard session.acceptsAnswers else { return }
+        let isOverBridge = bridgeDropFrame.contains(location)
+        let wasOverBridge = activePlankDrag?.isOverBridge == true
+        if var drag = activePlankDrag, drag.value == value {
+            drag.location = location
+            drag.isOverBridge = isOverBridge
+            activePlankDrag = drag
+        } else {
+            activePlankDrag = PlankDragState(value: value, size: size, origin: origin,
+                                             location: location, isOverBridge: isOverBridge,
+                                             isReturning: false)
+        }
+        if wasOverBridge != isOverBridge { scene.setGapHighlighted(isOverBridge) }
+    }
+
+    private func endPlankDrag(_ value: Int, location: CGPoint) {
+        guard session.acceptsAnswers, let drag = activePlankDrag, drag.value == value else {
+            scene.setGapHighlighted(false)
+            activePlankDrag = nil
+            return
+        }
+        scene.setGapHighlighted(false)
+        guard bridgeDropFrame.contains(location) else {
+            guard !reduceMotion else {
+                activePlankDrag = nil
+                return
+            }
+            var returningDrag = drag
+            returningDrag.location = drag.origin
+            returningDrag.isOverBridge = false
+            returningDrag.isReturning = true
+            withAnimation(.spring(response: 0.36, dampingFraction: 0.68)) {
+                activePlankDrag = returningDrag
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                if activePlankDrag?.value == value, activePlankDrag?.isReturning == true {
+                    activePlankDrag = nil
+                }
+            }
+            return
+        }
+        placePlank(value)
+        activePlankDrag = nil
     }
 
     private var helperColor: Color {

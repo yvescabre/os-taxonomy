@@ -71,6 +71,31 @@ final class ScreenshotTests: XCTestCase {
         attachScreenshot("locked-world", app: app)
     }
 
+    func testPlankDragCompletesPuzzle() {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = XCUIApplication()
+        app.launchArguments = ["-UITestInMemory", "-UITestProfile", "Mia"]
+        app.launch()
+
+        let map = app.buttons["world-numberKingdom"]
+        XCTAssertTrue(map.waitForExistence(timeout: 15))
+        map.tap()
+
+        let firstTopic = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "topic-")
+        ).firstMatch
+        XCTAssertTrue(firstTopic.waitForExistence(timeout: 10))
+        firstTopic.tap()
+
+        let plank = app.buttons["plank-correct"]
+        let dropArea = app.descendants(matching: .any)["bridge-drop-target"]
+        XCTAssertTrue(plank.waitForExistence(timeout: 10))
+        XCTAssertTrue(dropArea.waitForExistence(timeout: 10))
+        plank.press(forDuration: 0.05, thenDragTo: dropArea)
+        app.buttons["check-answer"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["reward-panel"].waitForExistence(timeout: 10))
+    }
+
     private func attachScreenshot(_ name: String, app: XCUIApplication) {
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = name

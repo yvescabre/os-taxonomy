@@ -14,6 +14,7 @@ final class BridgeScene: SKScene {
     private var companionTexture: SKTexture?
     private var lastConfiguration: LayoutConfiguration?
     private var filledGapValue: Int?
+    private var gapHighlighted = false
     private var isSequence = false
     var reduceMotion = false
 
@@ -75,6 +76,18 @@ final class BridgeScene: SKScene {
             addQuestionMark(to: node)
         }
         nextGapIndex = 0
+    }
+
+    func setGapHighlighted(_ highlighted: Bool) {
+        guard gapHighlighted != highlighted else { return }
+        gapHighlighted = highlighted
+        for gap in gapNodes {
+            guard let outline = gap.childNode(withName: "gap-outline") as? SKShapeNode else { continue }
+            outline.strokeColor = highlighted
+                ? SKColor(red: 1, green: 0.88, blue: 0.36, alpha: 1)
+                : SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
+            outline.glowWidth = highlighted ? 13 : 7
+        }
     }
 
     func celebrate() {
@@ -348,11 +361,15 @@ final class BridgeScene: SKScene {
         gap.strokeColor = .clear
         gap.lineWidth = 5
         gap.glowWidth = 7
+        gap.childNode(withName: "gap-outline")?.removeFromParent()
         if let path = gap.path?.copy(dashingWithPhase: 0, lengths: [10, 7], transform: .identity) {
             let dashedOutline = SKShapeNode(path: path)
-            dashedOutline.strokeColor = SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
+            dashedOutline.name = "gap-outline"
+            dashedOutline.strokeColor = gapHighlighted
+                ? SKColor(red: 1, green: 0.88, blue: 0.36, alpha: 1)
+                : SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
             dashedOutline.lineWidth = 5
-            dashedOutline.glowWidth = 7
+            dashedOutline.glowWidth = gapHighlighted ? 13 : 7
             gap.addChild(dashedOutline)
         }
         if !reduceMotion {
