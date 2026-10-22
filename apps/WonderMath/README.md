@@ -138,9 +138,17 @@ Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 
 ![Onboarding](docs/screenshots/01-onboarding.png)
 
+**Onboarding: choose a buddy**
+
+![Onboarding: choose a buddy](docs/screenshots/01b-onboarding-buddy.png)
+
 **World map**
 
 ![World map](docs/screenshots/02-world-map.png)
+
+**World map with the simulator in dark appearance**
+
+![World map in dark appearance](docs/screenshots/22-world-map-dark-mode.png)
 
 **Coming-soon world sheet**
 
