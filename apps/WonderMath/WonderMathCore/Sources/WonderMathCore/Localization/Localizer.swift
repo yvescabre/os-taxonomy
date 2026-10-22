@@ -101,6 +101,9 @@ final class NumberFormatCache: @unchecked Sendable {
             let f = NumberFormatter()
             f.locale = locale
             f.numberStyle = .decimal
+            if locale.identifier == "de_CH" {
+                f.groupingSeparator = "’"
+            }
             formatters[key] = f
         }
         return formatters[key]!.string(from: NSNumber(value: value)) ?? "\(value)"
