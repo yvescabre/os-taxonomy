@@ -234,19 +234,21 @@ struct WorldMapView: View {
                     }
                 }
                 HStack(spacing: 12) {
-                    ForEach(Array(["none", "star", "heart"].enumerated()), id: \.offset) { index, item in
+                    ForEach(Array(["none", "z"].enumerated()), id: \.offset) { index, item in
                         Button {
                             profile.companionAccessory = item
                             saveProfile()
                         } label: {
-                            Image(systemName: item == "heart" ? "heart.fill" :
-                                    item == "star" ? "star.fill" : "circle")
-                                .font(.title2)
-                                .foregroundStyle(Theme.sunDark)
+                            Text(item == "z" ? "Z" : "—")
+                                .font(Theme.roundedFont(25, weight: .heavy))
+                                .foregroundStyle(item == "z" ? .white : Theme.inkSoft)
                                 .frame(width: 64, height: 64)
-                                .background(profile.companionAccessory == item ? Theme.sun.opacity(0.23) : .white,
+                                .background(profile.companionAccessory == item ? Theme.violet : Theme.paper,
                                             in: Circle())
+                                .overlay(Circle().stroke(profile.companionAccessory == item ? .white : Theme.sand,
+                                                         lineWidth: 2))
                         }
+                        .buttonStyle(.plain)
                         .accessibilityLabel(localizer.string(.companionAccessoryLabel, [.number(index + 1)]))
                         .accessibilityIdentifier("buddy-accessory-\(item)")
                     }
