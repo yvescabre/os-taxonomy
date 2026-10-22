@@ -86,6 +86,8 @@ enum GermanStrings {
 
         .nudgeMissingNumber: "Welche Zahl macht beide Seiten gleich?",
         .nudgeMissingNumberTimes: "Welche Zahl mal {0} ergibt {1}?",
+        .nudgeMissingNumberDividedBy: "Welche Zahl geteilt durch {0} ergibt {1}?",
+        .nudgeDividedByWhich: "{0} geteilt durch welche Zahl ergibt {1}?",
         .nudgeBalance: "Mache beide Seiten gleich viel wert. Welche Zahl fehlt?",
         .nudgeCommutative: "Beim Malnehmen ist die Reihenfolge egal. Was fehlt?",
         .nudgeSequence: "Die Steine folgen einem Muster – finde heraus, wie gross jeder Sprung ist.",
