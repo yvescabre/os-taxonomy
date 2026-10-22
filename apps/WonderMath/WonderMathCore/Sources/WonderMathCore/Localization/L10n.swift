@@ -169,6 +169,11 @@ public enum L10n {
         case perSkillTableAttempts
         case perSkillTableState
         case audioLabel, languageLabel, difficultyLabel
+        case voiceSectionTitle, voicePersonalToggle
+        case voiceStatusUsingPersonal, voiceStatusAvailable, voiceStatusNoLanguageVoice
+        case voiceStatusDenied, voiceStatusCreate, voicePreview
+        case voiceCurrentFormat, voiceNameDefault
+        case voiceQualityPremium, voiceQualityEnhanced, voiceQualityDefault
         case researchTipPrefix
         case teachingNoteForParents
 

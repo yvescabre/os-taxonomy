@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import AVFoundation
 import WonderMathCore
 
 struct ParentDashboardView: View {
@@ -7,6 +8,10 @@ struct ParentDashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.localizer) private var localizer
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("usePersonalVoice") private var usePersonalVoice = false
+    @State private var speech = Speech()
+    @State private var voiceRevision = 0
     let profile: ChildProfile
 
     private var records: [MasteryRecord] { profile.mastery }
@@ -276,8 +281,94 @@ struct ParentDashboardView: View {
                     service.saveChanges()
                 }))
                 .frame(minHeight: 64)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(localizer.string(.voiceSectionTitle))
+                        .font(.system(size: 16, weight: .semibold))
+                    Toggle(localizer.string(.voicePersonalToggle), isOn: personalVoiceBinding)
+                        .font(.system(size: 16))
+                        .frame(minHeight: 56)
+                    Text(localizer.string(personalVoiceStatusKey))
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Button {
+                            speech.speak(LocalizedMessage(.feedbackCorrect),
+                                         localizer: localizer, enabled: true)
+                        } label: {
+                            Label(localizer.string(.voicePreview), systemImage: "play.fill")
+                                .font(.system(size: 15, weight: .semibold))
+                        }
+                        .buttonStyle(.bordered)
+                        Text(speech.currentVoiceDescription(localizer: localizer))
+                            .font(.system(size: 12))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                            .id(voiceRevision)
+                    }
+                }
+                .padding(.top, 8)
+                .onAppear(perform: synchronizePersonalVoicePreference)
+                .onChange(of: usePersonalVoice) { _, _ in
+                    speech.invalidateVoiceCache()
+                    voiceRevision += 1
+                }
+                .onChange(of: appState.language) { _, _ in
+                    speech.invalidateVoiceCache()
+                    voiceRevision += 1
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    if phase == .active { synchronizePersonalVoicePreference() }
+                }
+                .onReceive(NotificationCenter.default.publisher(
+                    for: AVSpeechSynthesizer.availableVoicesDidChangeNotification
+                )) { _ in
+                    speech.invalidateVoiceCache()
+                    voiceRevision += 1
+                }
             }
         }
+    }
+
+    private var personalVoiceBinding: Binding<Bool> {
+        Binding(get: { usePersonalVoice }, set: { enabled in
+            guard enabled else {
+                usePersonalVoice = false
+                return
+            }
+            AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
+                Task { @MainActor in
+                    usePersonalVoice = status == .authorized
+                    speech.invalidateVoiceCache()
+                    voiceRevision += 1
+                }
+            }
+        })
+    }
+
+    private var personalVoiceStatusKey: L10n.Key {
+        switch AVSpeechSynthesizer.personalVoiceAuthorizationStatus {
+        case .authorized:
+            if speech.hasPersonalVoice(for: localizer) {
+                return usePersonalVoice ? .voiceStatusUsingPersonal : .voiceStatusAvailable
+            }
+            return .voiceStatusNoLanguageVoice
+        case .denied:
+            return .voiceStatusDenied
+        case .unsupported, .notDetermined:
+            return .voiceStatusCreate
+        @unknown default:
+            return .voiceStatusCreate
+        }
+    }
+
+    private func synchronizePersonalVoicePreference() {
+        if AVSpeechSynthesizer.personalVoiceAuthorizationStatus != .authorized {
+            usePersonalVoice = false
+        }
+        speech.invalidateVoiceCache()
+        voiceRevision += 1
     }
 
     private func masteryLabel(_ progress: SkillProgress) -> String {
