@@ -27,6 +27,7 @@ struct WonderMathApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(appState)
+                .preferredColorScheme(.light)
                 .task { appState.load() }
         }
         .modelContainer(sharedModelContainer)
