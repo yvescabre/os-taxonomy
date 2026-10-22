@@ -66,6 +66,10 @@ public struct Localizer: Sendable {
         NumberFormatCache.shared.string(value, locale: language.locale)
     }
 
+    public func minutes(_ count: Int) -> String {
+        string(count == 1 ? .minuteFormatOne : .minutesFormat, [.number(count)])
+    }
+
     /// Template lookup: language table → English table → raw key.
     func template(for key: L10n.Key) -> String {
         let table = language == .german ? GermanStrings.table : EnglishStrings.table

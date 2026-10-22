@@ -12,6 +12,7 @@ enum EnglishStrings {
         .closeButton: "Close",
         .doneButton: "Done",
         .customizeBuddy: "Customize buddy",
+        .minuteFormatOne: "{0} minute",
         .minutesFormat: "{0} minutes",
         .parentAgeFormat: "Age {0}",
         .curriculumNotice: "Curriculum standards are not bundled in this app.",

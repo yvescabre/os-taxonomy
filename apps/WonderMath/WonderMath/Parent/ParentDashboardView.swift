@@ -37,7 +37,7 @@ struct ParentDashboardView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     HStack(spacing: 12) {
                         metricCard(title: localizer.string(.learningTimeTitle),
-                                   value: localizer.string(.minutesFormat, [.number(totalMinutes)]),
+                                   value: localizer.minutes(totalMinutes),
                                    symbol: "clock")
                         metricCard(title: localizer.string(.skillsPracticedTitle),
                                    value: localizer.format(practicedCount), symbol: "books.vertical")

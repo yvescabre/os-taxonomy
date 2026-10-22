@@ -16,6 +16,7 @@ enum GermanStrings {
         .closeButton: "Schliessen",
         .doneButton: "Fertig",
         .customizeBuddy: "Begleiter anpassen",
+        .minuteFormatOne: "{0} Minute",
         .minutesFormat: "{0} Minuten",
         .parentAgeFormat: "{0} Jahre",
         .curriculumNotice: "Curriculum-Standards sind in dieser App nicht enthalten.",

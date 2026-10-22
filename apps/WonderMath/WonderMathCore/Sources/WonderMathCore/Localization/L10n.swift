@@ -18,6 +18,7 @@ public enum L10n {
         case closeButton
         case doneButton
         case customizeBuddy
+        case minuteFormatOne
         case minutesFormat
         case parentAgeFormat
         case curriculumNotice
