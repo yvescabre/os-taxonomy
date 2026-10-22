@@ -21,7 +21,8 @@ struct DailyAdventureView: View {
                 if let plan, let log {
                     ScrollView {
                         VStack(spacing: 16) {
-                            Text(localizer.string(.dailyAdventureTitle)).font(.largeTitle.bold())
+                            Text(localizer.string(.dailyAdventureTitle))
+                                .font(Theme.roundedFont(34, weight: .black))
                             ProgressView(value: Double(log.stagesCompleted),
                                          total: Double(max(1, plan.stages.count)))
                                 .accessibilityIdentifier("adventure-progress")
@@ -30,7 +31,7 @@ struct DailyAdventureView: View {
                             ])).font(.headline)
                             if log.completedAt != nil {
                                 Label(localizer.string(.adventureComplete), systemImage: "sparkles")
-                                    .font(.title2.bold())
+                                    .font(Theme.roundedFont(25, weight: .heavy))
                                     .padding(22)
                                     .background(Color.yellow.opacity(0.25), in: RoundedRectangle(cornerRadius: 22))
                             }
@@ -38,7 +39,7 @@ struct DailyAdventureView: View {
                                 stageRow(index: index, stage: stage, log: log)
                             }
                             Button(localizer.string(.doneButton)) { dismiss() }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.leaf)
                                 .frame(maxWidth: .infinity, minHeight: 64)
                         }
                         .padding(24)
@@ -73,6 +74,8 @@ struct DailyAdventureView: View {
                 }
             }
         }
+        .fontDesign(.rounded)
+        .background(Theme.cream.ignoresSafeArea())
         .onAppear {
             let today = service.todayPlan()
             log = today.0
@@ -114,6 +117,7 @@ struct DailyAdventureView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, minHeight: 70)
-        .background(.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 18))
+        .background(Theme.paper, in: RoundedRectangle(cornerRadius: 18))
+        .overlay(RoundedRectangle(cornerRadius: 18).stroke(.white, lineWidth: 2))
     }
 }

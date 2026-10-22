@@ -22,14 +22,14 @@ struct OnboardingView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 22) {
-                Text(localizer.string(.appName)).font(.largeTitle.bold())
-                Text(localizer.string(.chooseName)).font(.title2.bold())
+                Text(localizer.string(.appName)).font(Theme.roundedFont(38, weight: .black))
+                Text(localizer.string(.chooseName)).font(Theme.roundedFont(25, weight: .heavy))
                 TextField(localizer.string(.childNamePlaceholder), text: $name)
-                    .font(.title2)
+                    .font(Theme.roundedFont(25, weight: .medium))
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 460)
                     .accessibilityIdentifier("onboarding-name")
-                Text(localizer.string(.chooseAge)).font(.title2.bold())
+                Text(localizer.string(.chooseAge)).font(Theme.roundedFont(25, weight: .heavy))
                 HStack(spacing: 24) {
                     Button { age = max(7, age - 1) } label: {
                         Image(systemName: "minus.circle.fill").font(.largeTitle)
@@ -38,7 +38,7 @@ struct OnboardingView: View {
                     .accessibilityLabel(localizer.string(.chooseAge))
                     .disabled(age == 7)
                     Text(localizer.string(.parentAgeFormat, [.number(age)]))
-                        .font(.title.bold()).frame(minWidth: 140)
+                        .font(Theme.roundedFont(27, weight: .heavy)).frame(minWidth: 140)
                     Button { age = min(12, age + 1) } label: {
                         Image(systemName: "plus.circle.fill").font(.largeTitle)
                             .frame(width: 72, height: 72)
@@ -46,14 +46,14 @@ struct OnboardingView: View {
                     .accessibilityLabel(localizer.string(.chooseAge))
                     .disabled(age == 12)
                 }
-                Text(localizer.string(.chooseCompanion)).font(.title2.bold())
+                Text(localizer.string(.chooseCompanion)).font(Theme.roundedFont(25, weight: .heavy))
                 HStack(spacing: 18) {
                     ForEach(speciesOptions, id: \.0) { item in
                         Button { species = item.0 } label: {
                             VStack(spacing: 8) {
                                 CompanionView(species: item.0, colorName: colorName,
                                               accessory: accessory, size: 76)
-                                Text(localizer.string(item.1)).font(.caption.bold())
+                                Text(localizer.string(item.1)).font(Theme.roundedFont(14, weight: .bold))
                             }
                             .padding(12)
                             .background(species == item.0 ? Color.blue.opacity(0.17) : .white.opacity(0.8),
@@ -92,14 +92,15 @@ struct OnboardingView: View {
                         .font(.title3.bold())
                         .frame(maxWidth: 460, minHeight: 72)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.sun)
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .accessibilityIdentifier("start-adventure")
             }
             .padding(28)
             .frame(maxWidth: .infinity)
         }
-        .background(Color.cyan.opacity(0.12))
+        .fontDesign(.rounded)
+        .background(Theme.skyPale.ignoresSafeArea())
     }
 
     private func createProfile() {

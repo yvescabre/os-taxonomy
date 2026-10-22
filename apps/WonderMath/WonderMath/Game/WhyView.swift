@@ -22,13 +22,13 @@ struct WhyView: View {
                     }
                     if why.researchMissing {
                         Text(localizer.string(.noTeachingNotesYet))
-                            .font(.body)
+                            .font(Theme.roundedFont(17))
                             .padding(16)
                             .background(Color.yellow.opacity(0.2), in: RoundedRectangle(cornerRadius: 18))
                     }
                 } else {
                     Text(localizer.string(.noTeachingNotesYet))
-                        .font(.body)
+                        .font(Theme.roundedFont(17))
                         .padding(16)
                         .background(Color.yellow.opacity(0.2), in: RoundedRectangle(cornerRadius: 18))
                 }
@@ -36,22 +36,25 @@ struct WhyView: View {
                     section("\(index + 1)", body: localizer.string(step.message))
                 }
                 Button(localizer.string(.closeButton)) { dismiss() }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.ghost)
                     .frame(minHeight: 64)
             }
             .padding(28)
         }
+        .fontDesign(.rounded)
+        .background(Theme.cream.ignoresSafeArea())
         .navigationTitle(localizer.string(.whyDoesThisWork))
         .navigationBarTitleDisplayMode(.inline)
     }
 
     private func section(_ title: String, body: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.title3.bold())
-            Text(body).font(.body)
+            Text(title).font(Theme.roundedFont(21, weight: .heavy))
+            Text(body).font(Theme.roundedFont(17))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
-        .background(Color.cyan.opacity(0.12), in: RoundedRectangle(cornerRadius: 18))
+        .background(Theme.paper, in: RoundedRectangle(cornerRadius: 18))
+        .overlay(RoundedRectangle(cornerRadius: 18).stroke(.white, lineWidth: 2))
     }
 }
