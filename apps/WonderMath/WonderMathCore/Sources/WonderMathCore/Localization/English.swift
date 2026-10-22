@@ -48,6 +48,12 @@ enum EnglishStrings {
         .chooseName: "What should we call you?",
         .chooseAge: "How old are you?",
         .chooseCompanion: "Pick a travel buddy",
+        .onboardingTitle: "Meet your buddy",
+        .onboardingBubbleName: "Hi! I'm your new buddy. What's your name?",
+        .onboardingBubbleAge: "Nice to meet you, {0}! How old are you?",
+        .onboardingBubbleBuddy: "Now choose how I look!",
+        .onboardingNext: "Next",
+        .onboardingBack: "Back",
         .startAdventure: "Start exploring",
         .childNamePlaceholder: "Your name",
 

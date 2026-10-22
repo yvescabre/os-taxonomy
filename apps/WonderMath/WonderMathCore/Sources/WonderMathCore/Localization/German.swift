@@ -52,6 +52,12 @@ enum GermanStrings {
         .chooseName: "Wie sollen wir dich nennen?",
         .chooseAge: "Wie alt bist du?",
         .chooseCompanion: "Wähle einen Reisebegleiter",
+        .onboardingTitle: "Lerne deinen neuen Kumpel kennen",
+        .onboardingBubbleName: "Hoi! Ich bin dein neuer Kumpel. Wie heisst du?",
+        .onboardingBubbleAge: "Schön, dich kennenzulernen, {0}! Wie alt bist du?",
+        .onboardingBubbleBuddy: "Jetzt wähle aus, wie ich aussehe!",
+        .onboardingNext: "Weiter",
+        .onboardingBack: "Zurück",
         .startAdventure: "Los geht's",
         .childNamePlaceholder: "Dein Name",
 

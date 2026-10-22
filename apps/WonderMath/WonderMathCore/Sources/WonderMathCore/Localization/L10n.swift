@@ -51,6 +51,12 @@ public enum L10n {
         case chooseName
         case chooseAge
         case chooseCompanion
+        case onboardingTitle
+        case onboardingBubbleName
+        case onboardingBubbleAge
+        case onboardingBubbleBuddy
+        case onboardingNext
+        case onboardingBack
         case startAdventure
         case childNamePlaceholder
 
