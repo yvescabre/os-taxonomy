@@ -1,0 +1,702 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0947D2C432AF6609F0F3FCF7 /* Taxonomy in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C7FC4EF811BE8BC82879C /* Taxonomy */; };
+		105CB36D160C7D9992A70582 /* LocalizationEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 364644D26617DB5B90B5340C /* LocalizationEnvironment.swift */; };
+		12D40EAC6AFB7C57ED0703FC /* TopicPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3923FEBBAFB5E942D889C9C /* TopicPathView.swift */; };
+		145DA30FFCAFA4ABBA1766E6 /* WorldMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95BF0A8D21AFEB9F757E9A8A /* WorldMapView.swift */; };
+		16CDD129C9AD2463EF3788E9 /* WhyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1486827B228D298E72FDB29D /* WhyView.swift */; };
+		1FA3C8D058325926BAEE7EAB /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABE5A04AD5ED45469BB7628 /* Speech.swift */; };
+		24452802C10CAAB1A296BEE6 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264B705661D7EE126498BD2A /* Models.swift */; };
+		2CC5B0034C88263E8FC29D87 /* CompanionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2E4B89506C1231D963C059 /* CompanionView.swift */; };
+		2FF045C6D12B1C07AE4E397E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43668FF204B3783CF1733CD6 /* OnboardingView.swift */; };
+		349AD3EAA305DC2D5000B24C /* WonderMathCore in Frameworks */ = {isa = PBXBuildFile; productRef = 81E01D315B2B1030134B97A6 /* WonderMathCore */; };
+		35202E89D0FBB051A9555645 /* ParentDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2208B625F239070BB7F318 /* ParentDashboardView.swift */; };
+		493B75AABCB602790C566E38 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7AF09054C8DA2FD1570644 /* AppState.swift */; };
+		64C93B1604E96A197C425808 /* WorldMapScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C363FFA07ADF06FF13E886 /* WorldMapScene.swift */; };
+		81053FBE00D8B7F5C5D3FA9E /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BDB935E2F24128E0EEDB2E6 /* PersistenceTests.swift */; };
+		81D52CAEF3D64B177763051D /* PuzzleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF311143B0C0EA9E9256040 /* PuzzleView.swift */; };
+		8766ECA3748C647C034759F1 /* DailyAdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055A597741CB837AEAD66C9E /* DailyAdventureView.swift */; };
+		89E5D05C02FDF53BA9052FFA /* PuzzleSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78229928067175F062A23072 /* PuzzleSession.swift */; };
+		8BF9EE274D1F3338FC88ADBF /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83C6CF5F91E2705CF7B465C /* ScreenshotTests.swift */; };
+		A6BA742BB03CE3437EDD5584 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D48206CC75330D5319F59549 /* Assets.xcassets */; };
+		A7C907A7D955414198CA55F0 /* WonderMathApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7265CBAC6A917F656952A2 /* WonderMathApp.swift */; };
+		AD140DF25A3E8F8851D43653 /* ProgressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE34F3C7CE5D2A00667ADDDE /* ProgressService.swift */; };
+		B4D1C7A230C91E74D2F843A3 /* BridgeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F52CE54468CEF7161A852B /* BridgeScene.swift */; };
+		C0C19FC7DDCAB5200A247250 /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2450921256B0950D6ED654 /* ParentGateView.swift */; };
+		E929338FF35F76FEFF085F9C /* WonderMathCore in Frameworks */ = {isa = PBXBuildFile; productRef = B7676A5207ECA3FAB162719E /* WonderMathCore */; };
+		FF691A0AE6F9CD46ABE575D7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6DCE0C122EC5EED80B25A4 /* RootView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5901401647DF40D2AA145780 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A0DC20AF1D4337499CE541E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A0A009B279E354BC88074A44;
+			remoteInfo = WonderMath;
+		};
+		EB75A5DCF2418FE77DF6BC33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A0DC20AF1D4337499CE541E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A0A009B279E354BC88074A44;
+			remoteInfo = WonderMath;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		055A597741CB837AEAD66C9E /* DailyAdventureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyAdventureView.swift; sourceTree = "<group>"; };
+		05C363FFA07ADF06FF13E886 /* WorldMapScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldMapScene.swift; sourceTree = "<group>"; };
+		1486827B228D298E72FDB29D /* WhyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhyView.swift; sourceTree = "<group>"; };
+		1A26D042F2D5F9700154AD29 /* WonderMathCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WonderMathCore; path = WonderMathCore; sourceTree = SOURCE_ROOT; };
+		23654CF726A6F637F08C971D /* WonderMathUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = WonderMathUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		264B705661D7EE126498BD2A /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		2E6DCE0C122EC5EED80B25A4 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		364644D26617DB5B90B5340C /* LocalizationEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationEnvironment.swift; sourceTree = "<group>"; };
+		43668FF204B3783CF1733CD6 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		4A0C7FC4EF811BE8BC82879C /* Taxonomy */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Taxonomy; path = WonderMath/Resources/Taxonomy; sourceTree = SOURCE_ROOT; };
+		78229928067175F062A23072 /* PuzzleSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleSession.swift; sourceTree = "<group>"; };
+		7D60DF45F0CF9EFFE5DF771B /* WonderMathTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = WonderMathTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		82F52CE54468CEF7161A852B /* BridgeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeScene.swift; sourceTree = "<group>"; };
+		8BDB935E2F24128E0EEDB2E6 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
+		8E2E4B89506C1231D963C059 /* CompanionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionView.swift; sourceTree = "<group>"; };
+		95BF0A8D21AFEB9F757E9A8A /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldMapView.swift; sourceTree = "<group>"; };
+		A3923FEBBAFB5E942D889C9C /* TopicPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicPathView.swift; sourceTree = "<group>"; };
+		AB2208B625F239070BB7F318 /* ParentDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentDashboardView.swift; sourceTree = "<group>"; };
+		AD2450921256B0950D6ED654 /* ParentGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentGateView.swift; sourceTree = "<group>"; };
+		BE34F3C7CE5D2A00667ADDDE /* ProgressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressService.swift; sourceTree = "<group>"; };
+		C83C6CF5F91E2705CF7B465C /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
+		CB7AF09054C8DA2FD1570644 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		CE8CFE14BDC6702FE403BF9E /* WonderMath.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WonderMath.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D48206CC75330D5319F59549 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EABE5A04AD5ED45469BB7628 /* Speech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
+		FB7265CBAC6A917F656952A2 /* WonderMathApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WonderMathApp.swift; sourceTree = "<group>"; };
+		FDF311143B0C0EA9E9256040 /* PuzzleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3FEB4EDBD79FA18F05C29AC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E929338FF35F76FEFF085F9C /* WonderMathCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB6A3FCC33E4145AD79C3837 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				349AD3EAA305DC2D5000B24C /* WonderMathCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07873F7745591FB6D20CD734 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				1A26D042F2D5F9700154AD29 /* WonderMathCore */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		2F4EEEBE4F00B893F8960AD7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE8CFE14BDC6702FE403BF9E /* WonderMath.app */,
+				7D60DF45F0CF9EFFE5DF771B /* WonderMathTests.xctest */,
+				23654CF726A6F637F08C971D /* WonderMathUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3D8EB1044BAB6AFE76C86D3C /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				364644D26617DB5B90B5340C /* LocalizationEnvironment.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		43C9C1109B8B7DFCEE7B7F4B /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				82F52CE54468CEF7161A852B /* BridgeScene.swift */,
+				8E2E4B89506C1231D963C059 /* CompanionView.swift */,
+				055A597741CB837AEAD66C9E /* DailyAdventureView.swift */,
+				43668FF204B3783CF1733CD6 /* OnboardingView.swift */,
+				FDF311143B0C0EA9E9256040 /* PuzzleView.swift */,
+				EABE5A04AD5ED45469BB7628 /* Speech.swift */,
+				A3923FEBBAFB5E942D889C9C /* TopicPathView.swift */,
+				1486827B228D298E72FDB29D /* WhyView.swift */,
+				05C363FFA07ADF06FF13E886 /* WorldMapScene.swift */,
+				95BF0A8D21AFEB9F757E9A8A /* WorldMapView.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		4AC4D2D2783C10CED20D5E54 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D48206CC75330D5319F59549 /* Assets.xcassets */,
+				4A0C7FC4EF811BE8BC82879C /* Taxonomy */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		6279AB96FF916E30B891551F /* WonderMathUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C83C6CF5F91E2705CF7B465C /* ScreenshotTests.swift */,
+			);
+			path = WonderMathUITests;
+			sourceTree = "<group>";
+		};
+		630AC98BB344EEE726AD3EAB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				264B705661D7EE126498BD2A /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		81727FD184689D4CF48D221A /* WonderMathTests */ = {
+			isa = PBXGroup;
+			children = (
+				8BDB935E2F24128E0EEDB2E6 /* PersistenceTests.swift */,
+			);
+			path = WonderMathTests;
+			sourceTree = "<group>";
+		};
+		8B22CCE99D628A37DE307501 /* Adaptive */ = {
+			isa = PBXGroup;
+			children = (
+				BE34F3C7CE5D2A00667ADDDE /* ProgressService.swift */,
+			);
+			path = Adaptive;
+			sourceTree = "<group>";
+		};
+		A7A89D13CE9BEE2F3743BF70 /* Puzzles */ = {
+			isa = PBXGroup;
+			children = (
+				78229928067175F062A23072 /* PuzzleSession.swift */,
+			);
+			path = Puzzles;
+			sourceTree = "<group>";
+		};
+		AC97B533ABD00F26D36E7DE8 /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				CB7AF09054C8DA2FD1570644 /* AppState.swift */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
+		CA28BC4BB057242C7A655ABE /* Parent */ = {
+			isa = PBXGroup;
+			children = (
+				AB2208B625F239070BB7F318 /* ParentDashboardView.swift */,
+				AD2450921256B0950D6ED654 /* ParentGateView.swift */,
+			);
+			path = Parent;
+			sourceTree = "<group>";
+		};
+		D682229D0C0AD042470D4883 = {
+			isa = PBXGroup;
+			children = (
+				07873F7745591FB6D20CD734 /* Packages */,
+				DAC735E2F1855441B133EE91 /* WonderMath */,
+				81727FD184689D4CF48D221A /* WonderMathTests */,
+				6279AB96FF916E30B891551F /* WonderMathUITests */,
+				2F4EEEBE4F00B893F8960AD7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DAC735E2F1855441B133EE91 /* WonderMath */ = {
+			isa = PBXGroup;
+			children = (
+				2E6DCE0C122EC5EED80B25A4 /* RootView.swift */,
+				FB7265CBAC6A917F656952A2 /* WonderMathApp.swift */,
+				8B22CCE99D628A37DE307501 /* Adaptive */,
+				AC97B533ABD00F26D36E7DE8 /* Content */,
+				43C9C1109B8B7DFCEE7B7F4B /* Game */,
+				3D8EB1044BAB6AFE76C86D3C /* Localization */,
+				630AC98BB344EEE726AD3EAB /* Models */,
+				CA28BC4BB057242C7A655ABE /* Parent */,
+				A7A89D13CE9BEE2F3743BF70 /* Puzzles */,
+				4AC4D2D2783C10CED20D5E54 /* Resources */,
+			);
+			path = WonderMath;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3081BA849AB06095833CFCF6 /* WonderMathTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB2F618EC75F38E87C354C75 /* Build configuration list for PBXNativeTarget "WonderMathTests" */;
+			buildPhases = (
+				6BE7769257476363B3AABBFD /* Sources */,
+				3FEB4EDBD79FA18F05C29AC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0FD72A883DCB0CF18B278E72 /* PBXTargetDependency */,
+			);
+			name = WonderMathTests;
+			packageProductDependencies = (
+				B7676A5207ECA3FAB162719E /* WonderMathCore */,
+			);
+			productName = WonderMathTests;
+			productReference = 7D60DF45F0CF9EFFE5DF771B /* WonderMathTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		865496C38C7AB5C987037994 /* WonderMathUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A39C6B3D830EB65E7C56DA7 /* Build configuration list for PBXNativeTarget "WonderMathUITests" */;
+			buildPhases = (
+				0B7809D49C8FA99D3A98E062 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2821173F2B2383A451284EDA /* PBXTargetDependency */,
+			);
+			name = WonderMathUITests;
+			productName = WonderMathUITests;
+			productReference = 23654CF726A6F637F08C971D /* WonderMathUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		A0A009B279E354BC88074A44 /* WonderMath */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 865EAA521FC0F29E0E9B8D19 /* Build configuration list for PBXNativeTarget "WonderMath" */;
+			buildPhases = (
+				62557C6EAF417BF125737BA7 /* Sources */,
+				68354816706187F4F0A2D4D5 /* Resources */,
+				DB6A3FCC33E4145AD79C3837 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WonderMath;
+			packageProductDependencies = (
+				81E01D315B2B1030134B97A6 /* WonderMathCore */,
+			);
+			productName = WonderMath;
+			productReference = CE8CFE14BDC6702FE403BF9E /* WonderMath.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1A0DC20AF1D4337499CE541E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					865496C38C7AB5C987037994 = {
+						TestTargetID = A0A009B279E354BC88074A44;
+					};
+				};
+			};
+			buildConfigurationList = 18C9E88645E3A85B258D56B0 /* Build configuration list for PBXProject "WonderMath" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D682229D0C0AD042470D4883;
+			packageReferences = (
+				57DA9C9BE002DB53AA32B60A /* XCLocalSwiftPackageReference "WonderMathCore" */,
+			);
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A0A009B279E354BC88074A44 /* WonderMath */,
+				3081BA849AB06095833CFCF6 /* WonderMathTests */,
+				865496C38C7AB5C987037994 /* WonderMathUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		68354816706187F4F0A2D4D5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6BA742BB03CE3437EDD5584 /* Assets.xcassets in Resources */,
+				0947D2C432AF6609F0F3FCF7 /* Taxonomy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0B7809D49C8FA99D3A98E062 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8BF9EE274D1F3338FC88ADBF /* ScreenshotTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62557C6EAF417BF125737BA7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				493B75AABCB602790C566E38 /* AppState.swift in Sources */,
+				B4D1C7A230C91E74D2F843A3 /* BridgeScene.swift in Sources */,
+				2CC5B0034C88263E8FC29D87 /* CompanionView.swift in Sources */,
+				8766ECA3748C647C034759F1 /* DailyAdventureView.swift in Sources */,
+				105CB36D160C7D9992A70582 /* LocalizationEnvironment.swift in Sources */,
+				24452802C10CAAB1A296BEE6 /* Models.swift in Sources */,
+				2FF045C6D12B1C07AE4E397E /* OnboardingView.swift in Sources */,
+				35202E89D0FBB051A9555645 /* ParentDashboardView.swift in Sources */,
+				C0C19FC7DDCAB5200A247250 /* ParentGateView.swift in Sources */,
+				AD140DF25A3E8F8851D43653 /* ProgressService.swift in Sources */,
+				89E5D05C02FDF53BA9052FFA /* PuzzleSession.swift in Sources */,
+				81D52CAEF3D64B177763051D /* PuzzleView.swift in Sources */,
+				FF691A0AE6F9CD46ABE575D7 /* RootView.swift in Sources */,
+				1FA3C8D058325926BAEE7EAB /* Speech.swift in Sources */,
+				12D40EAC6AFB7C57ED0703FC /* TopicPathView.swift in Sources */,
+				16CDD129C9AD2463EF3788E9 /* WhyView.swift in Sources */,
+				A7C907A7D955414198CA55F0 /* WonderMathApp.swift in Sources */,
+				64C93B1604E96A197C425808 /* WorldMapScene.swift in Sources */,
+				145DA30FFCAFA4ABBA1766E6 /* WorldMapView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6BE7769257476363B3AABBFD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81053FBE00D8B7F5C5D3FA9E /* PersistenceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0FD72A883DCB0CF18B278E72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A0A009B279E354BC88074A44 /* WonderMath */;
+			targetProxy = EB75A5DCF2418FE77DF6BC33 /* PBXContainerItemProxy */;
+		};
+		2821173F2B2383A451284EDA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A0A009B279E354BC88074A44 /* WonderMath */;
+			targetProxy = 5901401647DF40D2AA145780 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		06F542A2E7E4C988215D32D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WonderMath;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				"INFOPLIST_KEY_UISupportedInterfaceOrientations~ipad" = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wondermath.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		35E7D1014F92E0204F65E991 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wondermath.app.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WonderMath.app/WonderMath";
+			};
+			name = Debug;
+		};
+		5317057E3AAC925A89EABBB2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wondermath.app.uitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_TARGET_NAME = WonderMath;
+			};
+			name = Debug;
+		};
+		B1636A17874D3B5040E5BF58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WonderMath;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				"INFOPLIST_KEY_UISupportedInterfaceOrientations~ipad" = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wondermath.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		B7374B9123D09830B0C3A578 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wondermath.app.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WonderMath.app/WonderMath";
+			};
+			name = Release;
+		};
+		C327B536E277E3E5FE45632C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		C91458DEF21DF772C1E6BA7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		F351B612DABCB50AE5A7B28C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wondermath.app.uitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_TARGET_NAME = WonderMath;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18C9E88645E3A85B258D56B0 /* Build configuration list for PBXProject "WonderMath" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C327B536E277E3E5FE45632C /* Debug */,
+				C91458DEF21DF772C1E6BA7A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7A39C6B3D830EB65E7C56DA7 /* Build configuration list for PBXNativeTarget "WonderMathUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5317057E3AAC925A89EABBB2 /* Debug */,
+				F351B612DABCB50AE5A7B28C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		865EAA521FC0F29E0E9B8D19 /* Build configuration list for PBXNativeTarget "WonderMath" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06F542A2E7E4C988215D32D5 /* Debug */,
+				B1636A17874D3B5040E5BF58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FB2F618EC75F38E87C354C75 /* Build configuration list for PBXNativeTarget "WonderMathTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35E7D1014F92E0204F65E991 /* Debug */,
+				B7374B9123D09830B0C3A578 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		57DA9C9BE002DB53AA32B60A /* XCLocalSwiftPackageReference "WonderMathCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = WonderMathCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		81E01D315B2B1030134B97A6 /* WonderMathCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WonderMathCore;
+		};
+		B7676A5207ECA3FAB162719E /* WonderMathCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WonderMathCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1A0DC20AF1D4337499CE541E /* Project object */;
+}
