@@ -12,7 +12,8 @@ struct WonderMathApp: App {
             Achievement.self,
             DailyAdventureLog.self,
         ])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let inMemory = ProcessInfo.processInfo.arguments.contains("-UITestInMemory")
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
         do {
             return try ModelContainer(for: schema, configurations: [config])
         } catch {

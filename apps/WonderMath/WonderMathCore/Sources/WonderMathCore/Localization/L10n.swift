@@ -14,6 +14,22 @@ public enum L10n {
         case parentZoneTitle
         case loadingTaxonomy
         case comingSoon
+        case comingSoonDetail
+        case closeButton
+        case doneButton
+        case customizeBuddy
+        case minutesFormat
+        case parentAgeFormat
+        case curriculumNotice
+        case languageEnglish
+        case languageGerman
+        case difficultyGentler
+        case difficultyBalanced
+        case difficultyBolder
+        case companionColorLabel
+        case companionAccessoryLabel
+        case xpFormat
+        case roundsFormat
 
         // Worlds
         case world1Title, world1Subtitle
@@ -40,6 +56,7 @@ public enum L10n {
 
         // Bridge scene
         case bridgeInstructions
+        case sequenceInstructions
         case dropPlankHere
         case checkAnswer
         case tryAgain

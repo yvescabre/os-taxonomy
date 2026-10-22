@@ -13,6 +13,7 @@ final class ChildProfile {
     var companionColor: String
     var companionAccessory: String
     var xp: Int
+    var puzzlesSolved: Int
     var audioEnabled: Bool
     var difficultyOffset: Int         // -1 gentler … +1 bolder
     var createdAt: Date
@@ -28,7 +29,7 @@ final class ChildProfile {
 
     init(id: UUID = UUID(), name: String, age: Int, languageCode: String = "en",
          companionSpecies: String = "fox", companionColor: String = "orange",
-         companionAccessory: String = "none", xp: Int = 0,
+         companionAccessory: String = "none", xp: Int = 0, puzzlesSolved: Int = 0,
          audioEnabled: Bool = true, difficultyOffset: Int = 0, createdAt: Date = .now) {
         self.id = id
         self.name = name
@@ -38,6 +39,7 @@ final class ChildProfile {
         self.companionColor = companionColor
         self.companionAccessory = companionAccessory
         self.xp = xp
+        self.puzzlesSolved = puzzlesSolved
         self.audioEnabled = audioEnabled
         self.difficultyOffset = difficultyOffset
         self.createdAt = createdAt
