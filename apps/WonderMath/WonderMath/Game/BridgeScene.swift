@@ -75,7 +75,6 @@ final class BridgeScene: SKScene {
         node.fillColor = isSequence ? SKColor(red: 0.52, green: 0.67, blue: 0.49, alpha: 1) :
             SKColor(red: 0.75, green: 0.44, blue: 0.22, alpha: 1)
         node.strokeColor = isSequence ? .white : SKColor(red: 0.40, green: 0.23, blue: 0.13, alpha: 1)
-        node.lineDashPattern = nil
         let label = shadowedLabel("\(value)", size: isSequence ? 24 : 27)
         node.addChild(label)
     }
@@ -226,10 +225,16 @@ final class BridgeScene: SKScene {
     }
 
     private func styleGap(_ gap: SKShapeNode) {
-        gap.strokeColor = SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
+        gap.strokeColor = .clear
         gap.lineWidth = 5
-        gap.lineDashPattern = [10, 7]
         gap.glowWidth = 7
+        if let path = gap.path?.copy(dashingWithPhase: 0, lengths: [10, 7], transform: .identity) {
+            let dashedOutline = SKShapeNode(path: path)
+            dashedOutline.strokeColor = SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
+            dashedOutline.lineWidth = 5
+            dashedOutline.glowWidth = 7
+            gap.addChild(dashedOutline)
+        }
         if !reduceMotion {
             gap.run(.repeatForever(.sequence([.fadeAlpha(to: 0.5, duration: 0.8),
                                               .fadeAlpha(to: 1, duration: 0.8)])))
@@ -266,11 +271,16 @@ final class BridgeScene: SKScene {
         label.fontName = "AvenirNext-Heavy"
         label.fontSize = size
         label.fontColor = .white
-        label.shadowColor = SKColor.black.withAlphaComponent(0.28)
-        label.shadowBlurRadius = 2
-        label.shadowOffset = CGSize(width: 0, height: -2)
         label.verticalAlignmentMode = .center
         label.position.y = 2
+        let shadow = SKLabelNode(text: text)
+        shadow.fontName = label.fontName
+        shadow.fontSize = size
+        shadow.fontColor = SKColor.black.withAlphaComponent(0.28)
+        shadow.verticalAlignmentMode = .center
+        shadow.position.y = -2
+        shadow.zPosition = -1
+        label.addChild(shadow)
         return label
     }
 

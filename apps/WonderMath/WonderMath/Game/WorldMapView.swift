@@ -227,25 +227,8 @@ struct WorldMapView: View {
                               colorName: profile.companionColor,
                               accessory: profile.companionAccessory, size: 96)
                 HStack(spacing: 12) {
-                    ForEach(companionOptions, id: \.0) { species, titleKey in
-                        Button {
-                            profile.companionSpecies = species
-                            saveProfile()
-                        } label: {
-                            VStack(spacing: 4) {
-                                CompanionView(species: species, colorName: profile.companionColor,
-                                              accessory: profile.companionAccessory, size: 56)
-                                Text(localizer.string(titleKey))
-                                    .font(Theme.roundedFont(12, weight: .bold))
-                                    .foregroundStyle(Theme.ink)
-                            }
-                            .frame(width: 116, minHeight: 82)
-                            .background(profile.companionSpecies == species ? Theme.sun.opacity(0.2) : .white,
-                                        in: RoundedRectangle(cornerRadius: 18))
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(localizer.string(titleKey))
-                        .accessibilityIdentifier("buddy-species-\(species)")
+                    ForEach(companionOptions, id: \.0) { option in
+                        companionSpeciesButton(option.0, titleKey: option.1)
                     }
                 }
                 HStack(spacing: 12) {
@@ -289,6 +272,28 @@ struct WorldMapView: View {
             .padding(22)
         }
         .background(Theme.cream)
+    }
+
+    private func companionSpeciesButton(_ species: String, titleKey: L10n.Key) -> some View {
+        Button {
+            profile.companionSpecies = species
+            saveProfile()
+        } label: {
+            VStack(spacing: 4) {
+                CompanionView(species: species, colorName: profile.companionColor,
+                              accessory: profile.companionAccessory, size: 56)
+                Text(localizer.string(titleKey))
+                    .font(Theme.roundedFont(12, weight: .bold))
+                    .foregroundStyle(Theme.ink)
+            }
+            .frame(width: 116)
+            .frame(minHeight: 82)
+            .background(profile.companionSpecies == species ? Theme.sun.opacity(0.2) : .white,
+                        in: RoundedRectangle(cornerRadius: 18))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(localizer.string(titleKey))
+        .accessibilityIdentifier("buddy-species-\(species)")
     }
 
     private func saveProfile() {

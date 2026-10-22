@@ -128,11 +128,11 @@ final class WorldMapScene: SKScene {
                           control1: CGPoint(x: midpoint, y: previous.y),
                           control2: CGPoint(x: midpoint, y: point.y))
         }
-        let trail = SKShapeNode(path: path)
+        let dashedPath = path.copy(dashingWithPhase: 0, lengths: [2, 16], transform: .identity)
+        let trail = SKShapeNode(path: dashedPath)
         trail.strokeColor = SKColor.white.withAlphaComponent(0.68)
         trail.lineWidth = 5
         trail.lineCap = .round
-        trail.lineDashPattern = [2, 16]
         trail.zPosition = -1
         addChild(trail)
     }
