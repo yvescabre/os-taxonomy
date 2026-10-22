@@ -117,18 +117,82 @@ Command line:
 xcrun simctl list devices available | grep -i ipad
 
 xcodebuild -project WonderMath.xcodeproj -scheme WonderMath \
-  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)' build
+  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' build
 
 # app unit + UI tests (UI tests attach screenshots to the .xcresult)
 xcodebuild -project WonderMath.xcodeproj -scheme WonderMath \
-  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)' \
+  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' \
   -resultBundlePath build/WonderMath.xcresult test
 
 # core logic tests (macOS or Linux, no simulator needed)
 cd WonderMathCore && swift test
 ```
 
-Use any iPad simulator name from `simctl list`. The UI tests launch the app with `-UITestInMemory -UITestProfile Mia`, which uses an in-memory store and a pre-made profile so that the screenshots are reproducible.
+Use any iPad simulator name from `simctl list` (verified with Xcode 26.6 / iOS 26.5 on iPad Pro 13-inch (M5)). To export the UI-test screenshots: `xcrun xcresulttool export attachments --path build/WonderMath.xcresult --output-path build/shots`. The UI tests launch the app with `-UITestInMemory -UITestProfile Mia`, which uses an in-memory store and a pre-made profile so that the screenshots are reproducible.
+
+## Screenshots
+
+Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
+
+**Onboarding**
+
+![Onboarding](docs/screenshots/01-onboarding.png)
+
+**World map**
+
+![World map](docs/screenshots/02-world-map.png)
+
+**Number Kingdom topic path**
+
+![Number Kingdom topic path](docs/screenshots/03-topic-path.png)
+
+**Wrong plank: gentle feedback**
+
+![Wrong plank: gentle feedback](docs/screenshots/05-gentle-feedback.png)
+
+**Hints: Nudge → Clue → Walkthrough**
+
+![Hints: Nudge → Clue → Walkthrough](docs/screenshots/06-hint-walkthrough.png)
+
+**Why does this work?**
+
+![Why does this work?](docs/screenshots/07-why-does-this-work.png)
+
+**Reward after solving**
+
+![Reward after solving](docs/screenshots/08-reward.png)
+
+**Treasure chest (every 5 solves)**
+
+![Treasure chest (every 5 solves)](docs/screenshots/09-treasure-chest.png)
+
+**Today's Adventure**
+
+![Today's Adventure](docs/screenshots/10-daily-adventure.png)
+
+**Parent gate**
+
+![Parent gate](docs/screenshots/11-parent-gate.png)
+
+**Parent dashboard**
+
+![Parent dashboard](docs/screenshots/12-parent-dashboard.png)
+
+**Content & licences (Marble attribution)**
+
+![Content & licences (Marble attribution)](docs/screenshots/13-attribution.png)
+
+**Parent dashboard in German (Switzerland)**
+
+![Parent dashboard in German (Switzerland)](docs/screenshots/14-parent-dashboard-de-CH.png)
+
+**Topic path in German (Switzerland)**
+
+![Topic path in German (Switzerland)](docs/screenshots/15-topic-path-de-CH.png)
+
+**Bridge puzzle in German (Switzerland)**
+
+![Bridge puzzle in German (Switzerland)](docs/screenshots/16-bridge-puzzle-de-CH.png)
 
 ## Tests
 
