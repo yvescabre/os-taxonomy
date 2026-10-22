@@ -186,7 +186,7 @@ struct WorldMapView: View {
                 }
                 .shadow(color: Theme.ink.opacity(0.12), radius: 12, x: 0, y: 7)
         }
-        .position(x: size.width * 0.40, y: size.height * 0.75)
+        .position(x: size.width * 0.27, y: size.height * 0.27)
         .accessibilityElement(children: .combine)
     }
 
