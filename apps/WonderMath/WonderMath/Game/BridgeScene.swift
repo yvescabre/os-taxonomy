@@ -144,14 +144,32 @@ final class BridgeScene: SKScene {
                     addGap(at: point, width: spacing - 8, height: 66)
                 }
             }
-            addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+            addCompanionOnLeftCliff()
         case .sequence(let terms):
             resetScene(sequence: true)
-            let spacing = terms.count > 1 ? size.width * 0.64 / CGFloat(terms.count - 1) : 0
+            let stoneInset = size.width * 0.06
+            let leftStoneX = -size.width * 0.35 + stoneInset
+            let rightStoneX = size.width * 0.35 - stoneInset
+            let spacing = terms.count > 1
+                ? (rightStoneX - leftStoneX) / CGFloat(terms.count - 1)
+                : 0
+            let stoneY = -size.height * 0.235
             for (index, term) in terms.enumerated() {
-                let x = -size.width * 0.32 + CGFloat(index) * spacing
-                let stone = SKShapeNode(ellipseOf: CGSize(width: 88, height: 62))
-                stone.position = CGPoint(x: x, y: -size.height * 0.13)
+                let x = leftStoneX + CGFloat(index) * spacing
+                let point = CGPoint(x: x, y: stoneY)
+                let ripple = SKShapeNode(ellipseOf: CGSize(width: size.width * 0.055,
+                                                           height: size.height * 0.016))
+                ripple.position = CGPoint(x: x, y: stoneY - size.height * 0.035)
+                ripple.fillColor = SKColor(red: 0.12, green: 0.51, blue: 0.68, alpha: 0.72)
+                ripple.strokeColor = .clear
+                ripple.zPosition = 1
+                addChild(ripple)
+                let stoneSize = term == nil
+                    ? CGSize(width: 112, height: 78)
+                    : CGSize(width: 88, height: 62)
+                let stone = SKShapeNode(ellipseOf: stoneSize)
+                stone.position = point
+                stone.zPosition = 2
                 stone.fillColor = term == nil ? .clear :
                     SKColor(red: 0.851, green: 0.812, blue: 0.753, alpha: 1)
                 stone.strokeColor = term == nil ? .clear :
@@ -165,7 +183,7 @@ final class BridgeScene: SKScene {
                     styleGap(stone)
                 }
             }
-            addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+            addCompanionOnLeftCliff()
         }
         if let filledValue {
             fill(gapWith: filledValue)
@@ -212,17 +230,18 @@ final class BridgeScene: SKScene {
         water.fillColor = SKColor(red: 0.20, green: 0.65, blue: 0.81, alpha: 1)
         water.strokeColor = .clear
         addChild(water)
+        let innerCliffEdgeX = size.width * 0.35
         for side: CGFloat in [-1, 1] {
             addCliff(side: side)
             let post = SKShapeNode(rectOf: CGSize(width: 14, height: 75), cornerRadius: 7)
-            post.position = CGPoint(x: side * size.width * 0.31, y: size.height * 0.04)
+            post.position = CGPoint(x: side * innerCliffEdgeX, y: size.height * 0.04)
             post.fillColor = SKColor(red: 0.44, green: 0.26, blue: 0.15, alpha: 1)
             post.strokeColor = .clear
             addChild(post)
         }
         let ropePath = CGMutablePath()
-        ropePath.move(to: CGPoint(x: -size.width * 0.31, y: size.height * 0.06))
-        ropePath.addQuadCurve(to: CGPoint(x: size.width * 0.31, y: size.height * 0.06),
+        ropePath.move(to: CGPoint(x: -innerCliffEdgeX, y: size.height * 0.06))
+        ropePath.addQuadCurve(to: CGPoint(x: innerCliffEdgeX, y: size.height * 0.06),
                               control: CGPoint(x: 0, y: -size.height * 0.03))
         let rope = SKShapeNode(path: ropePath)
         rope.strokeColor = SKColor(red: 0.48, green: 0.27, blue: 0.14, alpha: 1)
@@ -231,17 +250,18 @@ final class BridgeScene: SKScene {
         for row in 0..<2 {
             let wavePath = CGMutablePath()
             let y = -size.height * (0.23 + CGFloat(row) * 0.10)
-            wavePath.move(to: CGPoint(x: -size.width * 0.5, y: y))
-            wavePath.addCurve(to: CGPoint(x: size.width * 0.5, y: y),
-                              control1: CGPoint(x: -size.width * 0.16, y: y + 12),
-                              control2: CGPoint(x: size.width * 0.16, y: y - 12))
+            let waveEdgeX = innerCliffEdgeX - size.width * 0.01
+            wavePath.move(to: CGPoint(x: -waveEdgeX, y: y))
+            wavePath.addCurve(to: CGPoint(x: waveEdgeX, y: y),
+                              control1: CGPoint(x: -size.width * 0.14, y: y + 12),
+                              control2: CGPoint(x: size.width * 0.14, y: y - 12))
             let wave = SKShapeNode(path: wavePath)
             wave.strokeColor = .white.withAlphaComponent(0.42)
             wave.lineWidth = 4
             addChild(wave)
             if !reduceMotion {
-                wave.run(.repeatForever(.sequence([.moveBy(x: -100, y: 0, duration: 6),
-                                                   .moveBy(x: 100, y: 0, duration: 6)])))
+                wave.run(.repeatForever(.sequence([.moveBy(x: 0, y: 2, duration: 3),
+                                                   .moveBy(x: 0, y: -2, duration: 3)])))
             }
         }
     }
@@ -268,7 +288,7 @@ final class BridgeScene: SKScene {
 
     private func addCliff(side: CGFloat) {
         let outerX = side * size.width * 0.53
-        let innerX = side * size.width * 0.32
+        let innerX = side * size.width * 0.35
         let outerY = size.height * 0.07
         let innerY = size.height * 0.035
         let control1 = CGPoint(x: outerX - side * size.width * 0.08,
@@ -444,6 +464,11 @@ final class BridgeScene: SKScene {
         sprite.zPosition = 12
         addChild(sprite)
         companionNode = sprite
+    }
+
+    private func addCompanionOnLeftCliff() {
+        let footY = size.height * 0.01
+        addCompanion(at: CGPoint(x: -size.width * 0.42, y: footY + 48))
     }
 
     private func gradientTexture(size: CGSize, colors: [SKColor]) -> SKTexture {

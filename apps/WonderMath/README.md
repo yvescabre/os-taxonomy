@@ -142,7 +142,7 @@ Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 
 **Number Kingdom path:** [initial path](docs/screenshots/03-topic-path.png) · [castle end](docs/screenshots/03b-topic-path-end.png)
 
-**Bridge puzzle:** [equation bridge](docs/screenshots/04-bridge-puzzle.png) · [stepping stones](docs/screenshots/04b-stepping-stones.png) · [wrong answer](docs/screenshots/05-gentle-feedback.png) · [Walkthrough hint](docs/screenshots/06-hint-walkthrough.png) · [Why does this work?](docs/screenshots/07-why-does-this-work.png) · [filled bridge](docs/screenshots/20-bridge-solved.png)
+**Bridge puzzle:** [equation bridge](docs/screenshots/04-bridge-puzzle.png) · [stepping stones](docs/screenshots/04b-stepping-stones.png) · [wrong answer](docs/screenshots/05-gentle-feedback.png) · [Walkthrough hint](docs/screenshots/06-hint-walkthrough.png) · [Why does this work?](docs/screenshots/07-why-does-this-work.png) · [solved bridge](docs/screenshots/20-bridge-solved.png)
 
 **Rewards:** [solved puzzle](docs/screenshots/08-reward.png) · [treasure chest](docs/screenshots/09-treasure-chest.png) · [star meter](docs/screenshots/23-star-meter.png)
 
