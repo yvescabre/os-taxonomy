@@ -128,99 +128,31 @@ xcodebuild -project WonderMath.xcodeproj -scheme WonderMath \
 cd WonderMathCore && swift test
 ```
 
-Use any iPad simulator name from `simctl list` (verified with Xcode 26.6 / iOS 26.5 on iPad Pro 13-inch (M5)). To export the UI-test screenshots: `xcrun xcresulttool export attachments --path build/WonderMath.xcresult --output-path build/shots`. The UI tests launch the app with `-UITestInMemory -UITestProfile Mia`, which uses an in-memory store and a pre-made profile so that the screenshots are reproducible.
+Use any iPad simulator name from `simctl list` (verified with Xcode 26.6 / iOS 26.5 on iPad Pro 13-inch (M5)). These landscape screenshots were captured with host-side `xcrun simctl io <udid> screenshot` calls coordinated by a temporary UI-test tour. The app uses an in-memory store and a pre-made profile so the states are reproducible.
 
 ## Screenshots
 
 Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 
-**Onboarding**
+**Onboarding:** [step 1](docs/screenshots/01-onboarding.png) · [choose a buddy](docs/screenshots/01b-onboarding-buddy.png)
 
-![Onboarding](docs/screenshots/01-onboarding.png)
+**World map:** [English](docs/screenshots/02-world-map.png) · [dark system appearance](docs/screenshots/22-world-map-dark-mode.png)
 
-**Onboarding: choose a buddy**
+**Sheets:** [coming soon](docs/screenshots/18-coming-soon.png) · [customize buddy](docs/screenshots/19-buddy-sheet.png)
 
-![Onboarding: choose a buddy](docs/screenshots/01b-onboarding-buddy.png)
+**Number Kingdom path:** [initial path](docs/screenshots/03-topic-path.png)
 
-**World map**
+**Bridge puzzle:** [initial](docs/screenshots/04-bridge-puzzle.png) · [wrong answer](docs/screenshots/05-gentle-feedback.png) · [Walkthrough hint](docs/screenshots/06-hint-walkthrough.png) · [Why does this work?](docs/screenshots/07-why-does-this-work.png) · [filled bridge](docs/screenshots/20-bridge-solved.png)
 
-![World map](docs/screenshots/02-world-map.png)
+**Rewards:** [solved puzzle](docs/screenshots/08-reward.png) · [treasure chest](docs/screenshots/09-treasure-chest.png) · [star meter](docs/screenshots/23-star-meter.png)
 
-**World map with the simulator in dark appearance**
+**Today's Adventure:** [daily adventure](docs/screenshots/10-daily-adventure.png)
 
-![World map in dark appearance](docs/screenshots/22-world-map-dark-mode.png)
+**Parent area:** [gate](docs/screenshots/11-parent-gate.png) · [dashboard](docs/screenshots/12-parent-dashboard.png) · [attribution](docs/screenshots/13-attribution.png) · [voice settings](docs/screenshots/24-parent-voice-settings.png)
 
-**Coming-soon world sheet**
+**German (Switzerland):** [parent dashboard](docs/screenshots/14-parent-dashboard-de-CH.png) · [topic path](docs/screenshots/15-topic-path-de-CH.png) · [bridge puzzle](docs/screenshots/16-bridge-puzzle-de-CH.png) · [world map](docs/screenshots/17-world-map-de-CH.png)
 
-![Coming-soon world sheet](docs/screenshots/18-coming-soon.png)
-
-**Buddy sheet**
-
-![Buddy sheet](docs/screenshots/19-buddy-sheet.png)
-
-**Number Kingdom topic path**
-
-![Number Kingdom topic path](docs/screenshots/03-topic-path.png)
-
-**Bridge puzzle (stepping-stone sequence)**
-
-![Bridge puzzle (stepping-stone sequence)](docs/screenshots/04-bridge-puzzle.png)
-
-**Wrong plank: gentle feedback**
-
-![Wrong plank: gentle feedback](docs/screenshots/05-gentle-feedback.png)
-
-**Hints: Nudge → Clue → Walkthrough**
-
-![Hints: Nudge → Clue → Walkthrough](docs/screenshots/06-hint-walkthrough.png)
-
-**Bridge solved**
-
-![Bridge solved](docs/screenshots/20-bridge-solved.png)
-
-**Why does this work?**
-
-![Why does this work?](docs/screenshots/07-why-does-this-work.png)
-
-**Reward after solving**
-
-![Reward after solving](docs/screenshots/08-reward.png)
-
-**Treasure chest (every 5 solves)**
-
-![Treasure chest (every 5 solves)](docs/screenshots/09-treasure-chest.png)
-
-**Today's Adventure**
-
-![Today's Adventure](docs/screenshots/10-daily-adventure.png)
-
-**Parent gate**
-
-![Parent gate](docs/screenshots/11-parent-gate.png)
-
-**Parent dashboard**
-
-![Parent dashboard](docs/screenshots/12-parent-dashboard.png)
-
-**Parent dashboard scrolled: content & licences (Marble attribution)**
-
-![Parent dashboard scrolled: content & licences (Marble attribution)](docs/screenshots/13-attribution.png)
-
-**World map in German (Switzerland)**
-
-![World map in German (Switzerland)](docs/screenshots/17-world-map-de-CH.png)
-
-**Parent dashboard in German (Switzerland)**
-
-![Parent dashboard in German (Switzerland)](docs/screenshots/14-parent-dashboard-de-CH.png)
-
-**Topic path in German (Switzerland)**
-
-![Topic path in German (Switzerland)](docs/screenshots/15-topic-path-de-CH.png)
-
-**Bridge puzzle in German (Switzerland)**
-
-![Bridge puzzle in German (Switzerland)](docs/screenshots/16-bridge-puzzle-de-CH.png)
+The requested German onboarding step 1 (`21-onboarding-de-CH.png`) is not included: the app has no existing pre-profile language selector or launch argument, and no app code was added to switch it.
 
 ## Tests
 
