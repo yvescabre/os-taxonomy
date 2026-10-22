@@ -105,7 +105,7 @@ enum EnglishStrings {
         .clueSequence: "Look at the hop between two stones next to each other.",
         .clueBuild: "Pick any first number — then work out what the second must be.",
 
-        .feedbackCorrect: "That works!",
+        .feedbackCorrect: "That's good!",
         .feedbackAlmost: "Almost — look at the hint and try again.",
         .feedbackUsedVisibleNumbers: "Careful — don't just join the numbers you can see. The gap hides a different number.",
         .feedbackWroteTheWhole: "That's the whole total, not the missing piece. How much more is needed?",
