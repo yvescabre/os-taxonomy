@@ -16,22 +16,37 @@ struct ParentDashboardView: View {
          logs.reduce(0) { $0 + $1.secondsPlayed }) / 60
     }
     private var practicedCount: Int { records.filter { $0.attempts > 0 }.count }
+    private var masteredCount: Int {
+        records.filter { $0.progress().state == .mastered }.count
+    }
+    private var overallAccuracy: Int {
+        let attempts = records.reduce(0) { $0 + $1.attempts }
+        guard attempts > 0 else { return 0 }
+        let weighted = records.reduce(0.0) {
+            $0 + $1.progress().recentAccuracy * Double($1.attempts)
+        }
+        return Int((weighted / Double(attempts) * 100).rounded())
+    }
     private var service: ProgressService {
         ProgressService(context: modelContext, profile: profile, appState: appState)
     }
 
     var body: some View {
         NavigationStack {
-            List {
-                Section(localizer.string(.learningTimeTitle)) {
-                    LabeledContent(localizer.string(.learningTimeTitle),
-                                   value: localizer.string(.minutesFormat, [.number(totalMinutes)]))
-                }
-                Section(localizer.string(.skillsPracticedTitle)) {
-                    LabeledContent(localizer.string(.skillsPracticedTitle),
-                                   value: localizer.format(practicedCount))
-                }
-                Section(localizer.string(.masteryTitle)) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    HStack(spacing: 12) {
+                        metricCard(title: localizer.string(.learningTimeTitle),
+                                   value: localizer.string(.minutesFormat, [.number(totalMinutes)]),
+                                   symbol: "clock")
+                        metricCard(title: localizer.string(.skillsPracticedTitle),
+                                   value: localizer.format(practicedCount), symbol: "books.vertical")
+                        metricCard(title: localizer.string(.masteryMastered),
+                                   value: localizer.format(masteredCount), symbol: "star.fill")
+                        metricCard(title: localizer.string(.perSkillTableAccuracy),
+                                   value: "\(overallAccuracy)%", symbol: "chart.bar.fill")
+                    }
+                    dashboardCard(title: localizer.string(.masteryTitle)) {
                     if records.isEmpty {
                         Text(localizer.string(.noDataYet))
                     } else {
@@ -39,11 +54,11 @@ struct ParentDashboardView: View {
                             skillRow(record)
                         }
                     }
-                }
-                Section(localizer.string(.improvementTitle)) {
-                    improvementContent
-                }
-                Section(localizer.string(.achievementsTitle)) {
+                    }
+                    dashboardCard(title: localizer.string(.improvementTitle)) {
+                        improvementContent
+                    }
+                    dashboardCard(title: localizer.string(.achievementsTitle)) {
                     if profile.achievements.isEmpty {
                         Text(localizer.string(.noDataYet))
                     } else {
@@ -55,20 +70,23 @@ struct ParentDashboardView: View {
                             }
                         }
                     }
+                    }
+                    dashboardCard(title: localizer.string(.offlineActivitiesTitle)) {
+                        Text(localizer.string(.teachingNoteForParents))
+                            .font(.caption.bold())
+                            .foregroundStyle(.secondary)
+                        offlineActivityContent
+                    }
+                    settingsSection
+                    dashboardCard(title: localizer.string(.attributionTitle)) {
+                        Text(localizer.string(.attributionText)).font(.footnote)
+                        Text(localizer.string(.licenseNote)).font(.footnote)
+                        Text(localizer.string(.curriculumNotice)).font(.footnote)
+                    }
                 }
-                Section(localizer.string(.offlineActivitiesTitle)) {
-                    Text(localizer.string(.teachingNoteForParents))
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
-                    offlineActivityContent
-                }
-                settingsSection
-                Section(localizer.string(.attributionTitle)) {
-                    Text(localizer.string(.attributionText)).font(.footnote)
-                    Text(localizer.string(.licenseNote)).font(.footnote)
-                    Text(localizer.string(.curriculumNotice)).font(.footnote)
-                }
+                .padding(24)
             }
+            .background(Color(red: 0.95, green: 0.96, blue: 0.98).ignoresSafeArea())
             .navigationTitle(localizer.string(.parentZoneTitle))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -77,9 +95,40 @@ struct ParentDashboardView: View {
                 }
             }
         }
+        .fontDesign(.default)
         .onChange(of: profile.languageCode) { _, value in
             appState.language = AppLanguage(rawValue: value) ?? .english
         }
+    }
+
+    private func metricCard(title: String, value: String, symbol: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Image(systemName: symbol).foregroundStyle(Theme.violet)
+            Text(value).font(.system(size: 23, weight: .bold, design: .default))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+            Text(title).font(.system(size: 13, weight: .medium, design: .default))
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+        }
+        .frame(maxWidth: .infinity, minHeight: 112, alignment: .leading)
+        .padding(14)
+        .background(.white, in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    private func dashboardCard<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(title).font(.system(size: 20, weight: .bold, design: .default))
+                .foregroundStyle(Theme.ink)
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(.white, in: RoundedRectangle(cornerRadius: 20))
     }
 
     private func skillRow(_ record: MasteryRecord) -> some View {
@@ -95,6 +144,8 @@ struct ParentDashboardView: View {
         return VStack(alignment: .leading, spacing: 6) {
             Text(name).font(.headline)
             Text(domain).font(.caption).foregroundStyle(.secondary)
+            ProgressView(value: progress.recentAccuracy)
+                .tint(progress.state == .mastered ? Theme.leaf : Theme.sun)
             HStack {
                 Text(localizer.string(.perSkillTableAccuracy))
                 Spacer()
@@ -104,6 +155,10 @@ struct ParentDashboardView: View {
                 Text(localizer.format(progress.attempts))
                 Spacer()
                 Text(state)
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 4)
+                    .background(progress.state == .mastered ? Theme.leaf.opacity(0.16) : Theme.sun.opacity(0.18),
+                                in: Capsule())
             }
             .font(.caption)
         }
@@ -184,42 +239,44 @@ struct ParentDashboardView: View {
     }
 
     private var settingsSection: some View {
-        Section(localizer.string(.settingsSectionTitle)) {
-            Stepper(value: Binding(get: { profile.age }, set: {
-                profile.age = min(12, max(7, $0))
-                service.saveChanges()
-            }), in: 7...12) {
-                Text(localizer.string(.parentAgeFormat, [.number(profile.age)]))
+        dashboardCard(title: localizer.string(.settingsSectionTitle)) {
+            VStack(alignment: .leading, spacing: 10) {
+                Stepper(value: Binding(get: { profile.age }, set: {
+                    profile.age = min(12, max(7, $0))
+                    service.saveChanges()
+                }), in: 7...12) {
+                    Text(localizer.string(.parentAgeFormat, [.number(profile.age)]))
+                }
+                .frame(minHeight: 64)
+                Picker(localizer.string(.difficultyLabel), selection: Binding(get: {
+                    profile.difficultyOffset
+                }, set: {
+                    profile.difficultyOffset = $0
+                    service.saveChanges()
+                })) {
+                    Text(localizer.string(.difficultyGentler)).tag(-1)
+                    Text(localizer.string(.difficultyBalanced)).tag(0)
+                    Text(localizer.string(.difficultyBolder)).tag(1)
+                }
+                .pickerStyle(.segmented)
+                Picker(localizer.string(.languageLabel), selection: Binding(get: {
+                    profile.languageCode
+                }, set: {
+                    profile.languageCode = $0
+                    appState.language = AppLanguage(rawValue: $0) ?? .english
+                    service.saveChanges()
+                })) {
+                    Text(localizer.string(.languageEnglish)).tag(AppLanguage.english.rawValue)
+                    Text(localizer.string(.languageGerman)).tag(AppLanguage.german.rawValue)
+                }
+                Toggle(localizer.string(.audioLabel), isOn: Binding(get: {
+                    profile.audioEnabled
+                }, set: {
+                    profile.audioEnabled = $0
+                    service.saveChanges()
+                }))
+                .frame(minHeight: 64)
             }
-            .frame(minHeight: 64)
-            Picker(localizer.string(.difficultyLabel), selection: Binding(get: {
-                profile.difficultyOffset
-            }, set: {
-                profile.difficultyOffset = $0
-                service.saveChanges()
-            })) {
-                Text(localizer.string(.difficultyGentler)).tag(-1)
-                Text(localizer.string(.difficultyBalanced)).tag(0)
-                Text(localizer.string(.difficultyBolder)).tag(1)
-            }
-            .pickerStyle(.segmented)
-            Picker(localizer.string(.languageLabel), selection: Binding(get: {
-                profile.languageCode
-            }, set: {
-                profile.languageCode = $0
-                appState.language = AppLanguage(rawValue: $0) ?? .english
-                service.saveChanges()
-            })) {
-                Text(localizer.string(.languageEnglish)).tag(AppLanguage.english.rawValue)
-                Text(localizer.string(.languageGerman)).tag(AppLanguage.german.rawValue)
-            }
-            Toggle(localizer.string(.audioLabel), isOn: Binding(get: {
-                profile.audioEnabled
-            }, set: {
-                profile.audioEnabled = $0
-                service.saveChanges()
-            }))
-            .frame(minHeight: 64)
         }
     }
 

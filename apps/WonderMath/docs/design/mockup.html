@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WonderMath — visual redesign mockup</title>
+<style>
+:root{
+  --ink:#22314d; --ink-soft:#5b6b86; --cream:#fff8ec; --paper:#fffdf7;
+  --sun:#ffb627; --sun-d:#e08e00; --coral:#ff7a59; --coral-d:#d9532f;
+  --leaf:#5cbf6b; --leaf-d:#3b9a4c; --sky1:#7fd0ff; --sky2:#d9f3ff;
+  --water1:#4cc3e0; --water2:#2489b8; --wood:#c07a42; --wood-d:#8a4f25; --wood-l:#dd9a5c;
+  --violet:#8b6cf0; --violet-d:#6449cc; --teal:#2bb3a3;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", "Varela Round", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#1d2433;font-family:var(--font);color:var(--ink)}
+body{display:flex;flex-direction:column;align-items:center}
+.toolbar{display:flex;gap:6px;padding:10px;flex-wrap:wrap;justify-content:center}
+.toolbar button{font:600 14px var(--font);border:0;border-radius:999px;padding:8px 14px;background:#2e3850;color:#cfd8ea;cursor:pointer}
+.toolbar button[aria-selected=true]{background:#fff;color:var(--ink)}
+.stage{flex:1;width:100%;display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
+.ipad{width:1194px;height:834px;border-radius:38px;overflow:hidden;position:relative;transform-origin:top center;
+  box-shadow:0 0 0 14px #0b0e15,0 0 0 16px #3a4255,0 30px 80px rgba(0,0,0,.5);background:var(--sky2)}
+.screen{position:absolute;inset:0;display:none}
+.screen.on{display:block}
+.status{position:absolute;top:10px;left:26px;right:26px;display:flex;justify-content:space-between;font:600 14px var(--font);z-index:50;color:var(--ink)}
+
+/* chunky 3D buttons */
+.btn{font:800 22px var(--font);border:0;border-radius:24px;padding:16px 28px;cursor:pointer;color:#fff;
+  display:inline-flex;align-items:center;gap:12px;transition:transform .08s, box-shadow .08s;letter-spacing:.2px}
+.btn:active{transform:translateY(5px)}
+.btn-sun{background:linear-gradient(#ffc94d,var(--sun));box-shadow:0 7px 0 var(--sun-d),0 12px 20px rgba(224,142,0,.35);color:#5a3700}
+.btn-sun:active{box-shadow:0 2px 0 var(--sun-d)}
+.btn-leaf{background:linear-gradient(#78d486,var(--leaf));box-shadow:0 7px 0 var(--leaf-d),0 12px 20px rgba(59,154,76,.35)}
+.btn-leaf:active{box-shadow:0 2px 0 var(--leaf-d)}
+.btn-ghost{background:rgba(255,255,255,.85);color:var(--ink);box-shadow:0 5px 0 rgba(34,49,77,.15)}
+.btn-round{width:64px;height:64px;padding:0;justify-content:center;border-radius:50%}
+.chip{background:rgba(255,255,255,.9);border-radius:999px;padding:8px 18px 8px 8px;display:inline-flex;align-items:center;gap:12px;
+  box-shadow:0 5px 0 rgba(34,49,77,.12),0 10px 24px rgba(34,49,77,.12)}
+
+/* ---------- world map ---------- */
+#map svg.world{position:absolute;inset:0}
+.hud{position:absolute;top:40px;left:28px;right:28px;display:flex;align-items:center;gap:16px;z-index:5}
+.xp{display:flex;flex-direction:column;gap:5px}
+.xp b{font-size:20px}
+.xpbar{width:170px;height:14px;border-radius:9px;background:#e6eef7;overflow:hidden;box-shadow:inset 0 2px 0 rgba(0,0,0,.08)}
+.xpbar i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#ffd257,var(--sun));border-radius:9px}
+.lvl{font:800 13px var(--font);color:var(--ink-soft)}
+.spacer{flex:1}
+.island{cursor:pointer;transition:transform .25s}
+.island:hover{transform:translateY(-6px)}
+.island .float{animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px)}}
+.label-card{font:800 22px var(--font)}
+.bubble{position:absolute;background:#fff;border-radius:22px;padding:14px 20px;font:700 19px var(--font);box-shadow:0 10px 30px rgba(34,49,77,.18);max-width:300px}
+.bubble:after{content:"";position:absolute;width:22px;height:22px;background:#fff;transform:rotate(45deg);border-radius:4px}
+.bubble.left:after{left:-8px;top:24px}
+.bubble.down:after{bottom:-8px;left:40px}
+.gear{position:absolute;right:28px;bottom:26px;z-index:5}
+.sheet{position:absolute;inset:0;background:rgba(20,30,50,.35);display:none;align-items:center;justify-content:center;z-index:30}
+.sheet.on{display:flex}
+.sheet .card{background:var(--paper);border-radius:36px;padding:34px 40px;width:520px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.sheet h2{margin:8px 0 6px;font-size:34px}
+.sheet p{color:var(--ink-soft);font-size:19px;margin:0 0 22px}
+
+/* ---------- topic path ---------- */
+#path{background:linear-gradient(#bfe9ff 0,#e9f8ff 30%,#dff3c9 30.1%,#c9eab0 100%)}
+.topbar{position:absolute;top:36px;left:26px;right:26px;display:flex;align-items:center;gap:16px;z-index:5}
+.titlechip{background:rgba(255,255,255,.92);border-radius:999px;padding:12px 24px;font:800 22px var(--font);box-shadow:0 5px 0 rgba(34,49,77,.12)}
+.node{cursor:pointer}
+.node .ring{transition:transform .2s;transform-box:fill-box;transform-origin:center}
+.node:hover .ring{transform:scale(1.06)}
+.pulse{animation:pulse 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{50%{transform:scale(1.18);opacity:.25}}
+.side{position:absolute;right:26px;top:118px;bottom:26px;width:330px;background:var(--paper);border-radius:34px;padding:26px;
+  box-shadow:0 18px 50px rgba(34,49,77,.18);display:flex;flex-direction:column;gap:14px}
+.side h3{margin:0;font-size:28px;line-height:1.15}
+.side .muted{color:var(--ink-soft);font-size:17px}
+.stars{display:flex;gap:8px}
+.ev{display:flex;align-items:center;gap:10px;font:600 16px var(--font);color:var(--ink)}
+.ev i{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:14px;color:#fff}
+
+/* ---------- puzzle ---------- */
+#puzzle{background:linear-gradient(#fff6e3,#ffeccc)}
+.scene{position:absolute;left:0;right:0;top:0;height:520px;overflow:hidden}
+.progress{display:flex;gap:8px}
+.progress i{width:34px;height:12px;border-radius:7px;background:rgba(255,255,255,.7)}
+.progress i.done{background:var(--leaf)}
+.progress i.now{background:var(--sun)}
+.tray{position:absolute;left:0;right:0;bottom:0;height:314px;padding:22px 34px 26px;display:flex;flex-direction:column;gap:18px}
+.tray-row{display:flex;gap:22px;justify-content:center;align-items:center}
+.plank{width:178px;height:92px;border-radius:20px;border:0;cursor:grab;font:900 46px var(--font);color:#fff;
+  text-shadow:0 3px 0 rgba(90,45,10,.45);
+  background:
+    repeating-linear-gradient(90deg,rgba(255,255,255,0) 0 22px,rgba(120,60,20,.13) 22px 24px),
+    linear-gradient(#e1a467,var(--wood) 60%,#a9632f);
+  box-shadow:0 8px 0 var(--wood-d),0 14px 24px rgba(90,45,10,.3);transition:transform .15s,opacity .2s}
+.plank:hover{transform:translateY(-5px) rotate(-1.5deg)}
+.plank.used{opacity:.35;transform:none;cursor:default}
+.helper{display:flex;align-items:center;gap:18px;background:#fff;border-radius:28px;padding:12px 22px 12px 12px;
+  box-shadow:0 8px 24px rgba(120,80,20,.12);min-height:86px}
+.helper p{margin:0;font:700 22px var(--font);line-height:1.3}
+.helper.warm{background:#fff3df}
+.helper.hint{background:#eef7ff}
+.ladder{display:flex;gap:6px;margin-left:auto}
+.ladder span{font:800 13px var(--font);padding:6px 12px;border-radius:999px;background:#eef1f6;color:var(--ink-soft)}
+.ladder span.on{background:var(--sun);color:#5a3700}
+.actions{display:flex;gap:16px;justify-content:center}
+.fox-walk{transition:transform 1.4s cubic-bezier(.45,0,.3,1)}
+.shake{animation:shake .45s}
+@keyframes shake{25%{transform:translateX(-10px) rotate(-3deg)}75%{transform:translateX(10px) rotate(3deg)}}
+.glow{animation:glow 1.4s ease-in-out infinite}
+@keyframes glow{50%{opacity:.45}}
+.wave{animation:wave 5s linear infinite}
+@keyframes wave{to{transform:translateX(-120px)}}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:20}
+.confetti i{position:absolute;width:12px;height:18px;border-radius:3px;animation:fall 1.6s ease-in forwards}
+@keyframes fall{from{transform:translateY(-40px) rotate(0)}to{transform:translateY(860px) rotate(720deg)}}
+
+/* ---------- reward ---------- */
+#reward{background:radial-gradient(circle at 50% 45%,#ffe9a8 0,#ffb84d 45%,#f08a3c 100%)}
+.rays{position:absolute;left:50%;top:44%;width:1600px;height:1600px;margin:-800px 0 0 -800px;animation:spin 40s linear infinite;opacity:.35}
+@keyframes spin{to{transform:rotate(360deg)}}
+.reward-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;width:640px}
+.reward-card h1{font:900 64px var(--font);margin:0;color:#fff;text-shadow:0 5px 0 rgba(160,70,0,.35)}
+.reward-card .sub{font:700 24px var(--font);color:#6b3500;margin:6px 0 18px}
+.pill{display:inline-flex;align-items:center;gap:10px;background:#fff;border-radius:999px;padding:12px 22px;font:900 26px var(--font);box-shadow:0 6px 0 rgba(160,70,0,.25)}
+.chest-lid{transform-box:fill-box;transform-origin:50% 100%;transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.open .chest-lid{transform:rotate(-28deg) translate(-14px,-30px)}
+.coins{opacity:0;transition:opacity .4s .3s}
+.open .coins{opacity:1}
+
+/* ---------- parent ---------- */
+#parent{background:#f4f6fa;color:#1f2a3c;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.p-side{position:absolute;left:0;top:0;bottom:0;width:250px;background:#fff;border-right:1px solid #e3e8f0;padding:56px 18px 18px}
+.p-side h4{margin:0 0 18px 10px;font-size:15px;color:#6b778c;text-transform:uppercase;letter-spacing:.6px}
+.p-side a{display:flex;align-items:center;gap:10px;padding:12px 12px;border-radius:12px;color:#1f2a3c;text-decoration:none;font-weight:600;font-size:16px}
+.p-side a.on{background:#eef3ff;color:#3156c9}
+.p-main{position:absolute;left:250px;right:0;top:0;bottom:0;padding:52px 34px 24px;overflow:hidden}
+.p-main h2{margin:0 0 4px;font-size:30px}
+.p-main .s{color:#6b778c;margin:0 0 20px}
+.p-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.p-card{background:#fff;border:1px solid #e3e8f0;border-radius:18px;padding:16px 18px}
+.p-card .k{font-size:13px;color:#6b778c;font-weight:600}
+.p-card .v{font-size:30px;font-weight:700;margin-top:6px}
+.p-card .d{font-size:13px;color:#2f8a4c;font-weight:600}
+.p-two{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
+.p-card h5{margin:0 0 12px;font-size:16px}
+.skill{display:grid;grid-template-columns:1fr 150px 74px;align-items:center;gap:12px;padding:8px 0;border-top:1px solid #f0f2f6;font-size:15px}
+.skill:first-of-type{border-top:0}
+.meter{height:10px;border-radius:6px;background:#edf0f5;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:6px}
+.tag{font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;text-align:center}
+.act{border-top:1px solid #f0f2f6;padding:10px 0;font-size:14.5px}
+.act:first-of-type{border-top:0}
+.act b{display:block;font-size:15px;margin-bottom:3px}
+.attrib{position:absolute;left:284px;right:34px;bottom:18px;font-size:12px;color:#6b778c;border-top:1px solid #e3e8f0;padding-top:10px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="toolbar" role="tablist" aria-label="Screens">
+  <button role="tab" data-s="map" aria-selected="true">1 · World map</button>
+  <button role="tab" data-s="path">2 · Number Kingdom path</button>
+  <button role="tab" data-s="puzzle">3 · Bridge puzzle (playable)</button>
+  <button role="tab" data-s="reward">4 · Reward chest</button>
+  <button role="tab" data-s="parent">5 · Grown-ups' corner</button>
+</div>
+<div class="stage"><div class="ipad" id="ipad">
+<div class="status"><span>9:41&nbsp;&nbsp;Thu 22 Oct</span><span>100%</span></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <symbol id="fox" viewBox="0 0 120 120">
+   <path d="M88 92c18 2 28-10 26-26-6 10-14 12-22 10z" fill="#ff8a3d"/><path d="M110 70c-3 5-8 7-13 7l4-9c4 0 7 0 9 2z" fill="#fff"/>
+   <ellipse cx="60" cy="90" rx="30" ry="24" fill="#ff8a3d"/><ellipse cx="60" cy="96" rx="18" ry="16" fill="#fff4e4"/>
+   <path d="M30 36L26 6l26 18z" fill="#ff8a3d"/><path d="M34 30l-2-16 12 10z" fill="#5b2b17"/>
+   <path d="M90 36l4-30-26 18z" fill="#ff8a3d"/><path d="M86 30l2-16-12 10z" fill="#5b2b17"/>
+   <circle cx="60" cy="50" r="32" fill="#ff8a3d"/>
+   <path d="M28 54c6 18 20 26 32 26s26-8 32-26c-10 6-20 4-32 4s-22 2-32-4z" fill="#fff4e4"/>
+   <ellipse cx="47" cy="48" rx="6" ry="7.5" fill="#22314d"/><ellipse cx="73" cy="48" rx="6" ry="7.5" fill="#22314d"/>
+   <circle cx="49" cy="45" r="2.4" fill="#fff"/><circle cx="75" cy="45" r="2.4" fill="#fff"/>
+   <circle cx="38" cy="60" r="5" fill="#ff6b8a" opacity=".45"/><circle cx="82" cy="60" r="5" fill="#ff6b8a" opacity=".45"/>
+   <ellipse cx="60" cy="60" rx="5" ry="3.6" fill="#22314d"/>
+   <path d="M54 66q6 6 12 0" stroke="#22314d" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="12" rx="3.5"/><path d="M8 10V7a4 4 0 018 0v3" fill="none" stroke="currentColor" stroke-width="3"/></symbol>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6cc8ff"/><stop offset=".55" stop-color="#bfeaff"/><stop offset="1" stop-color="#e8f9ff"/></linearGradient>
+  <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd0ea"/><stop offset="1" stop-color="#2a93c4"/></linearGradient>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#58cde6"/><stop offset="1" stop-color="#1f7fb0"/></linearGradient>
+  <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ee07c"/><stop offset="1" stop-color="#4fae5c"/></linearGradient>
+  <linearGradient id="cliff" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98d55"/><stop offset="1" stop-color="#8a5a33"/></linearGradient>
+  <linearGradient id="woodg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3a86b"/><stop offset=".6" stop-color="#c07a42"/><stop offset="1" stop-color="#9c5c2b"/></linearGradient>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#1b4d73" flood-opacity=".25"/></filter>
+  <filter id="desat"><feColorMatrix type="saturate" values=".25"/><feComponentTransfer><feFuncR type="linear" slope=".85" intercept=".12"/><feFuncG type="linear" slope=".85" intercept=".12"/><feFuncB type="linear" slope=".85" intercept=".14"/></feComponentTransfer></filter>
+ </defs>
+</svg>
+
+<!-- ================= 1. WORLD MAP ================= -->
+<section class="screen on" id="map" aria-label="World map">
+ <svg class="world" viewBox="0 0 1194 834" role="img" aria-label="Five islands in a sea: Number Kingdom is open, the other four are locked">
+  <rect width="1194" height="834" fill="url(#sky)"/>
+  <circle cx="860" cy="170" r="70" fill="#ffe27a" opacity=".55"/><circle cx="860" cy="170" r="48" fill="#ffd23f"/>
+  <g fill="#fff" opacity=".9">
+   <g class="float" style="animation-duration:9s"><ellipse cx="200" cy="170" rx="70" ry="22"/><circle cx="175" cy="155" r="26"/><circle cx="215" cy="148" r="32"/></g>
+   <g class="float" style="animation-duration:11s"><ellipse cx="700" cy="140" rx="60" ry="18"/><circle cx="685" cy="128" r="22"/><circle cx="718" cy="122" r="26"/></g>
+  </g>
+  <path d="M0 330 Q300 300 600 325 T1194 315 V834 H0z" fill="url(#sea)"/>
+  <g stroke="#fff" stroke-width="3" opacity=".35" fill="none" stroke-linecap="round">
+   <path d="M90 420 q20 -10 40 0"/><path d="M480 380 q20 -10 40 0"/><path d="M820 470 q20 -10 40 0"/><path d="M300 720 q20 -10 40 0"/><path d="M1000 650 q20 -10 40 0"/><path d="M650 760 q20-10 40 0"/>
+  </g>
+  <!-- dotted journey path -->
+  <path d="M215 610 C330 520 420 470 520 470 S700 560 760 600 S930 470 1000 420 M760 600 C800 680 880 720 960 700" stroke="#fff" stroke-width="7" stroke-dasharray="2 18" stroke-linecap="round" fill="none" opacity=".85"/>
+
+  <!-- World 1 Number Kingdom -->
+  <g class="island" data-world="Number Kingdom" data-open="1" filter="url(#soft)">
+   <g class="float">
+    <ellipse cx="215" cy="640" rx="150" ry="46" fill="#f3d79c"/><ellipse cx="215" cy="624" rx="138" ry="40" fill="url(#grass)"/>
+    <rect x="150" y="510" width="130" height="100" rx="10" fill="#fff1d6"/>
+    <rect x="130" y="470" width="44" height="140" rx="8" fill="#ffe6b8"/><rect x="256" y="470" width="44" height="140" rx="8" fill="#ffe6b8"/>
+    <path d="M124 474 l28 -46 l28 46z" fill="#ff7a59"/><path d="M250 474 l28 -46 l28 46z" fill="#ff7a59"/>
+    <path d="M178 514 l37 -52 l37 52z" fill="#8b6cf0"/>
+    <rect x="198" y="560" width="34" height="50" rx="17" fill="#8a4f25"/>
+    <line x1="152" y1="428" x2="152" y2="398" stroke="#22314d" stroke-width="3"/><path d="M152 398 h26 l-6 8 6 8 h-26z" fill="#ffb627"/>
+    <text x="164" y="411" font-size="11" font-weight="900" fill="#5a3700" text-anchor="middle" font-family="var(--font)">1</text>
+    <line x1="278" y1="428" x2="278" y2="398" stroke="#22314d" stroke-width="3"/><path d="M278 398 h26 l-6 8 6 8 h-26z" fill="#5cbf6b"/>
+    <text x="290" y="411" font-size="11" font-weight="900" fill="#fff" text-anchor="middle" font-family="var(--font)">2</text>
+    <g font-family="var(--font)" font-weight="900" font-size="20" fill="#c07a42" text-anchor="middle"><text x="150" y="540">3</text><text x="280" y="540">7</text></g>
+    <circle cx="120" cy="615" r="14" fill="#3b9a4c"/><circle cx="310" cy="618" r="16" fill="#3b9a4c"/>
+   </g>
+   <rect x="90" y="676" width="250" height="56" rx="28" fill="#fff"/>
+   <text x="215" y="712" text-anchor="middle" class="label-card" fill="#22314d" font-family="var(--font)">Number Kingdom</text>
+  </g>
+
+  <!-- World 2 Logic Lagoon -->
+  <g class="island" data-world="Logic Lagoon" filter="url(#soft)">
+   <g filter="url(#desat)"><g class="float" style="animation-delay:-1s">
+    <ellipse cx="520" cy="480" rx="120" ry="38" fill="#f3d79c"/><ellipse cx="520" cy="466" rx="108" ry="32" fill="url(#grass)"/>
+    <ellipse cx="520" cy="462" rx="56" ry="16" fill="#4cc3e0"/>
+    <ellipse cx="500" cy="460" rx="12" ry="5" fill="#5cbf6b"/><ellipse cx="540" cy="465" rx="10" ry="4" fill="#5cbf6b"/>
+    <g stroke="#3b9a4c" stroke-width="5" stroke-linecap="round"><path d="M448 458 v-44"/><path d="M460 458 v-56"/><path d="M590 460 v-50"/></g><g fill="#8a4f25"><rect x="443" y="404" width="10" height="22" rx="5"/><rect x="455" y="392" width="10" height="22" rx="5"/><rect x="585" y="400" width="10" height="22" rx="5"/></g><circle cx="520" cy="450" r="7" fill="#ff7a9a"/>
+   </g></g>
+   <rect x="405" y="520" width="230" height="50" rx="25" fill="#fff" opacity=".92"/>
+   <text x="520" y="553" text-anchor="middle" font-size="20" font-weight="800" fill="#5b6b86" font-family="var(--font)">Logic Lagoon</text>
+   <circle cx="620" cy="420" r="22" fill="#fff"/><use href="#lock" x="608" y="408" width="24" height="24" fill="#5b6b86" color="#5b6b86"/>
+  </g>
+
+  <!-- World 3 Puzzle Peaks -->
+  <g class="island" data-world="Puzzle Peaks" filter="url(#soft)">
+   <g filter="url(#desat)"><g class="float" style="animation-delay:-2s">
+    <ellipse cx="1000" cy="440" rx="125" ry="38" fill="#f3d79c"/><ellipse cx="1000" cy="426" rx="112" ry="32" fill="url(#grass)"/>
+    <path d="M915 430 L975 310 L1035 430z" fill="#9aa6c7"/><path d="M955 350 l20 -40 20 40 -10 -6 -10 8 -10 -8z" fill="#fff"/>
+    <path d="M985 430 L1045 345 L1095 430z" fill="#b6c0dc"/><path d="M1030 366 l15 -21 15 21 -8 -4 -7 6z" fill="#fff"/>
+   </g></g>
+   <rect x="888" y="478" width="224" height="50" rx="25" fill="#fff" opacity=".92"/>
+   <text x="1000" y="511" text-anchor="middle" font-size="20" font-weight="800" fill="#5b6b86" font-family="var(--font)">Puzzle Peaks</text>
+   <circle cx="1100" cy="370" r="22" fill="#fff"/><use href="#lock" x="1088" y="358" width="24" height="24" fill="#5b6b86" color="#5b6b86"/>
+  </g>
+
+  <!-- World 4 Inventor's Workshop -->
+  <g class="island" data-world="Inventor's Workshop" filter="url(#soft)">
+   <g filter="url(#desat)"><g class="float" style="animation-delay:-3s">
+    <ellipse cx="760" cy="630" rx="125" ry="40" fill="#f3d79c"/><ellipse cx="760" cy="616" rx="112" ry="34" fill="url(#grass)"/>
+    <rect x="705" y="540" width="110" height="74" rx="10" fill="#ffcf8a"/><path d="M695 545 l65 -42 65 42z" fill="#2bb3a3"/>
+    <circle cx="760" cy="578" r="20" fill="none" stroke="#22314d" stroke-width="8" stroke-dasharray="7 5"/>
+    <rect x="790" y="505" width="14" height="34" fill="#8a96ad"/>
+   </g></g>
+   <rect x="640" y="670" width="240" height="50" rx="25" fill="#fff" opacity=".92"/>
+   <text x="760" y="703" text-anchor="middle" font-size="20" font-weight="800" fill="#5b6b86" font-family="var(--font)">Inventor's Workshop</text>
+   <circle cx="860" cy="560" r="22" fill="#fff"/><use href="#lock" x="848" y="548" width="24" height="24" fill="#5b6b86" color="#5b6b86"/>
+  </g>
+
+  <!-- World 5 Mystery Island -->
+  <g class="island" data-world="Mystery Island" filter="url(#soft)">
+   <g filter="url(#desat)"><g class="float" style="animation-delay:-1.5s">
+    <ellipse cx="985" cy="715" rx="105" ry="32" fill="#f3d79c"/><ellipse cx="985" cy="703" rx="92" ry="26" fill="url(#grass)"/>
+    <path d="M1005 700 q-4 -50 8 -80" stroke="#8a4f25" stroke-width="8" fill="none"/>
+    <path d="M1013 620 q-40 -10 -56 14 q30 -6 56 -14z M1013 620 q36 -16 54 8 q-30 -4 -54 -8z M1013 620 q-6 -30 18 -40 q-6 24 -18 40z" fill="#3b9a4c"/>
+    <text x="950" y="700" font-size="40" font-weight="900" fill="#8b6cf0" font-family="var(--font)">?</text>
+   </g></g>
+   <rect x="890" y="752" width="190" height="46" rx="23" fill="#fff" opacity=".92"/>
+   <text x="985" y="782" text-anchor="middle" font-size="19" font-weight="800" fill="#5b6b86" font-family="var(--font)">Mystery Island</text>
+   <circle cx="1070" cy="660" r="22" fill="#fff"/><use href="#lock" x="1058" y="648" width="24" height="24" fill="#5b6b86" color="#5b6b86"/>
+  </g>
+
+  <use href="#fox" x="300" y="560" width="96" height="96"/>
+ </svg>
+
+ <div class="hud">
+  <div class="chip"><svg width="58" height="58" style="background:#ffe7c7;border-radius:50%"><use href="#fox"/></svg>
+   <div class="xp"><b>Mia</b><div class="xpbar"><i></i></div><span class="lvl">Level 3 · 104 XP</span></div></div>
+  <div class="spacer"></div>
+  <button class="btn btn-sun" data-go="puzzle"><svg width="28" height="28" fill="#5a3700"><use href="#star"/></svg>Today's adventure</button>
+ </div>
+ <div class="bubble left" style="left:410px;top:520px">Bridge time! Want to fix one with me?</div>
+ <button class="btn btn-ghost btn-round gear" aria-label="Grown-ups' corner" data-go="parent" title="Grown-ups' corner">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5b6b86" stroke-width="2.2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button>
+ <div class="sheet" id="soon"><div class="card">
+  <svg width="110" height="110"><use href="#fox"/></svg>
+  <h2 id="soonTitle">Logic Lagoon</h2>
+  <p>This island is still being built. Keep fixing bridges in Number Kingdom and we'll sail here together soon!</p>
+  <button class="btn btn-leaf" onclick="closeSoon()">Back to the map</button>
+ </div></div>
+</section>
+
+<!-- ================= 2. TOPIC PATH ================= -->
+<section class="screen" id="path" aria-label="Number Kingdom path">
+ <svg viewBox="0 0 1194 834" style="position:absolute;inset:0" role="img" aria-label="Winding path of bridge levels">
+  <path d="M0 250 Q200 200 400 240 T800 230 V260 H0z" fill="#a9dc8f" opacity=".6"/>
+  <g fill="#7cc96b" opacity=".5"><circle cx="90" cy="760" r="60"/><circle cx="760" cy="790" r="80"/><circle cx="420" cy="260" r="40"/></g>
+  <path id="trail" d="M90 690 C200 690 240 600 330 590 S460 650 540 600 S600 470 520 420 S380 380 330 330 S420 220 540 230 S720 300 780 260" stroke="#f3dcaa" stroke-width="44" fill="none" stroke-linecap="round"/>
+  <path d="M90 690 C200 690 240 600 330 590 S460 650 540 600 S600 470 520 420 S380 380 330 330 S420 220 540 230 S720 300 780 260" stroke="#fff" stroke-width="5" stroke-dasharray="2 16" stroke-linecap="round" fill="none" opacity=".9"/>
+  <g font-family="var(--font)" font-weight="900" text-anchor="middle">
+   <!-- done -->
+   <g class="node" data-i="0"><circle class="ring" cx="110" cy="690" r="40" fill="#5cbf6b" stroke="#fff" stroke-width="7"/><path d="M94 690 l11 11 20 -22" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#ffb627"><use href="#star" x="80" y="640" width="18" height="18"/><use href="#star" x="101" y="632" width="18" height="18"/><use href="#star" x="122" y="640" width="18" height="18"/></g></g>
+   <g class="node" data-i="1"><circle class="ring" cx="330" cy="590" r="40" fill="#5cbf6b" stroke="#fff" stroke-width="7"/><path d="M314 590 l11 11 20 -22" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#ffb627"><use href="#star" x="300" y="540" width="18" height="18"/><use href="#star" x="321" y="532" width="18" height="18"/></g><use href="#star" x="342" y="540" width="18" height="18" fill="#fff" opacity=".8"/></g>
+   <!-- current -->
+   <g class="node" data-i="2"><circle class="pulse" cx="540" cy="600" r="54" fill="#ffb627"/><circle class="ring" cx="540" cy="600" r="50" fill="#ffb627" stroke="#fff" stroke-width="8"/><text x="540" y="614" font-size="38" fill="#5a3700">3</text></g>
+   <use href="#fox" x="568" y="520" width="80" height="80"/>
+   <!-- upcoming -->
+   <g class="node" data-i="3"><circle class="ring" cx="520" cy="420" r="38" fill="#fff" stroke="#ffd98a" stroke-width="7"/><text x="520" y="433" font-size="32" fill="#c07a42">4</text></g>
+   <g class="node" data-i="4"><circle class="ring" cx="330" cy="330" r="38" fill="#fff" stroke="#ffd98a" stroke-width="7"/><text x="330" y="343" font-size="32" fill="#c07a42">5</text></g>
+   <g class="node" data-i="5"><circle class="ring" cx="540" cy="230" r="36" fill="#e3e8ef" stroke="#fff" stroke-width="7"/><use href="#lock" x="526" y="216" width="28" height="28" fill="#94a0b4" color="#94a0b4"/></g>
+   <g class="node" data-i="6"><circle class="ring" cx="780" cy="260" r="36" fill="#e3e8ef" stroke="#fff" stroke-width="7"/><use href="#lock" x="766" y="246" width="28" height="28" fill="#94a0b4" color="#94a0b4"/></g>
+  </g>
+  <!-- castle at end -->
+  <g transform="translate(700 100) scale(.6)"><rect x="40" y="60" width="130" height="100" rx="10" fill="#fff1d6"/><rect x="20" y="20" width="44" height="140" rx="8" fill="#ffe6b8"/><rect x="146" y="20" width="44" height="140" rx="8" fill="#ffe6b8"/><path d="M14 24 l28 -46 28 46z M140 24 l28 -46 28 46z" fill="#ff7a59"/><path d="M68 64 l37 -52 37 52z" fill="#8b6cf0"/></g>
+ </svg>
+ <div class="topbar">
+  <button class="btn btn-ghost btn-round" aria-label="Back to the map" data-go="map"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22314d" stroke-width="3" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="titlechip">Number Kingdom · Bridges to repair</div>
+ </div>
+ <aside class="side" id="side">
+  <span class="muted" id="sideStep">Bridge 3 of 24</span>
+  <h3 id="sideName">Addition and subtraction within 20</h3>
+  <div class="stars" id="sideStars"></div>
+  <div class="muted">What you'll show</div>
+  <div class="ev"><i style="background:#5cbf6b">✓</i>Add two numbers to 20</div>
+  <div class="ev"><i style="background:#ffb627">2</i>Find what's taken away</div>
+  <div class="ev"><i style="background:#d6dde8">3</i>Explain how you know</div>
+  <div style="flex:1"></div>
+  <button class="btn btn-sun" style="justify-content:center" data-go="puzzle" id="sidePlay">
+   <svg width="26" height="26" viewBox="0 0 24 24" fill="#5a3700"><path d="M7 4l13 8-13 8z"/></svg>Play</button>
+ </aside>
+</section>
+
+<!-- ================= 3. PUZZLE ================= -->
+<section class="screen" id="puzzle" aria-label="Bridge puzzle">
+ <div class="scene">
+  <svg viewBox="0 0 1194 520" width="1194" height="520" role="img" aria-label="A broken bridge over a river: 7 plus a missing plank equals 12">
+   <rect width="1194" height="520" fill="url(#sky)"/>
+   <circle cx="980" cy="110" r="44" fill="#ffd23f"/>
+   <path d="M0 250 Q160 170 330 230 T700 210 T1194 230 V330 H0z" fill="#a8dd92"/>
+   <path d="M0 280 Q250 230 520 270 T1194 260 V340 H0z" fill="#86cf73"/>
+   <rect y="330" width="1194" height="190" fill="url(#water)"/>
+   <g class="wave" stroke="#fff" stroke-width="4" opacity=".35" fill="none" stroke-linecap="round">
+    <path d="M0 380 q30 -12 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0"/>
+    <path d="M40 450 q30 -12 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0"/>
+   </g>
+   <!-- banks -->
+   <path d="M0 300 H190 Q225 300 225 340 V520 H0z" fill="url(#cliff)"/><path d="M0 290 H200 Q232 292 228 318 H0z" fill="url(#grass)"/>
+   <path d="M1194 300 H1004 Q969 300 969 340 V520 H1194z" fill="url(#cliff)"/><path d="M1194 290 H994 Q962 292 966 318 H1194z" fill="url(#grass)"/>
+   <!-- ropes -->
+   <path d="M215 260 Q597 330 979 260" stroke="#8a4f25" stroke-width="5" fill="none"/>
+   <rect x="208" y="252" width="14" height="70" rx="5" fill="#8a4f25"/><rect x="972" y="252" width="14" height="70" rx="5" fill="#8a4f25"/>
+   <!-- bridge tokens -->
+   <g font-family="var(--font)" font-weight="900" text-anchor="middle">
+    <g><rect x="235" y="300" width="130" height="70" rx="14" fill="url(#woodg)" stroke="#8a4f25" stroke-width="4"/><text x="300" y="350" font-size="42" fill="#fff">7</text></g>
+    <g><rect x="375" y="306" width="90" height="58" rx="29" fill="#fff" stroke="#d9e4ee" stroke-width="4"/><text x="420" y="350" font-size="40" fill="#22314d">+</text></g>
+    <g id="gap"><rect class="glow" x="475" y="294" width="160" height="82" rx="18" fill="#ffe27a" fill-opacity=".35" stroke="#ffb627" stroke-width="6" stroke-dasharray="14 10"/>
+     <text x="555" y="351" font-size="44" fill="#ffb627" class="glow">?</text></g>
+    <g id="gapFilled" style="display:none"><rect x="475" y="296" width="160" height="78" rx="16" fill="url(#woodg)" stroke="#8a4f25" stroke-width="4"/><text id="gapNum" x="555" y="350" font-size="44" fill="#fff">5</text></g>
+    <g><rect x="645" y="306" width="90" height="58" rx="29" fill="#fff" stroke="#d9e4ee" stroke-width="4"/><text x="690" y="350" font-size="40" fill="#22314d">=</text></g>
+    <g><rect x="745" y="300" width="220" height="70" rx="14" fill="url(#woodg)" stroke="#8a4f25" stroke-width="4"/><text x="855" y="350" font-size="42" fill="#fff">12</text></g>
+   </g>
+   <g id="foxg" class="fox-walk"><use href="#fox" x="70" y="186" width="120" height="120"/></g>
+   <g transform="translate(1050 200)"><rect x="0" y="40" width="80" height="60" rx="8" fill="#fff1d6"/><path d="M-6 44 l46 -40 46 40z" fill="#ff7a59"/></g>
+  </svg>
+ </div>
+ <div class="topbar" style="top:36px">
+  <button class="btn btn-ghost btn-round" aria-label="Close" data-go="path"><svg width="24" height="24" viewBox="0 0 24 24" stroke="#22314d" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="titlechip">Finding a missing number</div>
+  <div class="spacer"></div>
+  <div class="progress" aria-label="Bridge 3 of 5"><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i></div>
+ </div>
+ <div class="tray">
+  <div class="helper" id="helper"><svg width="66" height="66" style="flex:none;background:#ffe7c7;border-radius:50%"><use href="#fox"/></svg>
+   <p id="helperText">Which plank fixes the bridge? Drag it into the gap.</p>
+   <div class="ladder" id="ladder" aria-label="Hint level"><span>Nudge</span><span>Clue</span><span>Walkthrough</span></div></div>
+  <div class="tray-row" id="planks">
+   <button class="plank" data-v="4" draggable="true">4</button>
+   <button class="plank" data-v="5" draggable="true">5</button>
+   <button class="plank" data-v="6" draggable="true">6</button>
+  </div>
+  <div class="actions">
+   <button class="btn btn-ghost" id="hintBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#ffb627"><path d="M12 2a7 7 0 00-4 12.7V18h8v-3.3A7 7 0 0012 2zM9 20h6v2H9z"/></svg>Hint</button>
+   <button class="btn btn-ghost" id="whyBtn">Why does this work?</button>
+   <button class="btn btn-leaf" id="nextBtn" style="display:none" data-go="reward">Open the chest</button>
+  </div>
+ </div>
+ <div class="confetti" id="confetti"></div>
+ <div class="sheet" id="why"><div class="card" style="text-align:left;width:600px">
+  <h2>Why does this work?</h2>
+  <p style="color:var(--ink)">Adding and taking away undo each other. If 7 + ? makes 12, then ? is what's left when you take 7 away from 12.</p>
+  <svg viewBox="0 0 520 80" width="100%" height="80" aria-label="Number line jump from 7 to 12">
+   <line x1="20" y1="60" x2="500" y2="60" stroke="#22314d" stroke-width="3"/>
+   <g font-family="var(--font)" font-weight="800" font-size="16" text-anchor="middle" fill="#22314d">
+    <text x="60" y="80">5</text><text x="140" y="80">7</text><text x="220" y="80">8</text><text x="300" y="80">9</text><text x="380" y="80">10</text><text x="460" y="80">12</text></g>
+   <path d="M140 56 Q300 -10 460 56" stroke="#ffb627" stroke-width="5" fill="none"/><text x="300" y="22" text-anchor="middle" font-weight="900" fill="#e08e00" font-family="var(--font)">+5</text>
+  </svg>
+  <div style="text-align:right;margin-top:14px"><button class="btn btn-leaf" onclick="document.getElementById('why').classList.remove('on')">Got it</button></div>
+ </div></div>
+</section>
+
+<!-- ================= 4. REWARD ================= -->
+<section class="screen" id="reward" aria-label="Reward">
+ <svg class="rays" viewBox="-100 -100 200 200" aria-hidden="true"><g fill="#fff">
+  <path d="M0 0L-6 -100H6z"/><path d="M0 0L-6 -100H6z" transform="rotate(30)"/><path d="M0 0L-6 -100H6z" transform="rotate(60)"/><path d="M0 0L-6 -100H6z" transform="rotate(90)"/><path d="M0 0L-6 -100H6z" transform="rotate(120)"/><path d="M0 0L-6 -100H6z" transform="rotate(150)"/><path d="M0 0L-6 -100H6z" transform="rotate(180)"/><path d="M0 0L-6 -100H6z" transform="rotate(210)"/><path d="M0 0L-6 -100H6z" transform="rotate(240)"/><path d="M0 0L-6 -100H6z" transform="rotate(270)"/><path d="M0 0L-6 -100H6z" transform="rotate(300)"/><path d="M0 0L-6 -100H6z" transform="rotate(330)"/></g></svg>
+ <div class="reward-card">
+  <h1>Bridge fixed!</h1>
+  <div class="sub">You worked out what was missing. That's real maths thinking.</div>
+  <svg id="chest" viewBox="0 0 260 200" width="300" height="230" style="cursor:pointer" role="img" aria-label="Treasure chest, tap to open">
+   <g class="coins"><circle cx="100" cy="80" r="16" fill="#ffd23f" stroke="#e08e00" stroke-width="4"/><circle cx="135" cy="66" r="16" fill="#ffd23f" stroke="#e08e00" stroke-width="4"/><circle cx="165" cy="84" r="16" fill="#ffd23f" stroke="#e08e00" stroke-width="4"/>
+    <use href="#star" x="112" y="20" width="36" height="36" fill="#fff"/></g>
+   <rect x="40" y="100" width="180" height="90" rx="14" fill="#b86a2f" stroke="#7a4219" stroke-width="6"/>
+   <rect x="40" y="128" width="180" height="16" fill="#ffb627"/><rect x="116" y="118" width="28" height="36" rx="6" fill="#ffd23f" stroke="#7a4219" stroke-width="4"/>
+   <g class="chest-lid"><path d="M40 104 V84 Q40 50 130 50 Q220 50 220 84 V104z" fill="#d07f3c" stroke="#7a4219" stroke-width="6"/><rect x="40" y="92" width="180" height="12" fill="#ffb627"/></g>
+  </svg>
+  <div style="display:flex;gap:14px;justify-content:center;margin:8px 0 26px">
+   <span class="pill"><svg width="26" height="26" fill="#ffb627"><use href="#star"/></svg>+45 XP</span>
+   <span class="pill" style="font-size:20px">New badge: Gap finder</span>
+  </div>
+  <button class="btn btn-leaf" data-go="path">Next bridge</button>
+ </div>
+ <svg width="150" height="150" style="position:absolute;left:120px;bottom:60px"><use href="#fox"/></svg>
+ <div class="bubble down" style="left:110px;bottom:220px">Woohoo! You did it!</div>
+</section>
+
+<!-- ================= 5. PARENT ================= -->
+<section class="screen" id="parent" aria-label="Grown-ups' corner">
+ <nav class="p-side"><h4>Grown-ups' corner</h4>
+  <a class="on" href="#" onclick="return false">Overview</a><a href="#" onclick="return false">Skills</a><a href="#" onclick="return false">Activities at home</a><a href="#" onclick="return false">Settings</a><a href="#" onclick="return false">About and licences</a>
+  <div style="position:absolute;bottom:20px;left:18px;right:18px"><button class="btn btn-ghost" style="font-size:16px;padding:12px 18px;width:100%;justify-content:center;background:#eef1f6" data-go="map">Back to Mia's map</button></div>
+ </nav>
+ <main class="p-main">
+  <h2>Mia's week</h2><p class="s">Age 8 · English · on-device data only</p>
+  <div class="p-grid">
+   <div class="p-card"><div class="k">Learning time</div><div class="v">74 min</div><div class="d">+18 min vs last week</div></div>
+   <div class="p-card"><div class="k">Skills practised</div><div class="v">6</div><div class="d">2 new</div></div>
+   <div class="p-card"><div class="k">Mastered</div><div class="v">3</div><div class="d">Counting in 2s this week</div></div>
+   <div class="p-card"><div class="k">Accuracy</div><div class="v">86%</div><div class="d" style="color:#6b778c">across 58 attempts</div></div>
+  </div>
+  <div class="p-two">
+   <div class="p-card"><h5>Skills</h5>
+    <div class="skill"><span>Counting in 2s</span><div class="meter"><i style="width:100%;background:#2f8a4c"></i></div><span class="tag" style="background:#e3f4e8;color:#2f8a4c">Mastered</span></div>
+    <div class="skill"><span>Number bonds</span><div class="meter"><i style="width:100%;background:#2f8a4c"></i></div><span class="tag" style="background:#e3f4e8;color:#2f8a4c">Mastered</span></div>
+    <div class="skill"><span>Add and subtract within 20</span><div class="meter"><i style="width:64%;background:#3156c9"></i></div><span class="tag" style="background:#eef3ff;color:#3156c9">Learning</span></div>
+    <div class="skill"><span>Missing number in addition</span><div class="meter"><i style="width:38%;background:#d98a00"></i></div><span class="tag" style="background:#fff4e0;color:#a66900">Needs help</span></div>
+    <div class="skill"><span>Commutative multiplication</span><div class="meter"><i style="width:12%;background:#3156c9"></i></div><span class="tag" style="background:#eef3ff;color:#3156c9">Learning</span></div>
+   </div>
+   <div class="p-card"><h5>Try together at home</h5>
+    <div class="act"><b>Missing number in addition</b>Hide some counters under a cup: "There are 12 in total and I can see 7. How many are hiding?"</div>
+    <div class="act"><b>Add and subtract within 20</b>Make 10 first: with 8 + 5, move 2 across to make 10, then add the 3 that are left.</div>
+    <div class="act" style="color:#6b778c;font-size:13px">Ideas come from the Marble teaching research for each skill.</div>
+   </div>
+  </div>
+ </main>
+ <div class="attrib">Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · https://withmarble.com · licensed under ODbL 1.0 (database) and CC BY-SA 4.0 (content).</div>
+</section>
+</div></div>
+
+<script>
+const ipad=document.getElementById('ipad');
+function fit(){const s=Math.min((innerWidth-60)/1194,(innerHeight-90)/834,1);ipad.style.transform=`scale(${s})`;ipad.parentElement.style.height=(834*s+30)+'px'}
+addEventListener('resize',fit);fit();
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+ document.querySelectorAll('[role=tab]').forEach(t=>t.setAttribute('aria-selected',t.dataset.s===id));
+ if(id==='puzzle')resetPuzzle(); if(id==='reward')document.getElementById('chest').classList.remove('open');}
+document.querySelectorAll('[role=tab]').forEach(t=>t.onclick=()=>show(t.dataset.s));
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)show(g.dataset.go)});
+// map
+document.querySelectorAll('.island').forEach(i=>i.onclick=()=>{if(i.dataset.open)show('path');else{document.getElementById('soonTitle').textContent=i.dataset.world;document.getElementById('soon').classList.add('on')}});
+function closeSoon(){document.getElementById('soon').classList.remove('on')}
+// path
+const topics=[["Counting in 2s",3],["Number bonds",2],["Addition and subtraction within 20",0],["Commutative multiplication",0],["Finding a missing number in addition",0],["Adding within 100",-1],["Times tables",-1]];
+function star(on){return `<svg width="34" height="34" fill="${on?'#ffb627':'#e3e8ef'}"><use href="#star"/></svg>`}
+document.querySelectorAll('.node').forEach(n=>n.onclick=()=>{const i=+n.dataset.i,[name,s]=topics[i];
+ document.getElementById('sideName').textContent=name;document.getElementById('sideStep').textContent=`Bridge ${i+1} of 24`;
+ document.getElementById('sideStars').innerHTML=[0,1,2].map(k=>star(k<s)).join('');
+ const p=document.getElementById('sidePlay');p.disabled=s<0;p.style.opacity=s<0?.45:1;p.lastChild.textContent=s<0?'Locked for now':(s===3?'Play again':'Play')});
+document.getElementById('sideStars').innerHTML=[0,1,2].map(()=>star(false)).join('');
+// puzzle
+const hints=["What do we add to 7 to land on 12?","Count up from 7: 8, 9, 10, 11, 12. How many jumps was that?","7 and 5 make 12, because 12 take away 7 leaves 5. Try the 5 plank!"];
+let hintLevel=-1,solved=false;
+const helper=document.getElementById('helper'),ht=document.getElementById('helperText');
+function setHelper(t,c){ht.textContent=t;helper.className='helper '+(c||'')}
+function resetPuzzle(){hintLevel=-1;solved=false;setHelper('Which plank fixes the bridge? Drag it into the gap.');
+ document.getElementById('gap').style.display='';document.getElementById('gapFilled').style.display='none';
+ document.querySelectorAll('.plank').forEach(p=>p.classList.remove('used'));document.querySelectorAll('#ladder span').forEach(s=>s.classList.remove('on'));
+ document.getElementById('foxg').style.transform='';document.getElementById('nextBtn').style.display='none';document.getElementById('hintBtn').style.display=''}
+function place(v){if(solved)return;const gf=document.getElementById('gapFilled');document.getElementById('gapNum').textContent=v;
+ document.getElementById('gap').style.display='none';gf.style.display='';
+ if(v===5){solved=true;setHelper('Yes! 7 and 5 make 12. The bridge is fixed — let\'s cross!');
+  document.querySelector('.plank[data-v="5"]').classList.add('used');
+  document.getElementById('foxg').style.transform='translateX(800px)';confetti();
+  document.getElementById('hintBtn').style.display='none';setTimeout(()=>document.getElementById('nextBtn').style.display='',900)}
+ else{gf.classList.remove('shake');void gf.getBBox();gf.classList.add('shake');
+  setHelper(v===4?'So close! 7 and 4 make 11. We need one more step to reach 12.':'Nearly! 7 and 6 make 13 — that goes one step past 12.','warm');
+  setTimeout(()=>{if(!solved){document.getElementById('gap').style.display='';gf.style.display='none'}},900)}}
+document.querySelectorAll('.plank').forEach(p=>{p.onclick=()=>place(+p.dataset.v);p.ondragstart=e=>e.dataTransfer.setData('text',p.dataset.v)});
+const sc=document.querySelector('#puzzle .scene');sc.ondragover=e=>e.preventDefault();sc.ondrop=e=>{e.preventDefault();place(+e.dataTransfer.getData('text'))};
+document.getElementById('hintBtn').onclick=()=>{hintLevel=Math.min(hintLevel+1,2);setHelper(hints[hintLevel],'hint');
+ document.querySelectorAll('#ladder span').forEach((s,i)=>s.classList.toggle('on',i<=hintLevel))};
+document.getElementById('whyBtn').onclick=()=>document.getElementById('why').classList.add('on');
+function confetti(){const c=document.getElementById('confetti');c.innerHTML='';const cols=['#ffb627','#ff7a59','#5cbf6b','#8b6cf0','#4cc3e0'];
+ for(let i=0;i<60;i++){const d=document.createElement('i');d.style.left=Math.random()*100+'%';d.style.background=cols[i%5];d.style.animationDelay=Math.random()*.6+'s';c.appendChild(d)}}
+// reward
+document.getElementById('chest').onclick=function(){this.classList.add('open')};
+// deep link
+const q=new URLSearchParams(location.search);if(q.get('screen'))show(q.get('screen'));
+if(q.get('state')==='wrong')place(4);if(q.get('state')==='hint'){document.getElementById('hintBtn').click();document.getElementById('hintBtn').click()}
+if(q.get('state')==='solved')place(5);if(q.get('state')==='open')document.getElementById('chest').classList.add('open');
+if(q.get('node'))document.querySelector(`.node[data-i="${q.get('node')}"]`).dispatchEvent(new Event('click'));
+</script>
+</body>
+</html>

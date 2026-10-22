@@ -142,9 +142,21 @@ Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 
 ![World map](docs/screenshots/02-world-map.png)
 
+**Coming-soon world sheet**
+
+![Coming-soon world sheet](docs/screenshots/18-coming-soon.png)
+
+**Buddy sheet**
+
+![Buddy sheet](docs/screenshots/19-buddy-sheet.png)
+
 **Number Kingdom topic path**
 
 ![Number Kingdom topic path](docs/screenshots/03-topic-path.png)
+
+**Bridge puzzle (stepping-stone sequence)**
+
+![Bridge puzzle (stepping-stone sequence)](docs/screenshots/04-bridge-puzzle.png)
 
 **Wrong plank: gentle feedback**
 
@@ -153,6 +165,10 @@ Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 **Hints: Nudge → Clue → Walkthrough**
 
 ![Hints: Nudge → Clue → Walkthrough](docs/screenshots/06-hint-walkthrough.png)
+
+**Bridge solved**
+
+![Bridge solved](docs/screenshots/20-bridge-solved.png)
 
 **Why does this work?**
 
@@ -178,9 +194,13 @@ Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 
 ![Parent dashboard](docs/screenshots/12-parent-dashboard.png)
 
-**Content & licences (Marble attribution)**
+**Parent dashboard scrolled: content & licences (Marble attribution)**
 
-![Content & licences (Marble attribution)](docs/screenshots/13-attribution.png)
+![Parent dashboard scrolled: content & licences (Marble attribution)](docs/screenshots/13-attribution.png)
+
+**World map in German (Switzerland)**
+
+![World map in German (Switzerland)](docs/screenshots/17-world-map-de-CH.png)
 
 **Parent dashboard in German (Switzerland)**
 

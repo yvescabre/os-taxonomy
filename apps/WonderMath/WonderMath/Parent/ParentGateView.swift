@@ -23,14 +23,14 @@ struct ParentGateView: View {
                 ParentDashboardView(profile: profile)
             } else {
                 VStack(spacing: 20) {
-                    Text(localizer.string(.parentZoneTitle)).font(.largeTitle.bold())
+                    Text(localizer.string(.parentZoneTitle)).font(Theme.roundedFont(34, weight: .black))
                     Text(localizer.string(.parentGatePrompt, [.number(first), .number(second)]))
-                        .font(.title2.bold())
+                        .font(Theme.roundedFont(22, weight: .heavy))
                         .accessibilityIdentifier("parent-gate-prompt")
                         .accessibilityValue(isUITesting ? String(answer) : "")
-                    Text(localizer.string(.parentGateHint)).font(.body)
+                    Text(localizer.string(.parentGateHint)).font(Theme.roundedFont(17))
                     Text(entry.isEmpty ? " " : localizer.format(Int(entry) ?? 0))
-                        .font(.largeTitle.monospacedDigit())
+                        .font(Theme.roundedFont(34, weight: .bold).monospacedDigit())
                         .frame(minHeight: 56)
                         .accessibilityIdentifier("parent-gate-entry")
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
@@ -39,7 +39,7 @@ struct ParentGateView: View {
                         }
                         Button(localizer.string(.closeButton)) { dismiss() }
                             .frame(minHeight: 64)
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.ghost)
                         digitButton(0)
                         Button {
                             entry = String(entry.dropLast())
@@ -47,7 +47,7 @@ struct ParentGateView: View {
                             Image(systemName: "delete.left.fill")
                                 .frame(maxWidth: .infinity, minHeight: 64)
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.ghost)
                         .accessibilityIdentifier("gate-delete")
                         .disabled(entry.isEmpty)
                     }
@@ -60,7 +60,7 @@ struct ParentGateView: View {
                             second = Self.randomFactor()
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.sun)
                     .frame(maxWidth: 380, minHeight: 68)
                     .accessibilityIdentifier("gate-submit")
                     .disabled(entry.isEmpty)
@@ -70,8 +70,11 @@ struct ParentGateView: View {
                     }
                 }
                 .padding(26)
+                .frame(maxWidth: 540)
+                .background(Theme.paper, in: RoundedRectangle(cornerRadius: 32))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(red: 0.95, green: 0.94, blue: 0.88))
+                .fontDesign(.rounded)
+                .background(Theme.cream.ignoresSafeArea())
             }
         }
         .onChange(of: authorized) { _, value in
@@ -84,10 +87,10 @@ struct ParentGateView: View {
             guard entry.count < 4 else { return }
             entry.append(String(digit))
         } label: {
-            Text(String(digit)).font(.title2.bold())
+            Text(String(digit)).font(Theme.roundedFont(25, weight: .heavy))
                 .frame(maxWidth: .infinity, minHeight: 64)
         }
-        .buttonStyle(.bordered)
+        .buttonStyle(.ghost)
         .accessibilityIdentifier("gate-digit-\(digit)")
     }
 

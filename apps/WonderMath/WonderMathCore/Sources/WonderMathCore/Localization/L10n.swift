@@ -42,6 +42,9 @@ public enum L10n {
         case masteredBadge
         case lockedBadge
         case topicPathTitle
+        case mapCompanionGreeting
+        case scaffoldEncouragement
+        case bridgeProgressFormat
 
         // Profile / onboarding
         case chooseName
