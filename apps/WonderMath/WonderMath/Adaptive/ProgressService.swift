@@ -17,6 +17,7 @@ final class ProgressService {
     private let profile: ChildProfile
     private let appState: AppState
     private let engine: AdaptiveEngine
+    private var playableTopicIds: Set<String> { Set(appState.registry.playableTopicIds) }
 
     init(context: ModelContext, profile: ChildProfile, appState: AppState) {
         self.context = context
@@ -45,7 +46,8 @@ final class ProgressService {
             return value
         }()
         let applied = engine.apply(outcome, to: masteryRecord.progress(), topic: topic,
-                                   generator: generator, store: appState.store, now: .now)
+                                   generator: generator, store: appState.store,
+                                   playable: playableTopicIds, now: .now)
         masteryRecord.store(applied.progress)
         masteryRecord.totalSeconds += max(0, secondsSpent)
 
@@ -90,7 +92,9 @@ final class ProgressService {
     }
 
     func isUnlocked(_ topicId: String) -> Bool {
-        engine.isUnlocked(topicId, store: appState.store) { self.progress(for: $0) }
+        engine.isUnlocked(topicId, store: appState.store, playable: playableTopicIds) {
+            self.progress(for: $0)
+        }
     }
 
     func adjustedDifficulty(_ difficulty: Int) -> Int {

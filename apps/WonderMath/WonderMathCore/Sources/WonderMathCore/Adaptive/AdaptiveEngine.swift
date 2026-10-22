@@ -40,6 +40,7 @@ public struct AdaptiveEngine: Sendable {
                       topic: Topic,
                       generator: any PuzzleGenerator,
                       store: TaxonomyStore,
+                      playable: Set<String>,
                       now: Date) -> (progress: SkillProgress, scaffold: AdaptiveDecision?) {
         var p = progress
         let criteria = generator.mastery
@@ -96,7 +97,8 @@ public struct AdaptiveEngine: Sendable {
         // Scaffold decision: repeated failure at floor difficulty.
         var scaffold: AdaptiveDecision? = nil
         if p.difficulty == 1, p.consecutiveStruggles >= config.scaffoldAfterStruggles {
-            scaffold = scaffoldTarget(for: topic.id, outcome: outcome, store: store)
+            scaffold = scaffoldTarget(for: topic.id, outcome: outcome, store: store,
+                                      playable: playable)
             p.consecutiveStruggles = 0 // avoid spamming the decision
         }
         return (p, scaffold)
@@ -119,26 +121,26 @@ public struct AdaptiveEngine: Sendable {
 
     // MARK: - Scaffolding via `hard` prerequisite edges
 
-    /// Pick a reteach target: prefer the diagnosed pattern's
-    /// `reteachPrerequisiteId` when it's bundled, else the weakest playable
-    /// `hard` prerequisite (checked by caller-supplied mastery), else nil.
+    /// Pick a reteach target: prefer a playable diagnosed reteach prerequisite,
+    /// else the weakest playable `hard` prerequisite, else nil.
     public func scaffoldTarget(for topicId: String,
                                outcome: Outcome,
                                store: TaxonomyStore,
+                               playable: Set<String>,
                                progressLookup: (String) -> SkillProgress? = { _ in nil }) -> AdaptiveDecision? {
         // 1) Research recommendation from the last diagnosis.
         if let kind = outcome.misconception,
            let record = store.research(for: topicId),
            let pattern = ErrorPatternMatcher.match(kind, in: record),
            let reteach = pattern.reteachPrerequisiteId,
-           store.topic(reteach) != nil {
+           playable.contains(reteach), store.topic(reteach) != nil {
             return .scaffold(toTopicId: reteach, reason: .researchRecommendation(fromTopicId: topicId))
         }
         // 2) Weakest playable hard prerequisite (lowest mastery, prefer
         //    unmastered ones).
         let hard = store.graph.hardPrerequisites(of: topicId)
             .map(\.prerequisiteId)
-            .filter { store.topic($0) != nil }
+            .filter { playable.contains($0) }
         if let weakest = hard
             .map({ ($0, progressLookup($0)) })
             .filter({ $0.1?.state != .mastered })
@@ -150,11 +152,12 @@ public struct AdaptiveEngine: Sendable {
 
     // MARK: - Gating & review
 
-    /// A topic unlocks once every bundled `hard` prerequisite is mastered
-    /// (prerequisites outside the subset are treated as assumed).
+    /// A topic unlocks once every playable `hard` prerequisite is mastered.
+    /// Other prerequisites are treated as assumed.
     public func isUnlocked(_ topicId: String, store: TaxonomyStore,
+                           playable: Set<String>,
                            progress: (String) -> SkillProgress?) -> Bool {
-        for dep in store.graph.hardPrerequisites(of: topicId) {
+        for dep in store.graph.hardPrerequisites(of: topicId) where playable.contains(dep.prerequisiteId) {
             if progress(dep.prerequisiteId)?.state != .mastered { return false }
         }
         return true

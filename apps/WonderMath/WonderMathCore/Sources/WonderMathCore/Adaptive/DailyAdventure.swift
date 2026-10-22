@@ -100,7 +100,8 @@ public struct DailyAdventurePlanner: Sendable {
 
         // Review injection: any mastered topic due today replaces the warm-up.
         var stages = [warmup, maths, logic, creative, challenge]
-        if let reviewId = reviewsDue.first, let p = progress(reviewId) {
+        if let reviewId = reviewsDue.first(where: { bridgeOrder.contains($0) && unlocked($0) }),
+           let p = progress(reviewId) {
             stages[0] = DailyAdventurePlan.AdventureStage(
                 kind: .warmup, topicId: reviewId, rounds: 2,
                 difficulty: engine.adjustedDifficulty(p.difficulty))

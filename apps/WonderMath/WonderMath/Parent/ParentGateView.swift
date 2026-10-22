@@ -8,13 +8,13 @@ struct ParentGateView: View {
     @Environment(\.localizer) private var localizer
     @Environment(\.dismiss) private var dismiss
     let profile: ChildProfile
-    @State private var first = Int.random(in: 23...69)
-    @State private var second = Int.random(in: 30...84)
+    @State private var first = Self.randomFactor()
+    @State private var second = Self.randomFactor()
     @State private var entry = ""
     @State private var authorized = false
     @State private var showError = false
 
-    private var answer: Int { first + second }
+    private var answer: Int { first * second }
     private var isUITesting: Bool { ProcessInfo.processInfo.arguments.contains("-UITestInMemory") }
 
     var body: some View {
@@ -56,8 +56,8 @@ struct ParentGateView: View {
                         showError = !authorized
                         if !authorized {
                             entry = ""
-                            first = Int.random(in: 23...69)
-                            second = Int.random(in: 30...84)
+                            first = Self.randomFactor()
+                            second = Self.randomFactor()
                         }
                     }
                     .buttonStyle(.borderedProminent)
@@ -89,5 +89,9 @@ struct ParentGateView: View {
         }
         .buttonStyle(.bordered)
         .accessibilityIdentifier("gate-digit-\(digit)")
+    }
+
+    private static func randomFactor() -> Int {
+        (13...49).filter { $0 % 10 != 0 && $0 % 11 != 0 }.randomElement()!
     }
 }

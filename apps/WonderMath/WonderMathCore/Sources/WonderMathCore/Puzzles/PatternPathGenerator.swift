@@ -34,7 +34,8 @@ public struct PatternPathGenerator: PuzzleGenerator {
                                    difficulty: d, rng: &rng)
         let puzzle = PuzzleInstance(
             id: "pattern-\(topicId)-d\(d)-\(s)",
-            type: type, topicId: topicId, evidenceIndex: nil,
+            type: type, topicId: topicId,
+            evidenceIndex: profile.mastery.assessableEvidenceIndex(forSequence: s),
             difficulty: d, config: .sequence(config), choices: choices,
             interaction: .tapToPlace,
             hints: [

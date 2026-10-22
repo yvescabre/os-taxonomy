@@ -131,7 +131,7 @@ enum GermanStrings {
         .adventureComplete: "Abenteuer geschafft! Was für ein Entdecker.",
         .adventureProgressFormat: "{0} von {1} geschafft",
 
-        .parentGatePrompt: "Nur für Erwachsene: rechne {0} + {1} = ?",
+        .parentGatePrompt: "Nur für Erwachsene: rechne {0} × {1} = ?",
         .parentGateHint: "Eine kurze Frage hält kleine Entdecker von den Einstellungen fern.",
         .learningTimeTitle: "Lernzeit",
         .skillsPracticedTitle: "Geübte Themen",

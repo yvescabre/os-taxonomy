@@ -45,6 +45,13 @@ public struct MasteryCriteria: Codable, Sendable {
         self.minimumDifficulty = minimumDifficulty
         self.evidenceForms = evidenceForms
     }
+
+    public func assessableEvidenceIndex(forSequence sequence: Int) -> Int? {
+        let indices = evidenceForms.enumerated().compactMap { $0.element == nil ? nil : $0.offset }
+        guard !indices.isEmpty else { return nil }
+        let index = ((sequence % indices.count) + indices.count) % indices.count
+        return indices[index]
+    }
 }
 
 /// Registry: taxonomy topic id → generator.

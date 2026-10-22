@@ -21,7 +21,7 @@ public struct BridgeGenerator: PuzzleGenerator {
     public func makePuzzle(sequence: Int, difficulty: Int, store: TaxonomyStore) -> PuzzleInstance {
         let d = min(max(difficulty, 1), 5)
         var rng = SeededRandom(seed: SeededRandom.seed(["bridge", topicId, d, sequence]))
-        let evidenceIndex = pickEvidenceIndex(sequence: sequence, rng: &rng)
+        let evidenceIndex = profile.mastery.assessableEvidenceIndex(forSequence: sequence)
         let form = pickForm(for: evidenceIndex, rng: &rng)
         let equation = buildEquation(form: form, difficulty: d, rng: &rng)
         let answer = equation.solve()! // guaranteed by construction
@@ -74,13 +74,6 @@ public struct BridgeGenerator: PuzzleGenerator {
     }
 
     // MARK: - Evidence → form selection
-
-    private func pickEvidenceIndex(sequence: Int, rng: inout SeededRandom) -> Int? {
-        let playable = profile.mastery.evidenceForms.enumerated().compactMap { $0.element == nil ? nil : $0.offset }
-        guard !playable.isEmpty else { return nil }
-        // Cycle so every assessable evidence item gets equal coverage.
-        return playable[sequence % playable.count]
-    }
 
     private func pickForm(for evidenceIndex: Int?, rng: inout SeededRandom) -> BridgeForm {
         if let i = evidenceIndex, i < profile.mastery.evidenceForms.count,

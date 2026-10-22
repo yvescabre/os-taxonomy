@@ -127,7 +127,7 @@ enum EnglishStrings {
         .adventureComplete: "Adventure complete! What an explorer.",
         .adventureProgressFormat: "{0} of {1} done",
 
-        .parentGatePrompt: "Grown-ups only: solve {0} + {1} = ?",
+        .parentGatePrompt: "Grown-ups only: solve {0} × {1} = ?",
         .parentGateHint: "A quick question keeps little explorers out of the settings.",
         .learningTimeTitle: "Learning time",
         .skillsPracticedTitle: "Skills practiced",

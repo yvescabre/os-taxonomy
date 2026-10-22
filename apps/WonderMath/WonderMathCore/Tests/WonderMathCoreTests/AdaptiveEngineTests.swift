@@ -25,10 +25,13 @@ final class AdaptiveEngineTests: XCTestCase {
                 evidenceIndex: 0, difficulty: 1)
     }
 
+    private var playable: Set<String> { Set(TestSupport.registry.playableTopicIds) }
+
     func testPromotesAfterThreeIndependent() throws {
         var p = SkillProgress()
         for _ in 0..<3 {
-            p = engine.apply(correct(), to: p, topic: topic, generator: generator, store: store, now: TestSupport.now).progress
+            p = engine.apply(correct(), to: p, topic: topic, generator: generator, store: store,
+                             playable: playable, now: TestSupport.now).progress
         }
         XCTAssertEqual(p.difficulty, 2)
         XCTAssertEqual(p.consecutiveIndependent, 0)
@@ -37,7 +40,8 @@ final class AdaptiveEngineTests: XCTestCase {
     func testHintAssistedDoesNotPromote() throws {
         var p = SkillProgress()
         for _ in 0..<5 {
-            p = engine.apply(correct(hintFree: false), to: p, topic: topic, generator: generator, store: store, now: TestSupport.now).progress
+            p = engine.apply(correct(hintFree: false), to: p, topic: topic, generator: generator,
+                             store: store, playable: playable, now: TestSupport.now).progress
         }
         XCTAssertEqual(p.difficulty, 1)
     }
@@ -46,7 +50,8 @@ final class AdaptiveEngineTests: XCTestCase {
         var p = SkillProgress()
         p.difficulty = 3
         for _ in 0..<2 {
-            p = engine.apply(wrong(), to: p, topic: topic, generator: generator, store: store, now: TestSupport.now).progress
+            p = engine.apply(wrong(), to: p, topic: topic, generator: generator, store: store,
+                             playable: playable, now: TestSupport.now).progress
         }
         XCTAssertEqual(p.difficulty, 2)
     }
@@ -58,7 +63,8 @@ final class AdaptiveEngineTests: XCTestCase {
         var p = SkillProgress()
         var scaffold: AdaptiveDecision?
         for _ in 0..<3 {
-            let r = engine.apply(wrong(kind: .usedVisibleNumbers), to: p, topic: t, generator: gen, store: store, now: TestSupport.now)
+            let r = engine.apply(wrong(kind: .usedVisibleNumbers), to: p, topic: t, generator: gen,
+                                 store: store, playable: playable, now: TestSupport.now)
             p = r.progress; scaffold = r.scaffold ?? scaffold
         }
         guard case .scaffold(let to, _) = scaffold else { return XCTFail("no scaffold") }
@@ -75,7 +81,8 @@ final class AdaptiveEngineTests: XCTestCase {
             // Cycle evidence indices to earn all credits.
             let i = forms[guard_ % forms.count]
             p = engine.apply(correct(evidence: i, difficulty: p.difficulty),
-                             to: p, topic: topic, generator: generator, store: store, now: TestSupport.now).progress
+                             to: p, topic: topic, generator: generator, store: store,
+                             playable: playable, now: TestSupport.now).progress
             guard_ += 1
         }
         XCTAssertEqual(p.state, .mastered)
@@ -89,18 +96,82 @@ final class AdaptiveEngineTests: XCTestCase {
         let forms = generator.mastery.evidenceForms.enumerated().compactMap { $0.element == nil ? nil : $0.offset }
         for i in 0..<30 {
             let outcome = (i % 3 == 2) ? wrong() : correct(evidence: forms[i % forms.count])
-            p = engine.apply(outcome, to: p, topic: topic, generator: generator, store: store, now: TestSupport.now).progress
+            p = engine.apply(outcome, to: p, topic: topic, generator: generator, store: store,
+                             playable: playable, now: TestSupport.now).progress
         }
         XCTAssertNotEqual(p.state, .mastered)
     }
 
     func testGatingUsesHardEdges() throws {
         // Unknown-A&S is locked until equals-sign is mastered.
-        XCTAssertFalse(engine.isUnlocked("mt_3JgrHY221M", store: store) { _ in nil })
-        XCTAssertTrue(engine.isUnlocked("mt_3JgrHY221M", store: store) { id in
+        XCTAssertFalse(engine.isUnlocked("mt_3JgrHY221M", store: store, playable: playable) { _ in nil })
+        XCTAssertTrue(engine.isUnlocked("mt_3JgrHY221M", store: store, playable: playable) { id in
             var p = SkillProgress(); p.state = id == "mt_oIzycTBeE4" ? .mastered : .notStarted
             return p
         })
+    }
+
+    func testPatternEvidenceCyclesUntilMastery() throws {
+        let pattern = PatternPathLibrary.all[0]
+        let patternTopic = try XCTUnwrap(store.topic(pattern.topicId))
+        let indices = pattern.mastery.evidenceForms.enumerated()
+            .compactMap { $0.element == nil ? nil : $0.offset }
+        XCTAssertFalse(indices.isEmpty)
+        var progress = SkillProgress()
+        let count = indices.count * pattern.mastery.creditsPerEvidence
+
+        for sequence in 0..<count {
+            let puzzle = pattern.makePuzzle(sequence: sequence, difficulty: 1, store: store)
+            XCTAssertEqual(puzzle.evidenceIndex, indices[sequence % indices.count])
+            let outcome = Outcome(correct: true, maxHintLevel: nil, misconception: nil,
+                                  evidenceIndex: puzzle.evidenceIndex, difficulty: puzzle.difficulty)
+            progress = engine.apply(outcome, to: progress, topic: patternTopic,
+                                    generator: pattern, store: store, playable: playable,
+                                    now: TestSupport.now).progress
+        }
+
+        XCTAssertEqual(progress.state, .mastered)
+    }
+
+    func testAllGeneratorTopicsUnlockWhenPlayablePrerequisitesAreMastered() throws {
+        let order = TestSupport.playableOrder(store)
+        let allPlayable = Set(TestSupport.registry.playableTopicIds)
+        var progress: [String: SkillProgress] = [:]
+        var newlyMastered: Bool
+        repeat {
+            newlyMastered = false
+            for topicId in order where engine.isUnlocked(topicId, store: store, playable: allPlayable,
+                                                           progress: { progress[$0] }) &&
+                                        progress[topicId]?.state != .mastered {
+                var mastered = SkillProgress()
+                mastered.state = .mastered
+                progress[topicId] = mastered
+                newlyMastered = true
+            }
+        } while newlyMastered
+
+        for topicId in allPlayable {
+            XCTAssertTrue(engine.isUnlocked(topicId, store: store, playable: allPlayable,
+                                            progress: { progress[$0] }),
+                          "generator-backed topic remained locked: \(topicId)")
+        }
+    }
+
+    func testScaffoldsNeverReturnNonPlayableTargets() throws {
+        let targetTopic = try XCTUnwrap(store.topic("mt_3JgrHY221M"))
+        let nonPlayableResearchTarget = "mt_oIzycTBeE4"
+        let withoutResearchTarget = playable.subtracting([nonPlayableResearchTarget])
+        let researchScaffold = engine.scaffoldTarget(
+            for: targetTopic.id, outcome: wrong(kind: .usedVisibleNumbers), store: store,
+            playable: withoutResearchTarget)
+        if case .scaffold(let topicId, _) = researchScaffold {
+            XCTAssertTrue(withoutResearchTarget.contains(topicId))
+            XCTAssertNotEqual(topicId, nonPlayableResearchTarget)
+        }
+
+        let fallbackScaffold = engine.scaffoldTarget(
+            for: targetTopic.id, outcome: wrong(), store: store, playable: [])
+        XCTAssertNil(fallbackScaffold)
     }
 
     func testReviewDueScheduling() throws {
@@ -127,6 +198,28 @@ final class AdaptiveEngineTests: XCTestCase {
 }
 
 final class DailyAdventureTests: XCTestCase {
+
+    func testReviewInjectionRequiresInOrderUnlockedTopic() throws {
+        let planner = DailyAdventurePlanner()
+        let engine = AdaptiveEngine()
+        var dueProgress = SkillProgress()
+        dueProgress.state = .mastered
+        dueProgress.nextReviewDate = TestSupport.now.addingTimeInterval(-3600)
+        let progress = ["outside": dueProgress, "locked": dueProgress, "review": dueProgress]
+
+        let ignored = planner.plan(
+            date: TestSupport.now, childAge: 9, bridgeOrder: ["frontier"],
+            unlocked: { $0 == "frontier" }, progress: { progress[$0] },
+            reviewsDue: ["outside", "locked"], engine: engine)
+        XCTAssertEqual(ignored.stages[0].topicId, "frontier")
+
+        let injected = planner.plan(
+            date: TestSupport.now, childAge: 9,
+            bridgeOrder: ["frontier", "locked", "review"],
+            unlocked: { $0 != "locked" }, progress: { progress[$0] },
+            reviewsDue: ["outside", "locked", "review"], engine: engine)
+        XCTAssertEqual(injected.stages[0].topicId, "review")
+    }
 
     func testPlanHasAllFiveStagesAndIsDeterministic() throws {
         let store = try TestSupport.loadStore()

@@ -151,4 +151,4 @@ Use any iPad simulator name from `simctl list`. The UI tests launch the app with
 - **German (Swiss) is a scaffold.** All UI strings are translated, and topic names are translated for the playable topics. Taxonomy research text (offline activities, research tips) is English-only and appears only in the parent area, labelled as such; it is never shown to the child in German mode.
 - Text-to-speech uses the system `AVSpeechSynthesizer` voices; there is no recorded audio.
 - One child profile per device in this slice.
-- Gating treats prerequisites outside the bundled subset as already met.
+- Gating only counts hard prerequisites playable in the app; other prerequisites are treated as met and listed for parents.
