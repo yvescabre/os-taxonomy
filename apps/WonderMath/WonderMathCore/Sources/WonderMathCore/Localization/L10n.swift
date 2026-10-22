@@ -86,6 +86,8 @@ public enum L10n {
         // Hints & feedback (mechanic-authored, localized)
         case nudgeMissingNumber
         case nudgeMissingNumberTimes
+        case nudgeMissingNumberDividedBy
+        case nudgeDividedByWhich
         case nudgeBalance
         case nudgeCommutative
         case nudgeSequence

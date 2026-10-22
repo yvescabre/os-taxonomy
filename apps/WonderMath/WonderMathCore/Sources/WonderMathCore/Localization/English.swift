@@ -82,6 +82,8 @@ enum EnglishStrings {
 
         .nudgeMissingNumber: "Which number makes both sides equal?",
         .nudgeMissingNumberTimes: "Which number, times {0}, makes {1}?",
+        .nudgeMissingNumberDividedBy: "Which number, divided by {0}, makes {1}?",
+        .nudgeDividedByWhich: "{0} divided by which number makes {1}?",
         .nudgeBalance: "Make both sides worth the same. What does the missing plank need to be?",
         .nudgeCommutative: "Multiplication doesn't mind the order. What's missing?",
         .nudgeSequence: "The stones follow a pattern — find how big each hop is.",

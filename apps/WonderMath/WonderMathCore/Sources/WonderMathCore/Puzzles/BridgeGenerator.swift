@@ -274,11 +274,29 @@ public struct BridgeGenerator: PuzzleGenerator {
         switch form {
         case .resultUnknown: return LocalizedMessage(.nudgeMissingNumber)
         case .firstOperandUnknown, .secondOperandUnknown, .answerLeft:
-            if equation.left.operation == .multiply || equation.left.operation == .divide
-                || equation.right.operation == .multiply || equation.right.operation == .divide {
-                return LocalizedMessage(.nudgeMissingNumberTimes,
-                    [.number(equation.left.rhs.knownValue ?? equation.right.rhs.knownValue ?? 0),
-                     .number(equation.left.lhs.knownValue ?? equation.right.lhs.knownValue ?? 0)])
+            let unknownSide = form == .answerLeft ? equation.right : equation.left
+            let resultSide = form == .answerLeft ? equation.left : equation.right
+            guard let result = resultSide.evaluate() else { return LocalizedMessage(.nudgeMissingNumber) }
+
+            if unknownSide.lhs.isUnknown, let known = unknownSide.rhs.knownValue {
+                switch unknownSide.operation {
+                case .multiply:
+                    return LocalizedMessage(.nudgeMissingNumberTimes, [.number(known), .number(result)])
+                case .divide:
+                    return LocalizedMessage(.nudgeMissingNumberDividedBy, [.number(known), .number(result)])
+                case .add, .subtract:
+                    return LocalizedMessage(.nudgeMissingNumber)
+                }
+            }
+            if unknownSide.rhs.isUnknown, let known = unknownSide.lhs.knownValue {
+                switch unknownSide.operation {
+                case .multiply:
+                    return LocalizedMessage(.nudgeMissingNumberTimes, [.number(known), .number(result)])
+                case .divide:
+                    return LocalizedMessage(.nudgeDividedByWhich, [.number(known), .number(result)])
+                case .add, .subtract:
+                    return LocalizedMessage(.nudgeMissingNumber)
+                }
             }
             return LocalizedMessage(.nudgeMissingNumber)
         case .balance: return LocalizedMessage(.nudgeBalance)
