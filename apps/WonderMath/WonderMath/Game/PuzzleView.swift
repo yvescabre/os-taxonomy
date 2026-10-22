@@ -124,22 +124,29 @@ private struct PuzzlePlayScreen: View {
                 .padding(.top, 14)
                 Spacer()
             }
-            Text(localizer.string(.dropPlankHere))
-                .font(Theme.roundedFont(17, weight: .bold))
-                .foregroundStyle(Theme.ink)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 10)
-                .background(.white.opacity(0.94), in: Capsule())
-                .dropDestination(for: String.self) { values, _ in
-                    guard session.acceptsAnswers,
-                          let first = values.first, let number = Int(first) else { return false }
-                    session.place(number)
-                    scene.fill(gapWith: number)
-                    return true
-                }
-                .accessibilityIdentifier("bridge-drop-target")
-                .position(x: 120, y: 85)
+            VStack {
+                Spacer()
+                Text(localizer.string(.dropPlankHere))
+                    .font(Theme.roundedFont(17, weight: .bold))
+                    .foregroundStyle(Theme.ink)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 10)
+                    .background(.white.opacity(0.94), in: Capsule())
+                    .padding(.bottom, 14)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(false)
         }
+        .contentShape(Rectangle())
+        .dropDestination(for: String.self) { values, _ in
+            guard session.acceptsAnswers,
+                  let first = values.first, let number = Int(first) else { return false }
+            session.place(number)
+            scene.fill(gapWith: number)
+            return true
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("bridge-drop-target")
     }
 
     private var tray: some View {

@@ -5,13 +5,11 @@ import WonderMathCore
 
 private enum MapSheet: Identifiable {
     case comingSoon(WorldDefinition)
-    case parent
     case buddy
 
     var id: String {
         switch self {
         case .comingSoon(let world): return world.id.rawValue
-        case .parent: return "parent"
         case .buddy: return "buddy"
         }
     }
@@ -25,6 +23,8 @@ struct WorldMapView: View {
     @State private var activeSheet: MapSheet?
     @State private var showingTopicPath = false
     @State private var showingAdventure = false
+    @State private var showingParent = false
+    @State private var comingSoonDetent: PresentationDetent = .large
     @State private var scene = WorldMapScene(size: CGSize(width: 1200, height: 800))
 
     private let companionOptions: [(String, L10n.Key)] = [
@@ -48,7 +48,7 @@ struct WorldMapView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .padding(.horizontal, 26)
                     .padding(.top, 26)
-                Button { activeSheet = .parent } label: {
+                Button { showingParent = true } label: {
                     Image(systemName: "gearshape.fill")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(Theme.ink)
@@ -71,13 +71,15 @@ struct WorldMapView: View {
         .fullScreenCover(isPresented: $showingAdventure) {
             DailyAdventureView(profile: profile)
         }
+        .fullScreenCover(isPresented: $showingParent) {
+            ParentGateView(profile: profile)
+        }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .comingSoon(let world):
                 comingSoonSheet(world)
-                    .presentationDetents([.medium])
-            case .parent:
-                ParentGateView(profile: profile)
+                    .presentationDetents([.medium, .large], selection: $comingSoonDetent)
+                    .presentationBackground(Theme.paper)
             case .buddy:
                 buddySheet
                     .presentationDetents([.large])
@@ -143,6 +145,7 @@ struct WorldMapView: View {
             if playable {
                 showingTopicPath = true
             } else {
+                comingSoonDetent = .large
                 activeSheet = .comingSoon(world)
             }
         } label: {
@@ -205,16 +208,15 @@ struct WorldMapView: View {
                 .font(Theme.roundedFont(18, weight: .medium))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
             Button(localizer.string(.closeButton)) { activeSheet = nil }
                 .buttonStyle(.leaf)
                 .accessibilityIdentifier("close-coming-soon")
         }
         .padding(30)
+        .padding(.bottom, 24)
         .frame(maxWidth: 620)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.paper, in: RoundedRectangle(cornerRadius: 34))
-        .padding(18)
-        .background(Theme.ink.opacity(0.12))
     }
 
     private var buddySheet: some View {

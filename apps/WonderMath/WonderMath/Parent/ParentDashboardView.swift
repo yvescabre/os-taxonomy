@@ -106,6 +106,8 @@ struct ParentDashboardView: View {
             Image(systemName: symbol).foregroundStyle(Theme.violet)
             Text(value).font(.system(size: 23, weight: .bold, design: .default))
                 .foregroundStyle(Theme.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
             Text(title).font(.system(size: 13, weight: .medium, design: .default))
                 .foregroundStyle(.secondary)
                 .lineLimit(2)

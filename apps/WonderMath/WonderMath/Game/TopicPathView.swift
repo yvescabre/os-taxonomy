@@ -16,10 +16,11 @@ struct TopicPathView: View {
         NavigationStack(path: $path) {
             GeometryReader { geometry in
                 let nodeCount = appState.playableOrder.count
+                let lastNodeX = 110 + CGFloat(max(nodeCount - 1, 0)) * 158
                 let contentWidth = max(geometry.size.width - 300,
-                                       CGFloat(nodeCount) * 158 + 110)
+                                       lastNodeX + 200)
                 let trailHeight = max(geometry.size.height - 105, 400)
-                let points = trailPoints(count: nodeCount, width: contentWidth, height: trailHeight)
+                let points = trailPoints(count: nodeCount, height: trailHeight)
 
                 ZStack(alignment: .topLeading) {
                     MeadowBackground()
@@ -136,11 +137,13 @@ struct TopicPathView: View {
                 starRow(count: starCount(topicId: topic.id, progress: progress), size: 24)
                 if appState.language == .english {
                     VStack(alignment: .leading, spacing: 9) {
-                        ForEach(Array(topic.evidence.enumerated()), id: \.offset) { _, evidence in
+                        ForEach(Array(topic.evidence.enumerated()), id: \.offset) { index, evidence in
+                            let earned = evidenceEarned(topicId: topic.id, index: index,
+                                                        progress: progress)
                             HStack(alignment: .top, spacing: 9) {
-                                Image(systemName: "checkmark.circle.fill")
+                                Image(systemName: earned ? "checkmark.circle.fill" : "circle")
                                     .font(.system(size: 16, weight: .bold))
-                                    .foregroundStyle(Theme.leaf)
+                                    .foregroundStyle(earned ? Theme.leaf : Theme.ink.opacity(0.25))
                                 Text(evidence)
                                     .font(Theme.roundedFont(14, weight: .medium))
                                     .foregroundStyle(Theme.inkSoft)
@@ -207,12 +210,20 @@ struct TopicPathView: View {
         return min(3, earned)
     }
 
-    private func trailPoints(count: Int, width: CGFloat, height: CGFloat) -> [CGPoint] {
+    private func evidenceEarned(topicId: String, index: Int, progress: SkillProgress?) -> Bool {
+        guard let progress,
+              let criteria = appState.registry.generator(for: topicId)?.mastery,
+              criteria.evidenceForms.indices.contains(index),
+              criteria.evidenceForms[index] != nil else { return false }
+        return (progress.evidenceCredits[index] ?? 0) >= criteria.creditsPerEvidence
+    }
+
+    private func trailPoints(count: Int, height: CGFloat) -> [CGPoint] {
         let yRatios: [CGFloat] = [0.82, 0.70, 0.72, 0.53, 0.41, 0.29, 0.32, 0.50,
                                   0.65, 0.73, 0.56, 0.39, 0.28, 0.38, 0.57, 0.74]
         return (0..<count).map { index in
             let ratio = yRatios[index % yRatios.count]
-            return CGPoint(x: 74 + CGFloat(index) * 158, y: height * ratio)
+            return CGPoint(x: 110 + CGFloat(index) * 158, y: height * ratio)
         }
     }
 
@@ -315,7 +326,7 @@ private struct TopicNode: View {
                     } else {
                         Text("\(number)")
                             .font(Theme.roundedFont(isNext ? 29 : 24, weight: .black))
-                            .foregroundStyle(state == .notStarted ? Theme.inkSoft : Theme.ink)
+                            .foregroundStyle(Theme.ink)
                     }
                     if isNext {
                         Circle().stroke(Theme.sun.opacity(0.42), lineWidth: 5)
@@ -351,7 +362,7 @@ private struct TopicNode: View {
         switch state {
         case .mastered: return Theme.leaf
         case .learning, .review: return .white
-        case .notStarted: return Theme.ink.opacity(0.16)
+        case .notStarted: return isNext ? Theme.sun : .white
         }
     }
 
@@ -359,7 +370,7 @@ private struct TopicNode: View {
         switch state {
         case .mastered: return Theme.leafDark
         case .learning, .review: return Theme.coral
-        case .notStarted: return Theme.ink.opacity(0.26)
+        case .notStarted: return isNext ? Theme.sunDark : Theme.ink.opacity(0.18)
         }
     }
 }

@@ -70,6 +70,8 @@ struct ParentGateView: View {
                     }
                 }
                 .padding(26)
+                .frame(maxWidth: 540)
+                .background(Theme.paper, in: RoundedRectangle(cornerRadius: 32))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .fontDesign(.rounded)
                 .background(Theme.cream.ignoresSafeArea())

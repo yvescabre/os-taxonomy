@@ -3,10 +3,17 @@ import UIKit
 import WonderMathCore
 
 final class BridgeScene: SKScene {
+    private enum LayoutConfiguration {
+        case tokens([BridgeToken])
+        case sequence([Int?])
+    }
+
     private var gapNodes: [SKShapeNode] = []
     private var nextGapIndex = 0
     private var companionNode: SKSpriteNode?
     private var companionTexture: SKTexture?
+    private var lastConfiguration: LayoutConfiguration?
+    private var filledGapValue: Int?
     private var isSequence = false
     var reduceMotion = false
 
@@ -22,49 +29,25 @@ final class BridgeScene: SKScene {
         scaleMode = .resizeFill
     }
 
+    override func didChangeSize(_ oldSize: CGSize) {
+        super.didChangeSize(oldSize)
+        guard oldSize != size, size.width > 0, size.height > 0,
+              lastConfiguration != nil else { return }
+        rebuildLayout(preservingFilledGap: true)
+    }
+
     func configureCompanion(texture: SKTexture?) {
         companionTexture = texture
     }
 
     func configure(tokens: [BridgeToken]) {
-        resetScene(sequence: false)
-        let spacing = min(158, (size.width - 150) / CGFloat(max(tokens.count, 1)))
-        for (index, token) in tokens.enumerated() {
-            let x = CGFloat(index) * spacing - CGFloat(tokens.count - 1) * spacing / 2
-            let point = CGPoint(x: x, y: -size.height * 0.05)
-            switch token {
-            case .number(let value):
-                addPlank(text: "\(value)", at: point, width: spacing - 8)
-            case .operation(let operation):
-                addOperator(operation.symbol, at: point)
-            case .equals:
-                addOperator("=", at: point)
-            case .gap:
-                addGap(at: point, width: spacing - 8, height: 66)
-            }
-        }
-        addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+        lastConfiguration = .tokens(tokens)
+        rebuildLayout()
     }
 
     func configure(sequence terms: [Int?]) {
-        resetScene(sequence: true)
-        let spacing = min(145, (size.width - 150) / CGFloat(max(terms.count, 1)))
-        for (index, term) in terms.enumerated() {
-            let x = CGFloat(index) * spacing - CGFloat(terms.count - 1) * spacing / 2
-            let stone = SKShapeNode(ellipseOf: CGSize(width: 88, height: 62))
-            stone.position = CGPoint(x: x, y: -size.height * 0.05)
-            stone.fillColor = term == nil ? .clear : SKColor(red: 0.52, green: 0.67, blue: 0.49, alpha: 1)
-            stone.strokeColor = .white
-            stone.lineWidth = 4
-            addChild(stone)
-            if let term {
-                addLabel("\(term)", to: stone, size: 24)
-            } else {
-                gapNodes.append(stone)
-                styleGap(stone)
-            }
-        }
-        addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+        lastConfiguration = .sequence(terms)
+        rebuildLayout()
     }
 
     func fill(gapWith value: Int) {
@@ -77,9 +60,11 @@ final class BridgeScene: SKScene {
         node.strokeColor = isSequence ? .white : SKColor(red: 0.40, green: 0.23, blue: 0.13, alpha: 1)
         let label = shadowedLabel("\(value)", size: isSequence ? 24 : 27)
         node.addChild(label)
+        filledGapValue = value
     }
 
     func clearGap() {
+        filledGapValue = nil
         for node in gapNodes {
             node.removeAllChildren()
             node.fillColor = .clear
@@ -119,18 +104,71 @@ final class BridgeScene: SKScene {
         ]))
     }
 
+    private func rebuildLayout(preservingFilledGap: Bool = false) {
+        guard let lastConfiguration else { return }
+        let filledValue = preservingFilledGap ? filledGapValue : nil
+        switch lastConfiguration {
+        case .tokens(let tokens):
+            resetScene(sequence: false)
+            let spacing = min(158, (size.width - 150) / CGFloat(max(tokens.count, 1)))
+            for (index, token) in tokens.enumerated() {
+                let x = CGFloat(index) * spacing - CGFloat(tokens.count - 1) * spacing / 2
+                let point = CGPoint(x: x, y: -size.height * 0.05)
+                switch token {
+                case .number(let value):
+                    addPlank(text: "\(value)", at: point, width: spacing - 8)
+                case .operation(let operation):
+                    addOperator(operation.symbol, at: point)
+                case .equals:
+                    addOperator("=", at: point)
+                case .gap:
+                    addGap(at: point, width: spacing - 8, height: 66)
+                }
+            }
+            addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+        case .sequence(let terms):
+            resetScene(sequence: true)
+            let spacing = min(145, (size.width - 150) / CGFloat(max(terms.count, 1)))
+            for (index, term) in terms.enumerated() {
+                let x = CGFloat(index) * spacing - CGFloat(terms.count - 1) * spacing / 2
+                let stone = SKShapeNode(ellipseOf: CGSize(width: 88, height: 62))
+                stone.position = CGPoint(x: x, y: -size.height * 0.05)
+                stone.fillColor = term == nil ? .clear :
+                    SKColor(red: 0.52, green: 0.67, blue: 0.49, alpha: 1)
+                stone.strokeColor = .white
+                stone.lineWidth = 4
+                addChild(stone)
+                if let term {
+                    addLabel("\(term)", to: stone, size: 24)
+                } else {
+                    gapNodes.append(stone)
+                    styleGap(stone)
+                }
+            }
+            addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+        }
+        if let filledValue {
+            fill(gapWith: filledValue)
+        }
+    }
+
     private func resetScene(sequence: Bool) {
         removeAllChildren()
         gapNodes.removeAll()
         nextGapIndex = 0
+        companionNode = nil
+        filledGapValue = nil
         isSequence = sequence
         drawLandscape()
     }
 
     private func drawLandscape() {
-        addChild(SKSpriteNode(texture: gradientTexture(size: size,
+        let background = SKSpriteNode(texture: gradientTexture(size: size,
             colors: [.init(red: 0.42, green: 0.78, blue: 1, alpha: 1),
-                     .init(red: 0.91, green: 0.98, blue: 1, alpha: 1)]), size: size))
+                     .init(red: 0.91, green: 0.98, blue: 1, alpha: 1)]), size: size)
+        background.position = .zero
+        background.zPosition = -100
+        addChild(background)
         let sun = SKShapeNode(circleOfRadius: size.height * 0.08)
         sun.position = CGPoint(x: size.width * 0.34, y: size.height * 0.29)
         sun.fillColor = SKColor(red: 1, green: 0.78, blue: 0.24, alpha: 1)
