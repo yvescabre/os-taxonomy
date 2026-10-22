@@ -353,19 +353,14 @@ private struct RewardOverlay: View {
 
     var body: some View {
         ZStack {
-            RadialGradient(colors: [Theme.sun, Theme.sunDark], center: .center,
-                           startRadius: 20, endRadius: 650)
-            Rays()
-                .fill(.white.opacity(0.13))
-                .frame(width: 1000, height: 1000)
-                .rotationEffect(.degrees(rotateRays ? 360 : 0))
-                .animation(reduceMotion ? nil : .linear(duration: 34).repeatForever(autoreverses: false),
-                           value: rotateRays)
+            Color.black.opacity(0.35).ignoresSafeArea()
             VStack(spacing: 15) {
                 Text(localizer.string(.wellDone))
-                    .font(Theme.roundedFont(42, weight: .black)).foregroundStyle(Theme.ink)
+                    .font(Theme.roundedFont(42, weight: .black))
+                    .foregroundStyle(.white)
+                    .shadow(color: Theme.ink.opacity(0.25), radius: 3, x: 0, y: 3)
                 if result.chestOpened {
-                    chest
+                    chest.padding(.top, 40)
                 } else {
                     starMedallion
                 }
@@ -398,8 +393,33 @@ private struct RewardOverlay: View {
                     .buttonStyle(.leaf)
                     .accessibilityIdentifier("next-puzzle")
             }
-            .padding(26)
+            .padding(.horizontal, 26)
+            .padding(.vertical, 22)
             .frame(maxWidth: 620)
+            .background {
+                RoundedRectangle(cornerRadius: 32)
+                    .fill(RadialGradient(colors: [Theme.sun, Theme.sunDark], center: .center,
+                                         startRadius: 20, endRadius: 650))
+            }
+            .overlay {
+                GeometryReader { geometry in
+                    let raySize = max(geometry.size.width, geometry.size.height) * 2
+                    Rays()
+                        .fill(.white.opacity(0.14))
+                        .frame(width: raySize, height: raySize)
+                        .rotationEffect(.degrees(rotateRays ? 360 : 0))
+                        .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                        .animation(reduceMotion ? nil :
+                            .linear(duration: 34).repeatForever(autoreverses: false),
+                            value: rotateRays)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 32))
+                .allowsHitTesting(false)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 32))
+            .overlay(RoundedRectangle(cornerRadius: 32)
+                .stroke(.white.opacity(0.58), lineWidth: 3))
+            .shadow(color: Theme.ink.opacity(0.28), radius: 18, x: 0, y: 10)
         }
         .ignoresSafeArea()
         .accessibilityElement(children: .contain)
@@ -413,13 +433,27 @@ private struct RewardOverlay: View {
     private var chest: some View {
         ZStack {
             if result.chestOpened {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 42, weight: .bold))
-                    .foregroundStyle(.white)
-                    .offset(y: -47)
+                HStack(spacing: 10) {
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 25, weight: .black))
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 34, weight: .black))
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 22, weight: .black))
+                }
+                .foregroundStyle(.white)
+                .shadow(color: Theme.ink.opacity(0.3), radius: 3, x: 0, y: 2)
+                .offset(y: -55)
                 HStack(spacing: 8) {
-                    ForEach(0..<4) { _ in Circle().fill(Theme.sun).frame(width: 20, height: 20) }
-                }.offset(y: -35)
+                    ForEach(0..<3) { index in
+                        Circle()
+                            .fill(Theme.sun)
+                            .frame(width: 22, height: 22)
+                            .overlay(Circle().stroke(Theme.sunDark, lineWidth: 3))
+                            .offset(y: index == 1 ? -8 : 0)
+                    }
+                }
+                .offset(y: -32)
             }
             RoundedRectangle(cornerRadius: 15)
                 .fill(Theme.woodGradient)
