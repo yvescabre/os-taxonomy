@@ -89,7 +89,7 @@ struct DailyAdventureView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(localizer.string(.closeButton)) { dismiss() }
-                        .buttonStyle(.ghost)
+                        .font(Theme.roundedFont(17, weight: .bold)).foregroundStyle(Theme.ink)
                 }
             }
         }
