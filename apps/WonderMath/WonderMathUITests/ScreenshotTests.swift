@@ -7,8 +7,16 @@ final class ScreenshotTests: XCTestCase {
         app.launchArguments = ["-UITestInMemory"]
         app.launch()
 
-        XCTAssertTrue(app.buttons["start-adventure"].waitForExistence(timeout: 15))
+        let nameField = app.textFields["onboarding-name"]
+        XCTAssertTrue(nameField.waitForExistence(timeout: 15))
         attachScreenshot("onboarding", app: app)
+        nameField.tap()
+        nameField.typeText("Mia")
+        app.buttons["onboarding-next"].tap()
+        app.buttons["onboarding-next"].tap()
+        let startAdventure = app.buttons["start-adventure"]
+        XCTAssertTrue(startAdventure.waitForExistence(timeout: 10))
+        attachScreenshot("onboarding-buddy", app: app)
     }
 
     func testMainLearningAndParentScreenshots() throws {
