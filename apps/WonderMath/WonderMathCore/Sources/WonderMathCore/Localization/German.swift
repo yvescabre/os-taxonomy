@@ -44,6 +44,9 @@ enum GermanStrings {
         .masteredBadge: "Gemeistert",
         .lockedBadge: "Gesperrt",
         .topicPathTitle: "Brücken zum Reparieren",
+        .mapCompanionGreeting: "Brückenzeit! Flicken wir eine zusammen?",
+        .scaffoldEncouragement: "Üben wir gemeinsam einen Schritt. Das machst du toll!",
+        .bridgeProgressFormat: "Brücke {0} von {1}",
 
         .chooseName: "Wie sollen wir dich nennen?",
         .chooseAge: "Wie alt bist du?",

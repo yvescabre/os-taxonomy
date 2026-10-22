@@ -40,6 +40,9 @@ enum EnglishStrings {
         .masteredBadge: "Mastered",
         .lockedBadge: "Locked",
         .topicPathTitle: "Bridges to repair",
+        .mapCompanionGreeting: "Bridge time! Want to fix one with me?",
+        .scaffoldEncouragement: "Let’s practise a step together. You’re doing great!",
+        .bridgeProgressFormat: "Bridge {0} of {1}",
 
         .chooseName: "What should we call you?",
         .chooseAge: "How old are you?",
