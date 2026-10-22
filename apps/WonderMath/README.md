@@ -134,15 +134,15 @@ Use any iPad simulator name from `simctl list` (verified with Xcode 26.6 / iOS 2
 
 Captured on the iPad Pro 13-inch (M5) simulator (iOS 26.5), landscape.
 
-**Onboarding:** [step 1](docs/screenshots/01-onboarding.png) · [choose a buddy](docs/screenshots/01b-onboarding-buddy.png)
+**Onboarding:** [step 1](docs/screenshots/01-onboarding.png) · [step 2](docs/screenshots/01a-onboarding-age.png) · [choose a buddy](docs/screenshots/01b-onboarding-buddy.png)
 
 **World map:** [English](docs/screenshots/02-world-map.png) · [dark system appearance](docs/screenshots/22-world-map-dark-mode.png)
 
 **Sheets:** [coming soon](docs/screenshots/18-coming-soon.png) · [customize buddy](docs/screenshots/19-buddy-sheet.png)
 
-**Number Kingdom path:** [initial path](docs/screenshots/03-topic-path.png)
+**Number Kingdom path:** [initial path](docs/screenshots/03-topic-path.png) · [castle end](docs/screenshots/03b-topic-path-end.png)
 
-**Bridge puzzle:** [initial](docs/screenshots/04-bridge-puzzle.png) · [wrong answer](docs/screenshots/05-gentle-feedback.png) · [Walkthrough hint](docs/screenshots/06-hint-walkthrough.png) · [Why does this work?](docs/screenshots/07-why-does-this-work.png) · [filled bridge](docs/screenshots/20-bridge-solved.png)
+**Bridge puzzle:** [equation bridge](docs/screenshots/04-bridge-puzzle.png) · [stepping stones](docs/screenshots/04b-stepping-stones.png) · [wrong answer](docs/screenshots/05-gentle-feedback.png) · [Walkthrough hint](docs/screenshots/06-hint-walkthrough.png) · [Why does this work?](docs/screenshots/07-why-does-this-work.png) · [filled bridge](docs/screenshots/20-bridge-solved.png)
 
 **Rewards:** [solved puzzle](docs/screenshots/08-reward.png) · [treasure chest](docs/screenshots/09-treasure-chest.png) · [star meter](docs/screenshots/23-star-meter.png)
 

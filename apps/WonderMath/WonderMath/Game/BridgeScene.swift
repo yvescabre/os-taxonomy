@@ -147,11 +147,11 @@ final class BridgeScene: SKScene {
             addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
         case .sequence(let terms):
             resetScene(sequence: true)
-            let spacing = min(145, (size.width - 150) / CGFloat(max(terms.count, 1)))
+            let spacing = terms.count > 1 ? size.width * 0.64 / CGFloat(terms.count - 1) : 0
             for (index, term) in terms.enumerated() {
-                let x = CGFloat(index) * spacing - CGFloat(terms.count - 1) * spacing / 2
+                let x = -size.width * 0.32 + CGFloat(index) * spacing
                 let stone = SKShapeNode(ellipseOf: CGSize(width: 88, height: 62))
-                stone.position = CGPoint(x: x, y: -size.height * 0.05)
+                stone.position = CGPoint(x: x, y: -size.height * 0.13)
                 stone.fillColor = term == nil ? .clear :
                     SKColor(red: 0.851, green: 0.812, blue: 0.753, alpha: 1)
                 stone.strokeColor = term == nil ? .clear :
@@ -215,14 +215,14 @@ final class BridgeScene: SKScene {
         for side: CGFloat in [-1, 1] {
             addCliff(side: side)
             let post = SKShapeNode(rectOf: CGSize(width: 14, height: 75), cornerRadius: 7)
-            post.position = CGPoint(x: side * size.width * 0.37, y: size.height * 0.04)
+            post.position = CGPoint(x: side * size.width * 0.31, y: size.height * 0.04)
             post.fillColor = SKColor(red: 0.44, green: 0.26, blue: 0.15, alpha: 1)
             post.strokeColor = .clear
             addChild(post)
         }
         let ropePath = CGMutablePath()
-        ropePath.move(to: CGPoint(x: -size.width * 0.37, y: size.height * 0.06))
-        ropePath.addQuadCurve(to: CGPoint(x: size.width * 0.37, y: size.height * 0.06),
+        ropePath.move(to: CGPoint(x: -size.width * 0.31, y: size.height * 0.06))
+        ropePath.addQuadCurve(to: CGPoint(x: size.width * 0.31, y: size.height * 0.06),
                               control: CGPoint(x: 0, y: -size.height * 0.03))
         let rope = SKShapeNode(path: ropePath)
         rope.strokeColor = SKColor(red: 0.48, green: 0.27, blue: 0.14, alpha: 1)
@@ -268,24 +268,28 @@ final class BridgeScene: SKScene {
 
     private func addCliff(side: CGFloat) {
         let outerX = side * size.width * 0.53
-        let innerX = side * size.width * 0.27
+        let innerX = side * size.width * 0.32
         let outerY = size.height * 0.07
         let innerY = size.height * 0.035
         let control1 = CGPoint(x: outerX - side * size.width * 0.08,
                                y: outerY + size.height * 0.08)
         let control2 = CGPoint(x: innerX + side * size.width * 0.08,
                                y: innerY + size.height * 0.07)
-        let topEdge = CGMutablePath()
-        topEdge.move(to: CGPoint(x: outerX, y: outerY))
-        topEdge.addCurve(to: CGPoint(x: innerX, y: innerY),
-                         control1: control1, control2: control2)
-
         let cliffPath = CGMutablePath()
-        cliffPath.move(to: CGPoint(x: outerX, y: -size.height * 0.5))
-        cliffPath.addLine(to: CGPoint(x: outerX, y: outerY))
+        let bottomY = -size.height * 0.5
+        cliffPath.move(to: CGPoint(x: outerX, y: bottomY))
+        cliffPath.addCurve(to: CGPoint(x: outerX, y: outerY),
+                           control1: CGPoint(x: outerX - side * size.width * 0.015,
+                                             y: -size.height * 0.32),
+                           control2: CGPoint(x: outerX + side * size.width * 0.01,
+                                             y: -size.height * 0.04))
         cliffPath.addCurve(to: CGPoint(x: innerX, y: innerY),
                            control1: control1, control2: control2)
-        cliffPath.addLine(to: CGPoint(x: innerX, y: -size.height * 0.5))
+        cliffPath.addCurve(to: CGPoint(x: innerX, y: bottomY),
+                           control1: CGPoint(x: innerX + side * size.width * 0.025,
+                                             y: -size.height * 0.08),
+                           control2: CGPoint(x: innerX + side * size.width * 0.01,
+                                             y: -size.height * 0.32))
         cliffPath.closeSubpath()
         let cliff = SKShapeNode(path: cliffPath)
         cliff.fillColor = SKColor(red: 0.66, green: 0.40, blue: 0.23, alpha: 1)
@@ -323,8 +327,8 @@ final class BridgeScene: SKScene {
             strata.lineWidth = max(2, size.height * 0.012)
             addChild(strata)
         }
-        for (index, position) in [CGPoint(x: side * size.width * 0.32, y: -size.height * 0.12),
-                                  CGPoint(x: side * size.width * 0.40, y: -size.height * 0.29)].enumerated() {
+        for (index, position) in [CGPoint(x: side * size.width * 0.36, y: -size.height * 0.12),
+                                  CGPoint(x: side * size.width * 0.43, y: -size.height * 0.29)].enumerated() {
             let pebble = SKShapeNode(ellipseOf: CGSize(width: size.width * 0.018,
                                                        height: size.height * 0.025))
             pebble.position = position
