@@ -250,6 +250,7 @@ private struct PuzzlePlayScreen: View {
     private func plankButton(_ value: Int) -> some View {
         let isCorrect = session.correctValueForUITesting == value
         return Button {
+            guard session.acceptsAnswers else { return }
             session.place(value)
             scene.fill(gapWith: value)
         } label: {
@@ -267,8 +268,10 @@ private struct PuzzlePlayScreen: View {
         }
         .buttonStyle(.plain)
         .draggable(String(value))
-        .accessibilityIdentifier(isCorrect ? "plank-correct" : "plank-\(value)")
-        .accessibilityValue(localizer.format(value))
+        .disabled(!session.acceptsAnswers)
+        .accessibilityLabel(localizer.format(value))
+        .accessibilityIdentifier(isCorrect && appState.isUITesting ? "plank-correct" : "plank-\(value)")
+        .accessibilityValue(appState.isUITesting && isCorrect ? String(value) : "")
     }
 
     private var helperColor: Color {
@@ -284,12 +287,17 @@ private struct PuzzlePlayScreen: View {
     }
 
     private var instructionMessage: LocalizedMessage {
-        session.puzzle.hints.first?.message ?? LocalizedMessage(.bridgeInstructions)
+        switch session.puzzle.config {
+        case .equation:
+            return LocalizedMessage(.bridgeInstructions)
+        case .sequence:
+            return LocalizedMessage(.sequenceInstructions)
+        }
     }
 
     private var currentHintTitle: String {
         switch session.hintLevel {
-        case nil: return localizer.string(.hintButton)
+        case nil: return localizer.string(.showHint)
         case .nudge: return localizer.string(.hintNudgeTitle)
         case .clue: return localizer.string(.hintClueTitle)
         case .walkthrough: return localizer.string(.hintWalkthroughTitle)
@@ -311,6 +319,7 @@ private struct PuzzlePlayScreen: View {
             scene.configure(sequence: puzzle.terms)
         }
         if let placed = session.placedValues.last { scene.fill(gapWith: placed) }
+        speech.speak(instructionMessage, localizer: localizer, enabled: profile.audioEnabled)
     }
 
     private func advance(_ result: RecordResult) {
@@ -343,19 +352,23 @@ private struct RewardOverlay: View {
             VStack(spacing: 15) {
                 Text(localizer.string(.wellDone))
                     .font(Theme.roundedFont(42, weight: .black)).foregroundStyle(Theme.ink)
-                chest
+                if result.chestOpened {
+                    chest
+                } else {
+                    starMedallion
+                }
                 Text(localizer.string(.xpEarnedFormat, [.number(result.xpGained)]))
                     .font(Theme.roundedFont(21, weight: .heavy)).foregroundStyle(Theme.ink)
                     .padding(.horizontal, 22).padding(.vertical, 10)
                     .background(.white, in: Capsule())
                 ForEach(result.newAchievements, id: \.id) { achievement in
-            Text(localizer.string(achievement.nameKey))
+                    Text(localizer.string(.newBadgeEarned) + " " + localizer.string(achievement.nameKey))
                         .font(Theme.roundedFont(17, weight: .bold))
                         .padding(.horizontal, 18).padding(.vertical, 8)
                         .background(.white.opacity(0.88), in: Capsule())
                 }
-                if let scaffold = result.scaffold {
-                    Text(localizer.string(.scaffoldEncouragement))
+                if let decision = result.scaffold, case .scaffold = decision {
+                    Text(localizer.string(.companionHelperPraise))
                         .font(Theme.roundedFont(16, weight: .bold))
                         .foregroundStyle(Theme.ink)
                         .accessibilityIdentifier("scaffold-message")
@@ -364,7 +377,7 @@ private struct RewardOverlay: View {
                     CompanionView(species: profile.companionSpecies,
                                   colorName: profile.companionColor,
                                   accessory: profile.companionAccessory, size: 74)
-                    Text(localizer.string(.wellDone))
+                    Text(localizer.string(.companionHelperPraise))
                         .font(Theme.roundedFont(18, weight: .bold))
                         .foregroundStyle(Theme.ink)
                         .padding(12).background(.white, in: RoundedRectangle(cornerRadius: 18))
@@ -377,6 +390,7 @@ private struct RewardOverlay: View {
             .frame(maxWidth: 620)
         }
         .ignoresSafeArea()
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("reward-panel")
         .onAppear {
             rotateRays = !reduceMotion
@@ -411,7 +425,16 @@ private struct RewardOverlay: View {
         .frame(width: 180, height: 110)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(localizer.string(.chestOpened))
-        .accessibilityIdentifier(result.chestOpened ? "chest-reward" : "closed-chest")
+        .accessibilityIdentifier("chest-reward")
+    }
+
+    private var starMedallion: some View {
+        Image(systemName: "star.fill")
+            .font(.system(size: 70, weight: .black))
+            .foregroundStyle(.white)
+            .frame(width: 142, height: 142)
+            .background(Theme.sunDark, in: Circle())
+            .overlay(Circle().stroke(.white, lineWidth: 5))
     }
 }
 
