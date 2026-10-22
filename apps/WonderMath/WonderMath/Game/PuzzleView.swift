@@ -77,7 +77,7 @@ private struct PuzzlePlayScreen: View {
             ZStack {
                 VStack(spacing: 0) {
                     bridgeArea
-                        .frame(height: geometry.size.height * 0.59)
+                        .frame(height: geometry.size.height * 0.64)
                     tray
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
@@ -124,18 +124,20 @@ private struct PuzzlePlayScreen: View {
                 .padding(.top, 14)
                 Spacer()
             }
-            VStack {
-                Spacer()
-                Text(localizer.string(.dropPlankHere))
-                    .font(Theme.roundedFont(17, weight: .bold))
-                    .foregroundStyle(Theme.ink)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 10)
-                    .background(.white.opacity(0.94), in: Capsule())
-                    .padding(.bottom, 14)
+            if !session.isSolved {
+                VStack {
+                    Spacer()
+                    Text(localizer.string(.dropPlankHere))
+                        .font(Theme.roundedFont(17, weight: .bold))
+                        .foregroundStyle(Theme.ink)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 10)
+                        .background(.white.opacity(0.94), in: Capsule())
+                        .padding(.bottom, 14)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .allowsHitTesting(false)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(false)
         }
         .contentShape(Rectangle())
         .dropDestination(for: String.self) { values, _ in
@@ -150,7 +152,7 @@ private struct PuzzlePlayScreen: View {
     }
 
     private var tray: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             helperBubble
             HStack(spacing: 12) {
                 ForEach(Array(session.choices.enumerated()), id: \.offset) { _, value in
@@ -199,8 +201,10 @@ private struct PuzzlePlayScreen: View {
                 .accessibilityIdentifier(session.isRetry ? "retry-button" : "check-answer")
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(.horizontal, 22)
-        .padding(.vertical, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 8)
         .background(Theme.cream)
     }
 
@@ -276,6 +280,7 @@ private struct PuzzlePlayScreen: View {
         .buttonStyle(.plain)
         .draggable(String(value))
         .disabled(!session.acceptsAnswers)
+        .opacity(session.acceptsAnswers ? 1 : 0.85)
         .accessibilityLabel(localizer.format(value))
         .accessibilityIdentifier(isCorrect && appState.isUITesting ? "plank-correct" : "plank-\(value)")
         .accessibilityValue(appState.isUITesting && isCorrect ? String(value) : "")
