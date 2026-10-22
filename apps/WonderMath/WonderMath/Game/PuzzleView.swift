@@ -86,52 +86,46 @@ private struct PuzzlePlayScreen: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            let bridgeSize = CGSize(width: geometry.size.width, height: geometry.size.height * 0.64)
-            ZStack {
-                VStack(spacing: 0) {
-                    bridgeArea
-                        .frame(height: bridgeSize.height)
-                    tray
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .background(Theme.cream)
-                if let drag = activePlankDrag {
-                    plankCard(drag.value)
-                        .frame(width: drag.size.width, height: drag.size.height)
-                        .scaleEffect(1.08)
-                        .shadow(color: Theme.ink.opacity(0.28), radius: 14, x: 0, y: 10)
-                        .position(drag.location)
-                        .zIndex(2)
-                        .allowsHitTesting(false)
-                        .accessibilityHidden(true)
-                }
-                if showReward, let result = session.result {
-                    RewardOverlay(result: result, profile: profile, localizer: localizer,
-                                  reduceMotion: reduceMotion) {
-                        advance(result)
-                    }
-                    .transition(.opacity)
-                }
+        ZStack {
+            VStack(spacing: 0) {
+                bridgeArea
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                tray
+                    .frame(maxWidth: .infinity)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 24)
             }
-            .coordinateSpace(name: "puzzle")
-            .onAppear {
-                bridgeDropFrame = CGRect(origin: .zero, size: bridgeSize)
+            .background(Theme.cream)
+            if let drag = activePlankDrag {
+                plankCard(drag.value)
+                    .frame(width: drag.size.width, height: drag.size.height)
+                    .scaleEffect(1.08)
+                    .shadow(color: Theme.ink.opacity(0.28), radius: 14, x: 0, y: 10)
+                    .position(drag.location)
+                    .zIndex(2)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             }
-            .onChange(of: geometry.size) { _, size in
-                bridgeDropFrame = CGRect(
-                    origin: .zero,
-                    size: CGSize(width: size.width, height: size.height * 0.64)
-                )
+            if showReward, let result = session.result {
+                RewardOverlay(result: result, profile: profile, localizer: localizer,
+                              reduceMotion: reduceMotion) {
+                    advance(result)
+                }
+                .transition(.opacity)
             }
-            .ignoresSafeArea()
         }
+        .coordinateSpace(name: "puzzle")
+        .ignoresSafeArea()
         .fontDesign(.rounded)
         .toolbar(.hidden, for: .navigationBar)
         .onAppear(perform: preparePuzzle)
         .onChange(of: session.puzzle.id) { _, _ in preparePuzzle() }
         .onChange(of: session.feedback) { _, value in
             if let value { speech.speak(value, localizer: localizer, enabled: profile.audioEnabled) }
+        }
+        .onDisappear {
+            scene.setGapHighlighted(false)
+            activePlankDrag = nil
         }
         .sheet(isPresented: $showingWhy) { NavigationStack { WhyView(puzzle: session.puzzle) } }
     }
@@ -178,6 +172,17 @@ private struct PuzzlePlayScreen: View {
             }
         }
         .contentShape(Rectangle())
+        .background {
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        bridgeDropFrame = geometry.frame(in: .named("puzzle"))
+                    }
+                    .onChange(of: geometry.size) { _, _ in
+                        bridgeDropFrame = geometry.frame(in: .named("puzzle"))
+                    }
+            }
+        }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("bridge-drop-target")
     }
@@ -235,7 +240,6 @@ private struct PuzzlePlayScreen: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(.horizontal, 22)
         .padding(.top, 8)
-        .padding(.bottom, 8)
         .background(Theme.cream)
     }
 
@@ -336,6 +340,7 @@ private struct PuzzlePlayScreen: View {
 
     private func placePlank(_ value: Int) {
         guard session.acceptsAnswers else { return }
+        scene.setGapHighlighted(false)
         session.place(value)
         scene.fill(gapWith: value)
     }

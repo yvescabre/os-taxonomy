@@ -55,7 +55,10 @@ final class BridgeScene: SKScene {
         guard !gapNodes.isEmpty else { return }
         let node = gapNodes[min(nextGapIndex, gapNodes.count - 1)]
         nextGapIndex = min(nextGapIndex + 1, gapNodes.count)
+        node.removeAllActions()
         node.removeAllChildren()
+        node.alpha = 1
+        node.glowWidth = 0
         node.fillColor = isSequence ? SKColor(red: 0.851, green: 0.812, blue: 0.753, alpha: 1) :
             SKColor(red: 0.75, green: 0.44, blue: 0.22, alpha: 1)
         node.strokeColor = isSequence
