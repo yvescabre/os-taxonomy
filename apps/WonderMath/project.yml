@@ -1,0 +1,87 @@
+name: WonderMath
+
+options:
+  bundleIdPrefix: com.wondermath
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+packages:
+  WonderMathCore:
+    path: WonderMathCore
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "2"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGNING_REQUIRED: NO
+    SUPPORTS_MACCATALYST: NO
+
+targets:
+  WonderMath:
+    type: application
+    platform: iOS
+    sources:
+      - path: WonderMath
+        excludes:
+          - Resources/Taxonomy
+      - path: WonderMath/Resources/Taxonomy
+        type: folder
+    dependencies:
+      - package: WonderMathCore
+        product: WonderMathCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wondermath.app
+        TARGETED_DEVICE_FAMILY: "2"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: WonderMath
+        INFOPLIST_KEY_UIRequiresFullScreen: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+
+  WonderMathTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: WonderMathTests
+    dependencies:
+      - target: WonderMath
+      - package: WonderMathCore
+        product: WonderMathCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wondermath.app.tests
+        TARGETED_DEVICE_FAMILY: "2"
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.0"
+
+  WonderMathUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: WonderMathUITests
+    dependencies:
+      - target: WonderMath
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wondermath.app.uitests
+        TARGETED_DEVICE_FAMILY: "2"
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.0"
+
+schemes:
+  WonderMath:
+    build:
+      targets:
+        WonderMath: all
+        WonderMathTests: [test]
+        WonderMathUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - WonderMathTests
+        - WonderMathUITests
+        - package: WonderMathCore/WonderMathCoreTests
