@@ -30,6 +30,7 @@ public enum L10n {
         case companionColorLabel
         case companionAccessoryLabel
         case xpFormat
+        case roundFormatOne
         case roundsFormat
 
         // Worlds

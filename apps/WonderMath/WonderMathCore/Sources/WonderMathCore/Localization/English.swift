@@ -24,6 +24,7 @@ enum EnglishStrings {
         .companionColorLabel: "Buddy colour {0}",
         .companionAccessoryLabel: "Buddy accessory {0}",
         .xpFormat: "{0} XP",
+        .roundFormatOne: "{0} round",
         .roundsFormat: "{0} rounds",
 
         .world1Title: "Number Kingdom",

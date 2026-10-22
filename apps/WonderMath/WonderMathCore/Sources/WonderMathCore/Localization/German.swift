@@ -28,6 +28,7 @@ enum GermanStrings {
         .companionColorLabel: "Farbe des Begleiters {0}",
         .companionAccessoryLabel: "Accessoire des Begleiters {0}",
         .xpFormat: "{0} XP",
+        .roundFormatOne: "{0} Runde",
         .roundsFormat: "{0} Runden",
 
         .world1Title: "Zahlenkönigreich",

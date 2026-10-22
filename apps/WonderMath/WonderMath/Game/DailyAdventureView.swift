@@ -152,7 +152,7 @@ struct DailyAdventureView: View {
                 Text(title)
                     .font(Theme.roundedFont(20, weight: .heavy))
                     .foregroundStyle(Theme.ink)
-                Text(localizer.string(.roundsFormat, [.number(rounds)]))
+                Text(localizer.rounds(rounds))
                     .font(Theme.roundedFont(15, weight: .semibold))
                     .foregroundStyle(Theme.inkSoft)
             }
