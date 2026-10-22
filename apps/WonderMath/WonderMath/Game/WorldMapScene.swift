@@ -33,10 +33,17 @@ final class WorldMapScene: SKScene {
         sky.zPosition = -10
         addChild(sky)
 
+        let outerHalo = SKShapeNode(circleOfRadius: size.height * 0.13)
+        outerHalo.position = CGPoint(x: size.width * 0.25, y: size.height * 0.27)
+        outerHalo.fillColor = SKColor(red: 1, green: 0.84, blue: 0.3, alpha: 0.2)
+        outerHalo.strokeColor = .clear
+        outerHalo.blendMode = .add
+        addChild(outerHalo)
         let halo = SKShapeNode(circleOfRadius: size.height * 0.095)
         halo.position = CGPoint(x: size.width * 0.25, y: size.height * 0.27)
-        halo.fillColor = SKColor(red: 1, green: 0.79, blue: 0.35, alpha: 0.25)
+        halo.fillColor = SKColor(red: 1, green: 0.84, blue: 0.3, alpha: 0.45)
         halo.strokeColor = .clear
+        halo.blendMode = .add
         addChild(halo)
         let sun = SKShapeNode(circleOfRadius: size.height * 0.052)
         sun.position = halo.position

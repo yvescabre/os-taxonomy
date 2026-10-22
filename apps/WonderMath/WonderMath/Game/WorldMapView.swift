@@ -323,15 +323,10 @@ private struct IslandArt: View {
     var body: some View {
         VStack(spacing: -2) {
             ZStack(alignment: .center) {
-                Ellipse().fill(Theme.wood.opacity(0.8))
-                    .frame(width: 218, height: 62).offset(y: 29)
-                Ellipse().fill(LinearGradient(colors: [Color(red: 0.56, green: 0.85, blue: 0.47),
-                                                       Color(red: 0.31, green: 0.66, blue: 0.36)],
-                                              startPoint: .top, endPoint: .bottom))
-                    .frame(width: 204, height: 58).offset(y: 15)
+                IslandBase()
                 IslandIllustration(world: world.id)
-                    .frame(width: 164, height: 134)
-                    .offset(y: -16)
+                    .frame(width: world.id == .numberKingdom ? 216 : 164, height: 134)
+                    .offset(y: world.id == .numberKingdom ? -18 : -16)
                 if !open {
                     Image(systemName: "lock.fill")
                         .font(.system(size: 18, weight: .heavy))
@@ -349,12 +344,12 @@ private struct IslandArt: View {
                 .foregroundStyle(open ? Theme.ink : Theme.inkSoft)
                 .lineLimit(2)
                 .frame(width: 220, height: 48)
-                .background(.white.opacity(open ? 0.94 : 0.72), in: Capsule())
+                .background(.white.opacity(open ? 0.94 : 0.85), in: Capsule())
                 .shadow(color: Theme.ink.opacity(0.14), radius: 7, x: 0, y: 4)
         }
         .frame(width: 232, height: 195)
-        .saturation(open ? 1 : 0.25)
-        .opacity(open ? 1 : 0.78)
+        .saturation(open ? 1 : 0.55)
+        .opacity(open ? 1 : 0.92)
         .offset(y: reduceMotion ? 0 : (floating ? -6 : 0))
         .onAppear {
             guard !reduceMotion else { return }
@@ -385,21 +380,28 @@ private struct IslandIllustration: View {
     }
 }
 
-private struct CastleIsland: View {
+private struct IslandBase: View {
     var body: some View {
-        HStack(alignment: .bottom, spacing: 3) {
-            CastleTower(width: 38, height: 68, roof: Theme.coral, number: "1")
-            Rectangle().fill(Color(red: 1, green: 0.93, blue: 0.77))
-                .frame(width: 72, height: 80)
-                .overlay(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Theme.woodDark.opacity(0.55))
-                        .frame(width: 24, height: 37)
-                }
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.woodDark, lineWidth: 3))
-            CastleTower(width: 40, height: 92, roof: Theme.violet, number: "2")
+        ZStack {
+            Ellipse().fill(Theme.waterDeep.opacity(0.28))
+                .frame(width: 218, height: 52).offset(x: 3, y: 39)
+            Ellipse().fill(Theme.sand)
+                .frame(width: 218, height: 62).offset(y: 29)
+            Ellipse().fill(Theme.leafGradient)
+                .frame(width: 204, height: 58).offset(y: 15)
         }
-        .shadow(color: Theme.ink.opacity(0.18), radius: 5, x: 0, y: 5)
+    }
+}
+
+struct CastleIsland: View {
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            CastleTower(width: 48, height: 101, roof: Theme.coral)
+            CastleKeep()
+            CastleTower(width: 54, height: 130, roof: Theme.violet)
+        }
+        .frame(height: 136)
+        .shadow(color: Theme.ink.opacity(0.20), radius: 5, x: 0, y: 5)
     }
 }
 
@@ -407,21 +409,107 @@ private struct CastleTower: View {
     let width: CGFloat
     let height: CGFloat
     let roof: Color
-    let number: String
 
     var body: some View {
+        let roofHeight = height * 0.25
         VStack(spacing: -1) {
-            MapTriangle().fill(roof).frame(width: width + 12, height: 25)
-            Rectangle().fill(Color(red: 1, green: 0.92, blue: 0.75))
-                .frame(width: width, height: height - 25)
-                .overlay(alignment: .top) {
-                    Text(number).font(Theme.roundedFont(16, weight: .heavy))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(Theme.coral, in: Capsule())
-                        .offset(y: -9)
+            ZStack(alignment: .top) {
+                MapTriangle().fill(roof).frame(width: width + 20, height: roofHeight)
+                HStack(spacing: 0) {
+                    Rectangle().fill(Theme.ink).frame(width: 2, height: 18)
+                    HStack(spacing: -1) {
+                        Rectangle().fill(roof).frame(width: 8, height: 8)
+                        MapTriangle().fill(roof).frame(width: 9, height: 9)
+                            .rotationEffect(.degrees(90))
+                    }
+                    .offset(x: -1, y: -5)
                 }
-                .overlay(RoundedRectangle(cornerRadius: 7).stroke(Theme.woodDark, lineWidth: 3))
+                .offset(y: -12)
+            }
+            .frame(width: width + 20, height: roofHeight)
+            crenellations(width: width)
+            RoundedRectangle(cornerRadius: 4)
+                .fill(CastlePalette.stone)
+                .frame(width: width, height: height - roofHeight - 10)
+                .overlay(RoundedRectangle(cornerRadius: 4)
+                    .stroke(CastlePalette.outline, lineWidth: 3))
+                .overlay(CastleStoneLines().padding(.horizontal, 5).padding(.vertical, 8))
+        }
+    }
+
+    private func crenellations(width: CGFloat) -> some View {
+        HStack(spacing: 4) {
+            ForEach(0..<3) { _ in
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(CastlePalette.stone)
+                    .frame(width: (width - 8) / 3, height: 11)
+                    .overlay(RoundedRectangle(cornerRadius: 2)
+                        .stroke(CastlePalette.outline, lineWidth: 2))
+            }
+        }
+        .frame(width: width)
+    }
+}
+
+private struct CastleKeep: View {
+    var body: some View {
+        VStack(spacing: -1) {
+            HStack(spacing: 4) {
+                ForEach(0..<4) { _ in
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(CastlePalette.stone)
+                        .frame(width: 15, height: 12)
+                        .overlay(RoundedRectangle(cornerRadius: 2)
+                            .stroke(CastlePalette.outline, lineWidth: 2))
+                }
+            }
+            ZStack {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(CastlePalette.stone)
+                    .overlay(RoundedRectangle(cornerRadius: 4)
+                        .stroke(CastlePalette.outline, lineWidth: 3))
+                CastleStoneLines().padding(.horizontal, 6).padding(.vertical, 8)
+                HStack(spacing: 13) {
+                    RoundedRectangle(cornerRadius: 3).fill(Theme.ink.opacity(0.8))
+                        .frame(width: 8, height: 13)
+                    RoundedRectangle(cornerRadius: 3).fill(Theme.ink.opacity(0.8))
+                        .frame(width: 8, height: 13)
+                }
+                .offset(y: -23)
+                CastleArch().fill(Theme.ink.opacity(0.8))
+                    .frame(width: 27, height: 40).offset(y: 20)
+            }
+            .frame(width: 78, height: 82)
+        }
+    }
+}
+
+private struct CastleStoneLines: View {
+    var body: some View {
+        VStack(spacing: 15) {
+            Rectangle().fill(CastlePalette.outline.opacity(0.5)).frame(height: 2)
+            Rectangle().fill(CastlePalette.outline.opacity(0.5)).frame(height: 2)
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+private enum CastlePalette {
+    static let stone = Color(red: 185 / 255, green: 194 / 255, blue: 207 / 255)
+    static let outline = Color(red: 141 / 255, green: 151 / 255, blue: 166 / 255)
+}
+
+private struct CastleArch: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            path.move(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + rect.height * 0.42))
+            path.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.minY),
+                              control: CGPoint(x: rect.midX, y: rect.minY))
+            path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + rect.height * 0.42),
+                              control: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+            path.closeSubpath()
         }
     }
 }
