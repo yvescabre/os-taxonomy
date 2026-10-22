@@ -4,16 +4,14 @@ import SwiftData
 import WonderMathCore
 
 private enum MapSheet: Identifiable {
-    case path
-    case comingSoon(WorldID)
+    case comingSoon(WorldDefinition)
     case adventure
     case parent
     case buddy
 
     var id: String {
         switch self {
-        case .path: return "path"
-        case .comingSoon(let world): return world.rawValue
+        case .comingSoon(let world): return world.id.rawValue
         case .adventure: return "adventure"
         case .parent: return "parent"
         case .buddy: return "buddy"
@@ -26,6 +24,7 @@ struct WorldMapView: View {
     @Environment(\.modelContext) private var modelContext
     let profile: ChildProfile
     @State private var activeSheet: MapSheet?
+    @State private var showingTopicPath = false
 
     @State private var scene = WorldMapScene(size: CGSize(width: 1200, height: 700))
     private let companionOptions: [(String, L10n.Key)] = [
@@ -51,10 +50,11 @@ struct WorldMapView: View {
             }
             .padding(.vertical, 14)
         }
+        .fullScreenCover(isPresented: $showingTopicPath) {
+            TopicPathView(profile: profile)
+        }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
-            case .path:
-                TopicPathView(profile: profile)
             case .comingSoon(let world):
                 comingSoonSheet(world)
                     .presentationDetents([.medium])
@@ -111,7 +111,11 @@ struct WorldMapView: View {
     private func worldButton(_ world: WorldDefinition) -> some View {
         let playable = world.isPlayable && world.id == .numberKingdom
         return Button {
-            activeSheet = playable ? .path : .comingSoon(world.id)
+            if playable {
+                showingTopicPath = true
+            } else {
+                activeSheet = .comingSoon(world)
+            }
         } label: {
             VStack(spacing: 8) {
                 ZStack {
@@ -210,7 +214,7 @@ struct WorldMapView: View {
                         saveProfile()
                     } label: {
                         Circle().fill(companionColor(color)).frame(width: 38, height: 38)
-                            .overlay(Circle().stroke(profile.companionColor == color ? .primary : .clear,
+                            .overlay(Circle().stroke(profile.companionColor == color ? Color.primary : Color.clear,
                                                      lineWidth: 3))
                             .frame(width: 58, height: 58)
                     }

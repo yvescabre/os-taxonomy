@@ -2,6 +2,7 @@ import XCTest
 
 final class ScreenshotTests: XCTestCase {
     func testOnboardingScreenshot() {
+        XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
         app.launchArguments = ["-UITestInMemory"]
         app.launch()
@@ -11,6 +12,7 @@ final class ScreenshotTests: XCTestCase {
     }
 
     func testMainLearningAndParentScreenshots() throws {
+        XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
         app.launchArguments = ["-UITestInMemory", "-UITestProfile", "Mia"]
         app.launch()

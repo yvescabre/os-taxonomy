@@ -261,6 +261,7 @@ private struct PuzzlePlayScreen: View {
         }
         .padding(14)
         .background(Color.green.opacity(0.15), in: RoundedRectangle(cornerRadius: 20))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("reward-panel")
     }
 

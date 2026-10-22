@@ -68,7 +68,8 @@ struct OnboardingView: View {
                     ForEach(Array(colors.enumerated()), id: \.offset) { index, color in
                         Button { colorName = color } label: {
                             Circle().fill(colorColor(color)).frame(width: 46, height: 46)
-                                .overlay(Circle().stroke(color == colorName ? .primary : .clear, lineWidth: 3))
+                                .overlay(Circle().stroke(color == colorName ? Color.primary : Color.clear,
+                                                         lineWidth: 3))
                                 .frame(width: 64, height: 64)
                         }
                         .accessibilityLabel(localizer.string(.companionColorLabel, [.number(index + 1)]))

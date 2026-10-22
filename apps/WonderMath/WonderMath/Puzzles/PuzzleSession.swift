@@ -36,8 +36,9 @@ final class PuzzleSession: ObservableObject {
         guard let generator = appState.registry.generator(for: topicId) else {
             preconditionFailure("No generator for topic \(topicId)")
         }
-        sequence = progressService.progress(for: topicId)?.attempts ?? 0
-        puzzle = generator.makePuzzle(sequence: sequence, difficulty: difficulty, store: appState.store)
+        let initialSequence = progressService.progress(for: topicId)?.attempts ?? 0
+        sequence = initialSequence
+        puzzle = generator.makePuzzle(sequence: initialSequence, difficulty: difficulty, store: appState.store)
     }
 
     var choices: [Int] { puzzle.choices }
@@ -68,10 +69,10 @@ final class PuzzleSession: ObservableObject {
         return nil
     }
     var correctValueForUITesting: Int? {
-        guard ProcessInfo.processInfo.arguments.contains("-UITestInMemory") else { return nil }
-        switch puzzle.config {
-        case .equation(let value): return value.equation.solve()
-        case .sequence(let value): return value.terms[value.gapIndex].map { $0 }
+        guard ProcessInfo.processInfo.arguments.contains("-UITestInMemory"),
+              let generator = appState.registry.generator(for: topicId) else { return nil }
+        return puzzle.choices.first {
+            generator.validate(puzzle, answer: Answer([$0])) == .correct
         }
     }
 

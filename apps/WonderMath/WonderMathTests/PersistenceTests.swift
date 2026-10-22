@@ -81,9 +81,13 @@ final class PersistenceTests: XCTestCase {
         XCTAssertEqual(persistedProfile.xp, outcomes.reduce(0) {
             $0 + Rewards.xp(correct: $1.correct, difficulty: $1.difficulty, hintFree: $1.hintFree)
         } + Rewards.chestBonus(puzzlesSolved: 5))
-        XCTAssertTrue(refetchedContext.fetch(FetchDescriptor<Achievement>())
-            .contains { $0.profile?.id == profile.id && $0.achievementId == "first_bridge" })
-        XCTAssertEqual(refetchedContext.fetch(FetchDescriptor<DailyAdventureLog>())
-            .filter { $0.profile?.id == profile.id && $0.dateKey == firstPlan.1.dateKey }.count, 1)
+        let achievements = try refetchedContext.fetch(FetchDescriptor<Achievement>())
+        let adventureLogs = try refetchedContext.fetch(FetchDescriptor<DailyAdventureLog>())
+        XCTAssertTrue(achievements.contains {
+            $0.profile?.id == profile.id && $0.achievementId == "first_bridge"
+        })
+        XCTAssertEqual(adventureLogs.filter {
+            $0.profile?.id == profile.id && $0.dateKey == firstPlan.1.dateKey
+        }.count, 1)
     }
 }
