@@ -214,22 +214,17 @@ struct TopicPathView: View {
     }
 
     private func starCount(topicId: String, progress: SkillProgress?) -> Int {
-        guard let progress,
-              let criteria = appState.registry.generator(for: topicId)?.mastery else { return 0 }
-        let assessable = criteria.evidenceForms.enumerated().filter { $0.element != nil }
-        guard !assessable.isEmpty else { return 0 }
-        let earned = assessable.filter {
-            (progress.evidenceCredits[$0.offset] ?? 0) >= criteria.creditsPerEvidence
-        }.count
-        return min(3, earned)
+        min(3, starProgress(topicId: topicId, progress: progress)?.earned ?? 0)
     }
 
     private func evidenceEarned(topicId: String, index: Int, progress: SkillProgress?) -> Bool {
-        guard let progress,
-              let criteria = appState.registry.generator(for: topicId)?.mastery,
-              criteria.evidenceForms.indices.contains(index),
-              criteria.evidenceForms[index] != nil else { return false }
-        return (progress.evidenceCredits[index] ?? 0) >= criteria.creditsPerEvidence
+        starProgress(topicId: topicId, progress: progress)?.isEarned(at: index) ?? false
+    }
+
+    private func starProgress(topicId: String, progress: SkillProgress?) -> StarProgress? {
+        guard let criteria = appState.registry.generator(for: topicId)?.mastery else { return nil }
+        let stars = StarProgress(criteria: criteria, progress: progress ?? SkillProgress())
+        return stars.total > 0 ? stars : nil
     }
 
     private func trailPoints(count: Int, height: CGFloat) -> [CGPoint] {

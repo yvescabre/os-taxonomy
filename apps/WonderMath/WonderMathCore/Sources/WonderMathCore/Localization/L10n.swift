@@ -46,6 +46,8 @@ public enum L10n {
         case mapCompanionGreeting
         case scaffoldEncouragement
         case bridgeProgressFormat
+        case progressStars
+        case progressStarsValueFormat
 
         // Profile / onboarding
         case chooseName

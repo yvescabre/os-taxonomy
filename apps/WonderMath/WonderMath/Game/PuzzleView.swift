@@ -53,6 +53,7 @@ private struct PuzzlePlayScreen: View {
     @State private var speech = Speech()
     let profile: ChildProfile
     let appState: AppState
+    let progressService: ProgressService
     let recordsPracticeTime: Bool
     let onNext: (RecordResult) -> Void
     let onRoundFinished: (() -> Void)?
@@ -67,6 +68,7 @@ private struct PuzzlePlayScreen: View {
                                                            recordsPracticeTime: recordsPracticeTime))
         self.profile = profile
         self.appState = appState
+        self.progressService = progressService
         self.recordsPracticeTime = recordsPracticeTime
         self.onNext = onNext
         self.onRoundFinished = onRoundFinished
@@ -118,6 +120,10 @@ private struct PuzzlePlayScreen: View {
                     .accessibilityLabel(localizer.string(.closeButton))
                     .accessibilityIdentifier("back-from-puzzle")
                     Text(topicTitle).chip()
+                    if let stars = currentStarProgress {
+                        StarProgressMeter(progress: stars, localizer: localizer,
+                                          reduceMotion: reduceMotion)
+                    }
                     Spacer()
                 }
                 .padding(.horizontal, 20)
@@ -298,6 +304,13 @@ private struct PuzzlePlayScreen: View {
         } ?? localizer.string(.appName)
     }
 
+    private var currentStarProgress: StarProgress? {
+        guard let criteria = appState.registry.generator(for: session.topicId)?.mastery else { return nil }
+        let progress = progressService.progress(for: session.topicId) ?? SkillProgress()
+        let stars = StarProgress(criteria: criteria, progress: progress)
+        return stars.total > 0 ? stars : nil
+    }
+
     private var instructionMessage: LocalizedMessage {
         switch session.puzzle.config {
         case .equation:
@@ -339,6 +352,97 @@ private struct PuzzlePlayScreen: View {
         onRoundFinished?()
         onNext(result)
         if result.scaffold == nil { session.nextPuzzle() }
+    }
+}
+
+private struct StarProgressMeter: View {
+    let progress: StarProgress
+    let localizer: Localizer
+    let reduceMotion: Bool
+    @State private var poppingIndex: Int?
+    @State private var popScale: CGFloat = 1
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Text(localizer.string(.progressStars))
+                .font(Theme.roundedFont(15, weight: .heavy))
+                .foregroundStyle(Theme.ink)
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(red: 0.9373, green: 0.9020, blue: 0.8314))
+                        .overlay(alignment: .top) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(.white.opacity(0.7), lineWidth: 2)
+                                .padding(2)
+                        }
+                        .overlay(alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Theme.ink.opacity(0.14), lineWidth: 2)
+                                .padding(2)
+                        }
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Theme.sunGradient)
+                        .frame(width: geometry.size.width * progress.fillFraction)
+                        .overlay(alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Theme.sunDark)
+                                .frame(height: 4)
+                                .padding(.horizontal, 3)
+                                .offset(y: 2)
+                        }
+                        .animation(
+                            reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.78),
+                            value: progress.fillFraction
+                        )
+                    HStack(spacing: 0) {
+                        ForEach(0..<progress.total, id: \.self) { index in
+                            checkpoint(at: index)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .frame(height: 38)
+            }
+            .frame(width: 228, height: 38)
+        }
+        .padding(.horizontal, 14)
+        .frame(height: 64)
+        .background(Theme.paper, in: RoundedRectangle(cornerRadius: 22))
+        .overlay(RoundedRectangle(cornerRadius: 22).stroke(.white, lineWidth: 2))
+        .shadow(color: Theme.ink.opacity(0.12), radius: 3, x: 0, y: 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(localizer.string(.progressStars))
+        .accessibilityValue(localizer.string(.progressStarsValueFormat, [
+            .number(progress.earned), .number(progress.total)
+        ]))
+        .accessibilityIdentifier("progress-stars")
+        .onChange(of: progress.earned) { oldValue, newValue in
+            guard !reduceMotion, newValue > oldValue else { return }
+            poppingIndex = newValue - 1
+            withAnimation(.spring(response: 0.2, dampingFraction: 0.48)) {
+                popScale = 1.25
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                withAnimation(.spring(response: 0.24, dampingFraction: 0.68)) {
+                    popScale = 1
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.42) {
+                poppingIndex = nil
+            }
+        }
+    }
+
+    private func checkpoint(at index: Int) -> some View {
+        let earned = progress.isEarned(at: index)
+        return Image(systemName: earned ? "star.fill" : "star")
+            .font(Theme.roundedFont(17, weight: .heavy))
+            .foregroundStyle(earned ? Theme.ink : Theme.ink.opacity(0.28))
+            .frame(width: 38, height: 38)
+            .background(earned ? Theme.sun : .white, in: Circle())
+            .overlay(Circle().stroke(earned ? Theme.sunDark : Theme.sand, lineWidth: 2))
+            .scaleEffect(poppingIndex == index ? popScale : 1)
     }
 }
 
