@@ -2,7 +2,18 @@ import SpriteKit
 
 final class WorldMapScene: SKScene {
     override func didMove(to view: SKView) {
+        anchorPoint = CGPoint(x: 0.5, y: 0.5)
         backgroundColor = SKColor(red: 0.47, green: 0.78, blue: 0.91, alpha: 1)
+        layoutScenery()
+    }
+
+    override func didChangeSize(_ oldSize: CGSize) {
+        guard view != nil else { return }
+        layoutScenery()
+    }
+
+    private func layoutScenery() {
+        removeAllChildren()
         for index in 0..<6 {
             let cloud = SKShapeNode(ellipseOf: CGSize(width: 120, height: 38))
             cloud.fillColor = .white.withAlphaComponent(0.62)
@@ -24,7 +35,7 @@ final class WorldMapScene: SKScene {
                                 SKColor(red: 0.63, green: 0.57, blue: 0.8, alpha: 1)][index]
             island.strokeColor = .white
             island.lineWidth = 4
-            island.position = CGPoint(x: CGFloat(index - 2) * size.width * 0.22, y: -size.height * 0.2)
+            island.position = CGPoint(x: CGFloat(index - 2) * size.width * 0.19, y: -size.height * 0.2)
             addChild(island)
             island.run(.repeatForever(.sequence([
                 .moveBy(x: 0, y: 5, duration: 1.8),

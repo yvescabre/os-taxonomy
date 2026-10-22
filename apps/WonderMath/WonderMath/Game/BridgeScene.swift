@@ -10,6 +10,18 @@ final class BridgeScene: SKScene {
     private var companionNode: SKShapeNode?
     private var isSequence = false
 
+    override init(size: CGSize) {
+        super.init(size: size)
+        anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        scaleMode = .aspectFill
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        scaleMode = .aspectFill
+    }
+
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.62, green: 0.85, blue: 0.96, alpha: 1)
     }

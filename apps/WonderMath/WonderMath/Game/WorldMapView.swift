@@ -5,14 +5,12 @@ import WonderMathCore
 
 private enum MapSheet: Identifiable {
     case comingSoon(WorldDefinition)
-    case adventure
     case parent
     case buddy
 
     var id: String {
         switch self {
         case .comingSoon(let world): return world.id.rawValue
-        case .adventure: return "adventure"
         case .parent: return "parent"
         case .buddy: return "buddy"
         }
@@ -25,6 +23,7 @@ struct WorldMapView: View {
     let profile: ChildProfile
     @State private var activeSheet: MapSheet?
     @State private var showingTopicPath = false
+    @State private var showingAdventure = false
 
     @State private var scene = WorldMapScene(size: CGSize(width: 1200, height: 700))
     private let companionOptions: [(String, L10n.Key)] = [
@@ -53,13 +52,14 @@ struct WorldMapView: View {
         .fullScreenCover(isPresented: $showingTopicPath) {
             TopicPathView(profile: profile)
         }
+        .fullScreenCover(isPresented: $showingAdventure) {
+            DailyAdventureView(profile: profile)
+        }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .comingSoon(let world):
                 comingSoonSheet(world)
                     .presentationDetents([.medium])
-            case .adventure:
-                DailyAdventureView(profile: profile)
             case .parent:
                 ParentGateView(profile: profile)
             case .buddy:
@@ -89,7 +89,7 @@ struct WorldMapView: View {
             .buttonStyle(.bordered)
             .frame(minHeight: 64)
             .accessibilityIdentifier("customize-buddy")
-            Button { activeSheet = .adventure } label: {
+            Button { showingAdventure = true } label: {
                 Label(localizer.string(.dailyAdventureTitle), systemImage: "sparkles")
             }
             .buttonStyle(.borderedProminent)

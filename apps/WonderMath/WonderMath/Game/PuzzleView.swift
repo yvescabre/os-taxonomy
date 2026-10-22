@@ -46,7 +46,7 @@ private struct PuzzlePlayScreen: View {
     @Environment(\.localizer) private var localizer
     @Environment(\.dismiss) private var dismiss
     @StateObject private var session: PuzzleSession
-    @State private var scene = BridgeScene(size: CGSize(width: 1100, height: 480))
+    @State private var scene = BridgeScene(size: CGSize(width: 1100, height: 310))
     @State private var showingWhy = false
     @State private var speech = Speech()
     let profile: ChildProfile
