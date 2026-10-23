@@ -130,11 +130,11 @@
       "text": "So close — count the jumps, not the marks. You're one off."
     },
     {
-      "durationSeconds": 2.62,
+      "durationSeconds": 3.06,
       "file": "de/feedbackPlaceValueSlip.m4a",
       "key": "feedbackPlaceValueSlip",
       "language": "de",
-      "seed": 1250,
+      "seed": 4016,
       "text": "Das sind Zehner, nicht Einer! Ein Zehner ist zehnmal so viel."
     },
     {
@@ -154,11 +154,11 @@
       "text": "Das füllt die linke Seite, aber beide Seiten müssen gleich sein. Prüfe auch die rechte Seite!"
     },
     {
-      "durationSeconds": 3.18,
+      "durationSeconds": 3.91,
       "file": "en/feedbackRunningTotal.m4a",
       "key": "feedbackRunningTotal",
       "language": "en",
-      "seed": 1253,
+      "seed": 3019,
       "text": "That fills the left side, but both sides must match. Check the right side too!"
     },
     {
@@ -274,12 +274,12 @@
       "text": "Find two numbers that work — there's more than one way!"
     },
     {
-      "durationSeconds": 2.53,
+      "durationSeconds": 2.97,
       "file": "de/nudgeCommutative.m4a",
       "key": "nudgeCommutative",
       "language": "de",
-      "seed": 1268,
-      "text": "Beim Malnehmen ist die Reihenfolge egal. Was fehlt?"
+      "seed": 2034,
+      "text": "Beim Multiplizieren ist die Reihenfolge egal. Was fehlt?"
     },
     {
       "durationSeconds": 2.15,
@@ -318,7 +318,7 @@
       "file": "en/nudgeSequence.m4a",
       "key": "nudgeSequence",
       "language": "en",
-      "seed": 1273,
+      "seed": 2039,
       "text": "The stones follow a pattern — find how big each hop is."
     },
     {
