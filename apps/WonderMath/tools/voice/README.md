@@ -12,4 +12,6 @@ swift run --package-path apps/WonderMath/WonderMathCore WonderMathVoiceLines > /
 python apps/WonderMath/tools/voice/render_clips.py --lines /tmp/lines.json
 ```
 
-Use `--only key1,key2` to regenerate selected lines. A permitted custom speaker recording can be supplied with `--voice my_clip.wav`; the renderer records its filename in the voice manifest.
+Use `--only key1,key2` to regenerate selected lines. `--seed 2000` changes the base seed; each line uses that value plus its position in the sorted `(key, language)` list (default base seed: `1234`). A partial render keeps existing manifest records and their seeds for non-selected clips.
+
+A permitted custom speaker recording can be supplied with `--voice my_clip.wav`; the renderer records its filename in the voice manifest.

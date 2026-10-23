@@ -42,6 +42,12 @@ def parse_args() -> argparse.Namespace:
         "--only",
         help="comma-separated line keys to render; preserves other existing clips",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=1234,
+        help="base seed; each sorted input line uses this seed plus its index",
+    )
     parser.add_argument("--voice", type=Path, help="optional permitted speaker WAV")
     parser.add_argument(
         "--device",
@@ -240,7 +246,7 @@ def render(args: argparse.Namespace) -> None:
             continue
 
         clip_started = time.monotonic()
-        seed = 1234 + index
+        seed = args.seed + index
         torch.manual_seed(seed)
         if device == "cuda":
             torch.cuda.manual_seed_all(seed)
@@ -274,6 +280,7 @@ def render(args: argparse.Namespace) -> None:
             "text": line["text"],
             "file": relative_path.as_posix(),
             "durationSeconds": duration,
+            "seed": seed,
         }
         logging.info(
             "Rendered %s/%s in %.1fs (clip %.2fs)",

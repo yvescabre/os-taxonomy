@@ -6,6 +6,7 @@
       "file": "de/bridgeInstructions.m4a",
       "key": "bridgeInstructions",
       "language": "de",
+      "seed": 1234,
       "text": "Eine Planke fehlt! Ziehe die richtige Zahl auf die Brücke."
     },
     {
@@ -13,6 +14,7 @@
       "file": "en/bridgeInstructions.m4a",
       "key": "bridgeInstructions",
       "language": "en",
+      "seed": 1235,
       "text": "A plank is missing! Drag the right number to fix the bridge."
     },
     {
@@ -20,6 +22,7 @@
       "file": "de/clueBuild.m4a",
       "key": "clueBuild",
       "language": "de",
+      "seed": 1236,
       "text": "Wähle irgendeine erste Zahl – dann rechne aus, welche zweite fehlt."
     },
     {
@@ -27,6 +30,7 @@
       "file": "en/clueBuild.m4a",
       "key": "clueBuild",
       "language": "en",
+      "seed": 1237,
       "text": "Pick any first number — then work out what the second must be."
     },
     {
@@ -34,6 +38,7 @@
       "file": "de/clueCommutative.m4a",
       "key": "clueCommutative",
       "language": "de",
+      "seed": 1238,
       "text": "Vertausche die Zahlen – das Ergebnis bleibt gleich."
     },
     {
@@ -41,6 +46,7 @@
       "file": "en/clueCommutative.m4a",
       "key": "clueCommutative",
       "language": "en",
+      "seed": 1239,
       "text": "Swap the numbers you multiply — the answer stays the same."
     },
     {
@@ -48,6 +54,7 @@
       "file": "de/clueSequence.m4a",
       "key": "clueSequence",
       "language": "de",
+      "seed": 1240,
       "text": "Schau dir den Sprung zwischen zwei benachbarten Steinen an."
     },
     {
@@ -55,6 +62,7 @@
       "file": "en/clueSequence.m4a",
       "key": "clueSequence",
       "language": "en",
+      "seed": 1241,
       "text": "Look at the hop between two stones next to each other."
     },
     {
@@ -62,6 +70,7 @@
       "file": "de/feedbackAlmost.m4a",
       "key": "feedbackAlmost",
       "language": "de",
+      "seed": 1242,
       "text": "Fast – schau dir den Tipp an und versuche es nochmals."
     },
     {
@@ -69,6 +78,7 @@
       "file": "en/feedbackAlmost.m4a",
       "key": "feedbackAlmost",
       "language": "en",
+      "seed": 1243,
       "text": "Almost — look at the hint and try again."
     },
     {
@@ -76,6 +86,7 @@
       "file": "de/feedbackCorrect.m4a",
       "key": "feedbackCorrect",
       "language": "de",
+      "seed": 1244,
       "text": "Das stimmt!"
     },
     {
@@ -83,6 +94,7 @@
       "file": "en/feedbackCorrect.m4a",
       "key": "feedbackCorrect",
       "language": "en",
+      "seed": 1245,
       "text": "That's good!"
     },
     {
@@ -90,6 +102,7 @@
       "file": "de/feedbackGenericWrong.m4a",
       "key": "feedbackGenericWrong",
       "language": "de",
+      "seed": 1246,
       "text": "Diese Zahl hält die Brücke noch nicht im Gleichgewicht – versuche eine andere Planke."
     },
     {
@@ -97,6 +110,7 @@
       "file": "en/feedbackGenericWrong.m4a",
       "key": "feedbackGenericWrong",
       "language": "en",
+      "seed": 1247,
       "text": "That number doesn't make the bridge balance yet — try another plank."
     },
     {
@@ -104,6 +118,7 @@
       "file": "de/feedbackOffByOne.m4a",
       "key": "feedbackOffByOne",
       "language": "de",
+      "seed": 1248,
       "text": "Ganz knapp – zähle die Sprünge, nicht die Striche. Du bist um eins daneben."
     },
     {
@@ -111,6 +126,7 @@
       "file": "en/feedbackOffByOne.m4a",
       "key": "feedbackOffByOne",
       "language": "en",
+      "seed": 1249,
       "text": "So close — count the jumps, not the marks. You're one off."
     },
     {
@@ -118,6 +134,7 @@
       "file": "de/feedbackPlaceValueSlip.m4a",
       "key": "feedbackPlaceValueSlip",
       "language": "de",
+      "seed": 1250,
       "text": "Das sind Zehner, nicht Einer! Ein Zehner ist zehnmal so viel."
     },
     {
@@ -125,6 +142,7 @@
       "file": "en/feedbackPlaceValueSlip.m4a",
       "key": "feedbackPlaceValueSlip",
       "language": "en",
+      "seed": 1251,
       "text": "Those are tens, not ones! A ten is worth ten times more."
     },
     {
@@ -132,6 +150,7 @@
       "file": "de/feedbackRunningTotal.m4a",
       "key": "feedbackRunningTotal",
       "language": "de",
+      "seed": 1252,
       "text": "Das füllt die linke Seite, aber beide Seiten müssen gleich sein. Prüfe auch die rechte Seite!"
     },
     {
@@ -139,6 +158,7 @@
       "file": "en/feedbackRunningTotal.m4a",
       "key": "feedbackRunningTotal",
       "language": "en",
+      "seed": 1253,
       "text": "That fills the left side, but both sides must match. Check the right side too!"
     },
     {
@@ -146,6 +166,7 @@
       "file": "de/feedbackUsedVisibleNumbers.m4a",
       "key": "feedbackUsedVisibleNumbers",
       "language": "de",
+      "seed": 1254,
       "text": "Vorsicht – rechne nicht einfach mit den Zahlen, die du siehst. Die Lücke versteckt eine andere Zahl."
     },
     {
@@ -153,6 +174,7 @@
       "file": "en/feedbackUsedVisibleNumbers.m4a",
       "key": "feedbackUsedVisibleNumbers",
       "language": "en",
+      "seed": 1255,
       "text": "Careful — don't just join the numbers you can see. The gap hides a different number."
     },
     {
@@ -160,6 +182,7 @@
       "file": "de/feedbackWrongDirection.m4a",
       "key": "feedbackWrongDirection",
       "language": "de",
+      "seed": 1256,
       "text": "Diese Steine gehen in die andere Richtung – schau, ob die Zahlen grösser oder kleiner werden."
     },
     {
@@ -167,6 +190,7 @@
       "file": "en/feedbackWrongDirection.m4a",
       "key": "feedbackWrongDirection",
       "language": "en",
+      "seed": 1257,
       "text": "These stones go the other way — check if the numbers grow or shrink."
     },
     {
@@ -174,6 +198,7 @@
       "file": "de/feedbackWrongOperation.m4a",
       "key": "feedbackWrongOperation",
       "language": "de",
+      "seed": 1258,
       "text": "Achtung, Richtung! Die Lücke steht am Anfang – überlege, was geteilt oder weggenommen wird."
     },
     {
@@ -181,6 +206,7 @@
       "file": "en/feedbackWrongOperation.m4a",
       "key": "feedbackWrongOperation",
       "language": "en",
+      "seed": 1259,
       "text": "Watch the direction! The gap is at the start — think about what gets taken away or shared."
     },
     {
@@ -188,6 +214,7 @@
       "file": "de/feedbackWrongStep.m4a",
       "key": "feedbackWrongStep",
       "language": "de",
+      "seed": 1260,
       "text": "Die Steine springen nicht so weit. Vergleiche zwei Nachbarn, um den echten Sprung zu finden."
     },
     {
@@ -195,6 +222,7 @@
       "file": "en/feedbackWrongStep.m4a",
       "key": "feedbackWrongStep",
       "language": "en",
+      "seed": 1261,
       "text": "The stones don't hop by that much. Compare two neighbours to find the real hop."
     },
     {
@@ -202,6 +230,7 @@
       "file": "de/feedbackWroteTheWhole.m4a",
       "key": "feedbackWroteTheWhole",
       "language": "de",
+      "seed": 1262,
       "text": "Das ist die ganze Summe, nicht das fehlende Stück. Wie viel fehlt noch?"
     },
     {
@@ -209,6 +238,7 @@
       "file": "en/feedbackWroteTheWhole.m4a",
       "key": "feedbackWroteTheWhole",
       "language": "en",
+      "seed": 1263,
       "text": "That's the whole total, not the missing piece. How much more is needed?"
     },
     {
@@ -216,6 +246,7 @@
       "file": "de/nudgeBalance.m4a",
       "key": "nudgeBalance",
       "language": "de",
+      "seed": 1264,
       "text": "Mache beide Seiten gleich viel wert. Welche Zahl fehlt?"
     },
     {
@@ -223,6 +254,7 @@
       "file": "en/nudgeBalance.m4a",
       "key": "nudgeBalance",
       "language": "en",
+      "seed": 1265,
       "text": "Make both sides worth the same. What does the missing plank need to be?"
     },
     {
@@ -230,6 +262,7 @@
       "file": "de/nudgeBuild.m4a",
       "key": "nudgeBuild",
       "language": "de",
+      "seed": 1266,
       "text": "Finde zwei Zahlen, die passen – es gibt mehr als einen Weg!"
     },
     {
@@ -237,6 +270,7 @@
       "file": "en/nudgeBuild.m4a",
       "key": "nudgeBuild",
       "language": "en",
+      "seed": 1267,
       "text": "Find two numbers that work — there's more than one way!"
     },
     {
@@ -244,6 +278,7 @@
       "file": "de/nudgeCommutative.m4a",
       "key": "nudgeCommutative",
       "language": "de",
+      "seed": 1268,
       "text": "Beim Malnehmen ist die Reihenfolge egal. Was fehlt?"
     },
     {
@@ -251,6 +286,7 @@
       "file": "en/nudgeCommutative.m4a",
       "key": "nudgeCommutative",
       "language": "en",
+      "seed": 1269,
       "text": "Multiplication doesn't mind the order. What's missing?"
     },
     {
@@ -258,6 +294,7 @@
       "file": "de/nudgeMissingNumber.m4a",
       "key": "nudgeMissingNumber",
       "language": "de",
+      "seed": 1270,
       "text": "Welche Zahl macht beide Seiten gleich?"
     },
     {
@@ -265,6 +302,7 @@
       "file": "en/nudgeMissingNumber.m4a",
       "key": "nudgeMissingNumber",
       "language": "en",
+      "seed": 1271,
       "text": "Which number makes both sides equal?"
     },
     {
@@ -272,6 +310,7 @@
       "file": "de/nudgeSequence.m4a",
       "key": "nudgeSequence",
       "language": "de",
+      "seed": 1272,
       "text": "Die Steine folgen einem Muster – finde heraus, wie gross jeder Sprung ist."
     },
     {
@@ -279,6 +318,7 @@
       "file": "en/nudgeSequence.m4a",
       "key": "nudgeSequence",
       "language": "en",
+      "seed": 1273,
       "text": "The stones follow a pattern — find how big each hop is."
     },
     {
@@ -286,6 +326,7 @@
       "file": "de/sequenceInstructions.m4a",
       "key": "sequenceInstructions",
       "language": "de",
+      "seed": 1274,
       "text": "Die Trittsteine folgen einem Muster. Wähle die fehlende Zahl."
     },
     {
@@ -293,6 +334,7 @@
       "file": "en/sequenceInstructions.m4a",
       "key": "sequenceInstructions",
       "language": "en",
+      "seed": 1275,
       "text": "The stepping stones follow a pattern. Choose the missing number."
     }
   ],
