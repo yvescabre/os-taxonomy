@@ -159,6 +159,7 @@ public enum L10n {
         case settingsSectionTitle
         case attributionTitle
         case attributionText
+        case chatterboxCredit
         case licenseNote
         case parentZoneDescription
         case masteryNotStarted, masteryLearning, masteryMastered, masteryReview
@@ -173,7 +174,7 @@ public enum L10n {
         case voiceSectionTitle, voicePersonalToggle
         case voiceStatusUsingPersonal, voiceStatusAvailable, voiceStatusNoLanguageVoice
         case voiceStatusDenied, voiceStatusCreate, voicePreview
-        case voiceCurrentFormat, voiceNameDefault
+        case voiceCurrentFormat, voiceRecordedNote, voicePersonalOverridesRecorded, voiceNameDefault
         case voiceQualityPremium, voiceQualityEnhanced, voiceQualityDefault
         case researchTipPrefix
         case teachingNoteForParents

@@ -9,6 +9,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "WonderMathCore"),
-        .testTarget(name: "WonderMathCoreTests", dependencies: ["WonderMathCore"])
+        .testTarget(name: "WonderMathCoreTests", dependencies: ["WonderMathCore"]),
+        .executableTarget(name: "WonderMathVoiceLines", dependencies: ["WonderMathCore"])
     ]
 )
