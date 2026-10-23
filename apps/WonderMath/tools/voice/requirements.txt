@@ -1,0 +1,5 @@
+# Install the CPU PyTorch wheels first:
+# pip install torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+chatterbox-tts @ git+https://github.com/yvescabre/chatterboxYC@5de7a54
+pyloudnorm
+soundfile

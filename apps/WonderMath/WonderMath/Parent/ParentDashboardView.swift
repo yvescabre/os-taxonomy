@@ -85,6 +85,7 @@ struct ParentDashboardView: View {
                     settingsSection
                     dashboardCard(title: localizer.string(.attributionTitle)) {
                         Text(localizer.string(.attributionText)).font(.footnote)
+                        Text(localizer.string(.chatterboxCredit)).font(.footnote)
                         Text(localizer.string(.licenseNote)).font(.footnote)
                         Text(localizer.string(.curriculumNotice)).font(.footnote)
                     }
@@ -307,6 +308,12 @@ struct ParentDashboardView: View {
                             .minimumScaleFactor(0.75)
                             .id(voiceRevision)
                     }
+                    Text(localizer.string(
+                        isUsingPersonalVoice ? .voicePersonalOverridesRecorded : .voiceRecordedNote
+                    ))
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.top, 8)
                 .onAppear(perform: synchronizePersonalVoicePreference)
@@ -361,6 +368,12 @@ struct ParentDashboardView: View {
         @unknown default:
             return .voiceStatusCreate
         }
+    }
+
+    private var isUsingPersonalVoice: Bool {
+        AVSpeechSynthesizer.personalVoiceAuthorizationStatus == .authorized &&
+            speech.hasPersonalVoice(for: localizer) &&
+            usePersonalVoice
     }
 
     private func synchronizePersonalVoicePreference() {

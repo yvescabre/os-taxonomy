@@ -27,7 +27,10 @@ targets:
       - path: WonderMath
         excludes:
           - Resources/Taxonomy
+          - Resources/Voice
       - path: WonderMath/Resources/Taxonomy
+        type: folder
+      - path: WonderMath/Resources/Voice
         type: folder
     dependencies:
       - package: WonderMathCore

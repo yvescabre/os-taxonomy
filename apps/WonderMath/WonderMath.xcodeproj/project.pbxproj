@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,6 +21,7 @@
 		35202E89D0FBB051A9555645 /* ParentDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2208B625F239070BB7F318 /* ParentDashboardView.swift */; };
 		493B75AABCB602790C566E38 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7AF09054C8DA2FD1570644 /* AppState.swift */; };
 		64C93B1604E96A197C425808 /* WorldMapScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C363FFA07ADF06FF13E886 /* WorldMapScene.swift */; };
+		8054518F5B3D9D06F754BBBB /* VoiceClips.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13DD23DD6AB565480001CB6 /* VoiceClips.swift */; };
 		81053FBE00D8B7F5C5D3FA9E /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BDB935E2F24128E0EEDB2E6 /* PersistenceTests.swift */; };
 		81D52CAEF3D64B177763051D /* PuzzleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF311143B0C0EA9E9256040 /* PuzzleView.swift */; };
 		86178DAC17EF8ACA407FCBE4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695FC30AA8097992FD5851D2 /* Theme.swift */; };
@@ -33,6 +34,7 @@
 		B4D1C7A230C91E74D2F843A3 /* BridgeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F52CE54468CEF7161A852B /* BridgeScene.swift */; };
 		C0C19FC7DDCAB5200A247250 /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2450921256B0950D6ED654 /* ParentGateView.swift */; };
 		E929338FF35F76FEFF085F9C /* WonderMathCore in Frameworks */ = {isa = PBXBuildFile; productRef = B7676A5207ECA3FAB162719E /* WonderMathCore */; };
+		ECFA6242AF80C95B7F3711E1 /* Voice in Resources */ = {isa = PBXBuildFile; fileRef = 8F8C6A708436F6034C6C63E1 /* Voice */; };
 		FF691A0AE6F9CD46ABE575D7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6DCE0C122EC5EED80B25A4 /* RootView.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +73,7 @@
 		82F52CE54468CEF7161A852B /* BridgeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeScene.swift; sourceTree = "<group>"; };
 		8BDB935E2F24128E0EEDB2E6 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		8E2E4B89506C1231D963C059 /* CompanionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionView.swift; sourceTree = "<group>"; };
+		8F8C6A708436F6034C6C63E1 /* Voice */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Voice; path = WonderMath/Resources/Voice; sourceTree = SOURCE_ROOT; };
 		95BF0A8D21AFEB9F757E9A8A /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldMapView.swift; sourceTree = "<group>"; };
 		A3923FEBBAFB5E942D889C9C /* TopicPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicPathView.swift; sourceTree = "<group>"; };
 		AB2208B625F239070BB7F318 /* ParentDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentDashboardView.swift; sourceTree = "<group>"; };
@@ -79,6 +82,7 @@
 		C83C6CF5F91E2705CF7B465C /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
 		CB7AF09054C8DA2FD1570644 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		CE8CFE14BDC6702FE403BF9E /* WonderMath.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WonderMath.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D13DD23DD6AB565480001CB6 /* VoiceClips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceClips.swift; sourceTree = "<group>"; };
 		D48206CC75330D5319F59549 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EABE5A04AD5ED45469BB7628 /* Speech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
 		FB7265CBAC6A917F656952A2 /* WonderMathApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WonderMathApp.swift; sourceTree = "<group>"; };
@@ -149,6 +153,7 @@
 				FDF311143B0C0EA9E9256040 /* PuzzleView.swift */,
 				EABE5A04AD5ED45469BB7628 /* Speech.swift */,
 				A3923FEBBAFB5E942D889C9C /* TopicPathView.swift */,
+				D13DD23DD6AB565480001CB6 /* VoiceClips.swift */,
 				1486827B228D298E72FDB29D /* WhyView.swift */,
 				05C363FFA07ADF06FF13E886 /* WorldMapScene.swift */,
 				95BF0A8D21AFEB9F757E9A8A /* WorldMapView.swift */,
@@ -161,6 +166,7 @@
 			children = (
 				D48206CC75330D5319F59549 /* Assets.xcassets */,
 				4A0C7FC4EF811BE8BC82879C /* Taxonomy */,
+				8F8C6A708436F6034C6C63E1 /* Voice */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -287,8 +293,6 @@
 				2821173F2B2383A451284EDA /* PBXTargetDependency */,
 			);
 			name = WonderMathUITests;
-			packageProductDependencies = (
-			);
 			productName = WonderMathUITests;
 			productReference = 23654CF726A6F637F08C971D /* WonderMathUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -328,6 +332,7 @@
 				};
 			};
 			buildConfigurationList = 18C9E88645E3A85B258D56B0 /* Build configuration list for PBXProject "WonderMath" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -335,12 +340,9 @@
 				en,
 			);
 			mainGroup = D682229D0C0AD042470D4883;
-			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				57DA9C9BE002DB53AA32B60A /* XCLocalSwiftPackageReference "WonderMathCore" */,
 			);
-			preferredProjectObjectVersion = 77;
-			productRefGroup = 2F4EEEBE4F00B893F8960AD7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -358,6 +360,7 @@
 			files = (
 				A6BA742BB03CE3437EDD5584 /* Assets.xcassets in Resources */,
 				0947D2C432AF6609F0F3FCF7 /* Taxonomy in Resources */,
+				ECFA6242AF80C95B7F3711E1 /* Voice in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +396,7 @@
 				2808798D4A3B2B99B95B96B6 /* StarProgress.swift in Sources */,
 				86178DAC17EF8ACA407FCBE4 /* Theme.swift in Sources */,
 				12D40EAC6AFB7C57ED0703FC /* TopicPathView.swift in Sources */,
+				8054518F5B3D9D06F754BBBB /* VoiceClips.swift in Sources */,
 				16CDD129C9AD2463EF3788E9 /* WhyView.swift in Sources */,
 				A7C907A7D955414198CA55F0 /* WonderMathApp.swift in Sources */,
 				64C93B1604E96A197C425808 /* WorldMapScene.swift in Sources */,

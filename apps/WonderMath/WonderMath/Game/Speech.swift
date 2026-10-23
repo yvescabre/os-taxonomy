@@ -9,6 +9,8 @@ final class Speech {
     }
 
     private let synthesizer = AVSpeechSynthesizer()
+    private let voiceClips = VoiceClips()
+    private var clipPlayer: AVAudioPlayer?
     private var voiceCache: [String: VoiceSelection] = [:]
     private var activeLanguage: String?
     private var cachedPersonalVoicePreference: Bool?
@@ -36,22 +38,44 @@ final class Speech {
         guard enabled else { return }
         let language = languageCode(for: localizer)
         let selection = voiceSelection(for: language)
-        let utterance = AVSpeechUtterance(string: localizer.string(message))
-        utterance.voice = selection.voice
-        if !selection.isPersonal {
-            utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.92
-            utterance.pitchMultiplier = 1.05
-            utterance.preUtteranceDelay = 0.1
+        let text = localizer.string(message)
+        var playedClip = false
+
+        if !selection.isPersonal,
+           let clipURL = voiceClips.url(for: message, language: language, text: text) {
+            synthesizer.stopSpeaking(at: .immediate)
+            clipPlayer?.stop()
+            clipPlayer = nil
+            if let player = try? AVAudioPlayer(contentsOf: clipURL) {
+                player.prepareToPlay()
+                if player.play() {
+                    clipPlayer = player
+                    playedClip = true
+                }
+            }
+        }
+
+        if !playedClip {
+            clipPlayer?.stop()
+            clipPlayer = nil
+            let utterance = AVSpeechUtterance(string: text)
+            utterance.voice = selection.voice
+            if !selection.isPersonal {
+                utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.92
+                utterance.pitchMultiplier = 1.05
+                utterance.preUtteranceDelay = 0.1
+            }
+            synthesizer.speak(utterance)
         }
 
         #if DEBUG
+        let source = playedClip ? "clip" : "tts"
         let voiceName = selection.voice?.name ?? localizer.string(.voiceNameDefault)
         let quality = selection.voice.map { qualityName($0.quality, localizer: localizer) }
             ?? localizer.string(.voiceQualityDefault)
-        print("[Speech] language=\(language) voice=\(voiceName) quality=\(quality) personal=\(selection.isPersonal)")
+        print("[Speech] language=\(language) voice=\(voiceName) quality=\(quality) personal=\(selection.isPersonal) source=\(source)")
         #endif
 
-        synthesizer.speak(utterance)
     }
 
     func hasPersonalVoice(for localizer: Localizer) -> Bool {

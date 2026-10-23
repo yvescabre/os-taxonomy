@@ -173,6 +173,19 @@ The requested German onboarding step 1 (`21-onboarding-de-CH.png`) is not includ
 - **Which worlds use taxonomy content and which need authored content.** World 1 (Number Kingdom) uses taxonomy topics only. World 4 (Inventor's Workshop) maps all 57 bundled Computing topics, but has no puzzle mechanic yet. Worlds 2/3/5 (Logic Lagoon, Puzzle Peaks, Mystery Island) need original WonderMath content, because the dataset has few pure logic or spatial puzzles; they are stubbed with TODOs in `WorldCatalog.swift`. The logic stage of the daily adventure currently uses the taxonomy's Mathematics *pattern* topics.
 - Only 24 of the 535 bundled Mathematics topics have generators so far. The others show on the parent dashboard and in the graph, but are not playable yet.
 - **German (Swiss) is a scaffold.** All UI strings are translated, and topic names are translated for the playable topics. Taxonomy research text (offline activities, research tips) is English-only and appears only in the parent area, labelled as such; it is never shown to the child in German mode.
-- Text-to-speech uses the system `AVSpeechSynthesizer` voices; there is no recorded audio.
+- Text-to-speech uses bundled prerecorded clips for fixed instructions and feedback; dynamically numbered hints use `AVSpeechSynthesizer`.
 - One child profile per device in this slice.
 - Gating only counts hard prerequisites playable in the app; other prerequisites are treated as met and listed for parents.
+
+## Voice
+
+WonderMath works offline: fixed instructions and feedback use bundled Chatterbox Multilingual v3 recordings, while lines containing numbers use the system `AVSpeechSynthesizer`. If an opted-in Personal Voice is active, it takes priority for every line; otherwise a matching prerecorded clip is preferred, with system speech as the fallback.
+
+To regenerate the clips, install the CPU PyTorch wheels, the pinned Chatterbox checkout, and `tools/voice/requirements.txt` (see [renderer setup](tools/voice/README.md)), then run from `apps/WonderMath`:
+
+```bash
+swift run --package-path WonderMathCore WonderMathVoiceLines > /tmp/lines.json
+python tools/voice/render_clips.py --lines /tmp/lines.json
+```
+
+Use `--voice my_clip.wav` to condition the voice on a 10–20 second recording you have permission to use. Chatterbox and its model weights are MIT-licensed; generated audio retains Resemble AI's Perth watermark.

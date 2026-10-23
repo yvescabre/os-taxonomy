@@ -1,0 +1,301 @@
+{
+  "chatterboxCommit": "5de7a54",
+  "clips": [
+    {
+      "durationSeconds": 2.76,
+      "file": "de/bridgeInstructions.m4a",
+      "key": "bridgeInstructions",
+      "language": "de",
+      "text": "Eine Planke fehlt! Ziehe die richtige Zahl auf die Brücke."
+    },
+    {
+      "durationSeconds": 2.93,
+      "file": "en/bridgeInstructions.m4a",
+      "key": "bridgeInstructions",
+      "language": "en",
+      "text": "A plank is missing! Drag the right number to fix the bridge."
+    },
+    {
+      "durationSeconds": 3.54,
+      "file": "de/clueBuild.m4a",
+      "key": "clueBuild",
+      "language": "de",
+      "text": "Wähle irgendeine erste Zahl – dann rechne aus, welche zweite fehlt."
+    },
+    {
+      "durationSeconds": 2.87,
+      "file": "en/clueBuild.m4a",
+      "key": "clueBuild",
+      "language": "en",
+      "text": "Pick any first number — then work out what the second must be."
+    },
+    {
+      "durationSeconds": 2.68,
+      "file": "de/clueCommutative.m4a",
+      "key": "clueCommutative",
+      "language": "de",
+      "text": "Vertausche die Zahlen – das Ergebnis bleibt gleich."
+    },
+    {
+      "durationSeconds": 2.86,
+      "file": "en/clueCommutative.m4a",
+      "key": "clueCommutative",
+      "language": "en",
+      "text": "Swap the numbers you multiply — the answer stays the same."
+    },
+    {
+      "durationSeconds": 2.62,
+      "file": "de/clueSequence.m4a",
+      "key": "clueSequence",
+      "language": "de",
+      "text": "Schau dir den Sprung zwischen zwei benachbarten Steinen an."
+    },
+    {
+      "durationSeconds": 2.34,
+      "file": "en/clueSequence.m4a",
+      "key": "clueSequence",
+      "language": "en",
+      "text": "Look at the hop between two stones next to each other."
+    },
+    {
+      "durationSeconds": 2.67,
+      "file": "de/feedbackAlmost.m4a",
+      "key": "feedbackAlmost",
+      "language": "de",
+      "text": "Fast – schau dir den Tipp an und versuche es nochmals."
+    },
+    {
+      "durationSeconds": 2.5,
+      "file": "en/feedbackAlmost.m4a",
+      "key": "feedbackAlmost",
+      "language": "en",
+      "text": "Almost — look at the hint and try again."
+    },
+    {
+      "durationSeconds": 0.7,
+      "file": "de/feedbackCorrect.m4a",
+      "key": "feedbackCorrect",
+      "language": "de",
+      "text": "Das stimmt!"
+    },
+    {
+      "durationSeconds": 0.79,
+      "file": "en/feedbackCorrect.m4a",
+      "key": "feedbackCorrect",
+      "language": "en",
+      "text": "That's good!"
+    },
+    {
+      "durationSeconds": 3.84,
+      "file": "de/feedbackGenericWrong.m4a",
+      "key": "feedbackGenericWrong",
+      "language": "de",
+      "text": "Diese Zahl hält die Brücke noch nicht im Gleichgewicht – versuche eine andere Planke."
+    },
+    {
+      "durationSeconds": 3.08,
+      "file": "en/feedbackGenericWrong.m4a",
+      "key": "feedbackGenericWrong",
+      "language": "en",
+      "text": "That number doesn't make the bridge balance yet — try another plank."
+    },
+    {
+      "durationSeconds": 3.76,
+      "file": "de/feedbackOffByOne.m4a",
+      "key": "feedbackOffByOne",
+      "language": "de",
+      "text": "Ganz knapp – zähle die Sprünge, nicht die Striche. Du bist um eins daneben."
+    },
+    {
+      "durationSeconds": 3.13,
+      "file": "en/feedbackOffByOne.m4a",
+      "key": "feedbackOffByOne",
+      "language": "en",
+      "text": "So close — count the jumps, not the marks. You're one off."
+    },
+    {
+      "durationSeconds": 2.62,
+      "file": "de/feedbackPlaceValueSlip.m4a",
+      "key": "feedbackPlaceValueSlip",
+      "language": "de",
+      "text": "Das sind Zehner, nicht Einer! Ein Zehner ist zehnmal so viel."
+    },
+    {
+      "durationSeconds": 3.08,
+      "file": "en/feedbackPlaceValueSlip.m4a",
+      "key": "feedbackPlaceValueSlip",
+      "language": "en",
+      "text": "Those are tens, not ones! A ten is worth ten times more."
+    },
+    {
+      "durationSeconds": 3.48,
+      "file": "de/feedbackRunningTotal.m4a",
+      "key": "feedbackRunningTotal",
+      "language": "de",
+      "text": "Das füllt die linke Seite, aber beide Seiten müssen gleich sein. Prüfe auch die rechte Seite!"
+    },
+    {
+      "durationSeconds": 3.18,
+      "file": "en/feedbackRunningTotal.m4a",
+      "key": "feedbackRunningTotal",
+      "language": "en",
+      "text": "That fills the left side, but both sides must match. Check the right side too!"
+    },
+    {
+      "durationSeconds": 5.01,
+      "file": "de/feedbackUsedVisibleNumbers.m4a",
+      "key": "feedbackUsedVisibleNumbers",
+      "language": "de",
+      "text": "Vorsicht – rechne nicht einfach mit den Zahlen, die du siehst. Die Lücke versteckt eine andere Zahl."
+    },
+    {
+      "durationSeconds": 3.79,
+      "file": "en/feedbackUsedVisibleNumbers.m4a",
+      "key": "feedbackUsedVisibleNumbers",
+      "language": "en",
+      "text": "Careful — don't just join the numbers you can see. The gap hides a different number."
+    },
+    {
+      "durationSeconds": 3.96,
+      "file": "de/feedbackWrongDirection.m4a",
+      "key": "feedbackWrongDirection",
+      "language": "de",
+      "text": "Diese Steine gehen in die andere Richtung – schau, ob die Zahlen grösser oder kleiner werden."
+    },
+    {
+      "durationSeconds": 3.05,
+      "file": "en/feedbackWrongDirection.m4a",
+      "key": "feedbackWrongDirection",
+      "language": "en",
+      "text": "These stones go the other way — check if the numbers grow or shrink."
+    },
+    {
+      "durationSeconds": 3.85,
+      "file": "de/feedbackWrongOperation.m4a",
+      "key": "feedbackWrongOperation",
+      "language": "de",
+      "text": "Achtung, Richtung! Die Lücke steht am Anfang – überlege, was geteilt oder weggenommen wird."
+    },
+    {
+      "durationSeconds": 4.05,
+      "file": "en/feedbackWrongOperation.m4a",
+      "key": "feedbackWrongOperation",
+      "language": "en",
+      "text": "Watch the direction! The gap is at the start — think about what gets taken away or shared."
+    },
+    {
+      "durationSeconds": 4.19,
+      "file": "de/feedbackWrongStep.m4a",
+      "key": "feedbackWrongStep",
+      "language": "de",
+      "text": "Die Steine springen nicht so weit. Vergleiche zwei Nachbarn, um den echten Sprung zu finden."
+    },
+    {
+      "durationSeconds": 3.48,
+      "file": "en/feedbackWrongStep.m4a",
+      "key": "feedbackWrongStep",
+      "language": "en",
+      "text": "The stones don't hop by that much. Compare two neighbours to find the real hop."
+    },
+    {
+      "durationSeconds": 3.62,
+      "file": "de/feedbackWroteTheWhole.m4a",
+      "key": "feedbackWroteTheWhole",
+      "language": "de",
+      "text": "Das ist die ganze Summe, nicht das fehlende Stück. Wie viel fehlt noch?"
+    },
+    {
+      "durationSeconds": 2.97,
+      "file": "en/feedbackWroteTheWhole.m4a",
+      "key": "feedbackWroteTheWhole",
+      "language": "en",
+      "text": "That's the whole total, not the missing piece. How much more is needed?"
+    },
+    {
+      "durationSeconds": 2.73,
+      "file": "de/nudgeBalance.m4a",
+      "key": "nudgeBalance",
+      "language": "de",
+      "text": "Mache beide Seiten gleich viel wert. Welche Zahl fehlt?"
+    },
+    {
+      "durationSeconds": 3.43,
+      "file": "en/nudgeBalance.m4a",
+      "key": "nudgeBalance",
+      "language": "en",
+      "text": "Make both sides worth the same. What does the missing plank need to be?"
+    },
+    {
+      "durationSeconds": 3.07,
+      "file": "de/nudgeBuild.m4a",
+      "key": "nudgeBuild",
+      "language": "de",
+      "text": "Finde zwei Zahlen, die passen – es gibt mehr als einen Weg!"
+    },
+    {
+      "durationSeconds": 2.66,
+      "file": "en/nudgeBuild.m4a",
+      "key": "nudgeBuild",
+      "language": "en",
+      "text": "Find two numbers that work — there's more than one way!"
+    },
+    {
+      "durationSeconds": 2.53,
+      "file": "de/nudgeCommutative.m4a",
+      "key": "nudgeCommutative",
+      "language": "de",
+      "text": "Beim Malnehmen ist die Reihenfolge egal. Was fehlt?"
+    },
+    {
+      "durationSeconds": 2.15,
+      "file": "en/nudgeCommutative.m4a",
+      "key": "nudgeCommutative",
+      "language": "en",
+      "text": "Multiplication doesn't mind the order. What's missing?"
+    },
+    {
+      "durationSeconds": 1.93,
+      "file": "de/nudgeMissingNumber.m4a",
+      "key": "nudgeMissingNumber",
+      "language": "de",
+      "text": "Welche Zahl macht beide Seiten gleich?"
+    },
+    {
+      "durationSeconds": 1.62,
+      "file": "en/nudgeMissingNumber.m4a",
+      "key": "nudgeMissingNumber",
+      "language": "en",
+      "text": "Which number makes both sides equal?"
+    },
+    {
+      "durationSeconds": 3.28,
+      "file": "de/nudgeSequence.m4a",
+      "key": "nudgeSequence",
+      "language": "de",
+      "text": "Die Steine folgen einem Muster – finde heraus, wie gross jeder Sprung ist."
+    },
+    {
+      "durationSeconds": 2.65,
+      "file": "en/nudgeSequence.m4a",
+      "key": "nudgeSequence",
+      "language": "en",
+      "text": "The stones follow a pattern — find how big each hop is."
+    },
+    {
+      "durationSeconds": 2.91,
+      "file": "de/sequenceInstructions.m4a",
+      "key": "sequenceInstructions",
+      "language": "de",
+      "text": "Die Trittsteine folgen einem Muster. Wähle die fehlende Zahl."
+    },
+    {
+      "durationSeconds": 2.77,
+      "file": "en/sequenceInstructions.m4a",
+      "key": "sequenceInstructions",
+      "language": "en",
+      "text": "The stepping stones follow a pattern. Choose the missing number."
+    }
+  ],
+  "generator": "Chatterbox Multilingual v3 (Resemble AI, MIT)",
+  "voice": "default"
+}
