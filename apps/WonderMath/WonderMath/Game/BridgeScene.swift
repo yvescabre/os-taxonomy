@@ -14,6 +14,7 @@ final class BridgeScene: SKScene {
     private var companionTexture: SKTexture?
     private var lastConfiguration: LayoutConfiguration?
     private var filledGapValue: Int?
+    private var gapHighlighted = false
     private var isSequence = false
     var reduceMotion = false
 
@@ -54,11 +55,17 @@ final class BridgeScene: SKScene {
         guard !gapNodes.isEmpty else { return }
         let node = gapNodes[min(nextGapIndex, gapNodes.count - 1)]
         nextGapIndex = min(nextGapIndex + 1, gapNodes.count)
+        node.removeAllActions()
         node.removeAllChildren()
-        node.fillColor = isSequence ? SKColor(red: 0.52, green: 0.67, blue: 0.49, alpha: 1) :
+        node.alpha = 1
+        node.glowWidth = 0
+        node.fillColor = isSequence ? SKColor(red: 0.851, green: 0.812, blue: 0.753, alpha: 1) :
             SKColor(red: 0.75, green: 0.44, blue: 0.22, alpha: 1)
-        node.strokeColor = isSequence ? .white : SKColor(red: 0.40, green: 0.23, blue: 0.13, alpha: 1)
-        let label = shadowedLabel("\(value)", size: isSequence ? 24 : 27)
+        node.strokeColor = isSequence
+            ? SKColor(red: 0.659, green: 0.604, blue: 0.525, alpha: 1)
+            : SKColor(red: 0.40, green: 0.23, blue: 0.13, alpha: 1)
+        node.lineWidth = 4
+        let label = isSequence ? stoneLabel("\(value)", size: 24) : shadowedLabel("\(value)", size: 27)
         node.addChild(label)
         filledGapValue = value
     }
@@ -72,6 +79,18 @@ final class BridgeScene: SKScene {
             addQuestionMark(to: node)
         }
         nextGapIndex = 0
+    }
+
+    func setGapHighlighted(_ highlighted: Bool) {
+        guard gapHighlighted != highlighted else { return }
+        gapHighlighted = highlighted
+        for gap in gapNodes {
+            guard let outline = gap.childNode(withName: "gap-outline") as? SKShapeNode else { continue }
+            outline.strokeColor = highlighted
+                ? SKColor(red: 1, green: 0.88, blue: 0.36, alpha: 1)
+                : SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
+            outline.glowWidth = highlighted ? 13 : 7
+        }
     }
 
     func celebrate() {
@@ -125,27 +144,46 @@ final class BridgeScene: SKScene {
                     addGap(at: point, width: spacing - 8, height: 66)
                 }
             }
-            addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+            addCompanionOnLeftCliff()
         case .sequence(let terms):
             resetScene(sequence: true)
-            let spacing = min(145, (size.width - 150) / CGFloat(max(terms.count, 1)))
+            let stoneInset = size.width * 0.06
+            let leftStoneX = -size.width * 0.35 + stoneInset
+            let rightStoneX = size.width * 0.35 - stoneInset
+            let spacing = terms.count > 1
+                ? (rightStoneX - leftStoneX) / CGFloat(terms.count - 1)
+                : 0
+            let stoneY = -size.height * 0.235
             for (index, term) in terms.enumerated() {
-                let x = CGFloat(index) * spacing - CGFloat(terms.count - 1) * spacing / 2
-                let stone = SKShapeNode(ellipseOf: CGSize(width: 88, height: 62))
-                stone.position = CGPoint(x: x, y: -size.height * 0.05)
+                let x = leftStoneX + CGFloat(index) * spacing
+                let point = CGPoint(x: x, y: stoneY)
+                let ripple = SKShapeNode(ellipseOf: CGSize(width: size.width * 0.055,
+                                                           height: size.height * 0.016))
+                ripple.position = CGPoint(x: x, y: stoneY - size.height * 0.035)
+                ripple.fillColor = SKColor(red: 0.12, green: 0.51, blue: 0.68, alpha: 0.72)
+                ripple.strokeColor = .clear
+                ripple.zPosition = 1
+                addChild(ripple)
+                let stoneSize = term == nil
+                    ? CGSize(width: 112, height: 78)
+                    : CGSize(width: 88, height: 62)
+                let stone = SKShapeNode(ellipseOf: stoneSize)
+                stone.position = point
+                stone.zPosition = 2
                 stone.fillColor = term == nil ? .clear :
-                    SKColor(red: 0.52, green: 0.67, blue: 0.49, alpha: 1)
-                stone.strokeColor = .white
+                    SKColor(red: 0.851, green: 0.812, blue: 0.753, alpha: 1)
+                stone.strokeColor = term == nil ? .clear :
+                    SKColor(red: 0.659, green: 0.604, blue: 0.525, alpha: 1)
                 stone.lineWidth = 4
                 addChild(stone)
                 if let term {
-                    addLabel("\(term)", to: stone, size: 24)
+                    stone.addChild(stoneLabel("\(term)", size: 24))
                 } else {
                     gapNodes.append(stone)
                     styleGap(stone)
                 }
             }
-            addCompanion(at: CGPoint(x: -size.width * 0.39, y: -size.height * 0.10))
+            addCompanionOnLeftCliff()
         }
         if let filledValue {
             fill(gapWith: filledValue)
@@ -174,16 +212,14 @@ final class BridgeScene: SKScene {
         sun.fillColor = SKColor(red: 1, green: 0.78, blue: 0.24, alpha: 1)
         sun.strokeColor = .clear
         addChild(sun)
-        for (index, color) in [SKColor(red: 0.65, green: 0.85, blue: 0.52, alpha: 1),
-                               SKColor(red: 0.48, green: 0.76, blue: 0.43, alpha: 1)].enumerated() {
-            let hill = SKShapeNode(ellipseOf: CGSize(width: size.width * 1.25,
-                                                     height: size.height * (0.55 - CGFloat(index) * 0.06)))
-            hill.position = CGPoint(x: index == 0 ? -size.width * 0.12 : size.width * 0.12,
-                                    y: size.height * (0.17 - CGFloat(index) * 0.08))
-            hill.fillColor = color
-            hill.strokeColor = .clear
-            addChild(hill)
-        }
+        addGradientHill(peakX: -size.width * 0.22, peakY: size.height * 0.24,
+                        startY: size.height * 0.04, endY: size.height * 0.02,
+                        colors: [SKColor(red: 0.73, green: 0.88, blue: 0.64, alpha: 1),
+                                 SKColor(red: 0.54, green: 0.78, blue: 0.52, alpha: 1)])
+        addGradientHill(peakX: size.width * 0.33, peakY: size.height * 0.20,
+                        startY: size.height * 0.02, endY: size.height * 0.06,
+                        colors: [SKColor(red: 0.62, green: 0.83, blue: 0.53, alpha: 1),
+                                 SKColor(red: 0.40, green: 0.72, blue: 0.43, alpha: 1)])
         let waterPath = CGMutablePath()
         waterPath.move(to: CGPoint(x: -size.width / 2, y: -size.height * 0.16))
         waterPath.addLine(to: CGPoint(x: size.width / 2, y: -size.height * 0.16))
@@ -194,27 +230,18 @@ final class BridgeScene: SKScene {
         water.fillColor = SKColor(red: 0.20, green: 0.65, blue: 0.81, alpha: 1)
         water.strokeColor = .clear
         addChild(water)
-        for side in [-1, 1] {
-            let cliff = SKShapeNode(rectOf: CGSize(width: size.width * 0.24, height: size.height * 0.47),
-                                    cornerRadius: 16)
-            cliff.position = CGPoint(x: CGFloat(side) * size.width * 0.39, y: -size.height * 0.22)
-            cliff.fillColor = SKColor(red: 0.66, green: 0.40, blue: 0.23, alpha: 1)
-            cliff.strokeColor = .clear
-            addChild(cliff)
-            let grass = SKShapeNode(rectOf: CGSize(width: size.width * 0.24, height: 18), cornerRadius: 9)
-            grass.position = CGPoint(x: cliff.position.x, y: -size.height * 0.02)
-            grass.fillColor = SKColor(red: 0.37, green: 0.72, blue: 0.38, alpha: 1)
-            grass.strokeColor = .clear
-            addChild(grass)
+        let innerCliffEdgeX = size.width * 0.35
+        for side: CGFloat in [-1, 1] {
+            addCliff(side: side)
             let post = SKShapeNode(rectOf: CGSize(width: 14, height: 75), cornerRadius: 7)
-            post.position = CGPoint(x: CGFloat(side) * size.width * 0.37, y: size.height * 0.04)
+            post.position = CGPoint(x: side * innerCliffEdgeX, y: size.height * 0.04)
             post.fillColor = SKColor(red: 0.44, green: 0.26, blue: 0.15, alpha: 1)
             post.strokeColor = .clear
             addChild(post)
         }
         let ropePath = CGMutablePath()
-        ropePath.move(to: CGPoint(x: -size.width * 0.37, y: size.height * 0.06))
-        ropePath.addQuadCurve(to: CGPoint(x: size.width * 0.37, y: size.height * 0.06),
+        ropePath.move(to: CGPoint(x: -innerCliffEdgeX, y: size.height * 0.06))
+        ropePath.addQuadCurve(to: CGPoint(x: innerCliffEdgeX, y: size.height * 0.06),
                               control: CGPoint(x: 0, y: -size.height * 0.03))
         let rope = SKShapeNode(path: ropePath)
         rope.strokeColor = SKColor(red: 0.48, green: 0.27, blue: 0.14, alpha: 1)
@@ -223,18 +250,113 @@ final class BridgeScene: SKScene {
         for row in 0..<2 {
             let wavePath = CGMutablePath()
             let y = -size.height * (0.23 + CGFloat(row) * 0.10)
-            wavePath.move(to: CGPoint(x: -size.width * 0.5, y: y))
-            wavePath.addCurve(to: CGPoint(x: size.width * 0.5, y: y),
-                              control1: CGPoint(x: -size.width * 0.16, y: y + 12),
-                              control2: CGPoint(x: size.width * 0.16, y: y - 12))
+            let waveEdgeX = innerCliffEdgeX - size.width * 0.01
+            wavePath.move(to: CGPoint(x: -waveEdgeX, y: y))
+            wavePath.addCurve(to: CGPoint(x: waveEdgeX, y: y),
+                              control1: CGPoint(x: -size.width * 0.14, y: y + 12),
+                              control2: CGPoint(x: size.width * 0.14, y: y - 12))
             let wave = SKShapeNode(path: wavePath)
             wave.strokeColor = .white.withAlphaComponent(0.42)
             wave.lineWidth = 4
             addChild(wave)
             if !reduceMotion {
-                wave.run(.repeatForever(.sequence([.moveBy(x: -100, y: 0, duration: 6),
-                                                   .moveBy(x: 100, y: 0, duration: 6)])))
+                wave.run(.repeatForever(.sequence([.moveBy(x: 0, y: 2, duration: 3),
+                                                   .moveBy(x: 0, y: -2, duration: 3)])))
             }
+        }
+    }
+
+    private func addGradientHill(peakX: CGFloat, peakY: CGFloat,
+                                startY: CGFloat, endY: CGFloat, colors: [SKColor]) {
+        let left = -size.width * 0.5
+        let right = size.width * 0.5
+        let baseline = -size.height * 0.16
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: left, y: baseline))
+        path.addLine(to: CGPoint(x: left, y: startY))
+        path.addCurve(to: CGPoint(x: right, y: endY),
+                      control1: CGPoint(x: peakX - size.width * 0.24, y: peakY),
+                      control2: CGPoint(x: peakX + size.width * 0.24, y: peakY))
+        path.addLine(to: CGPoint(x: right, y: baseline))
+        path.closeSubpath()
+        let hill = SKShapeNode(path: path)
+        hill.fillTexture = gradientTexture(size: size, colors: colors)
+        hill.fillColor = .white
+        hill.strokeColor = .clear
+        addChild(hill)
+    }
+
+    private func addCliff(side: CGFloat) {
+        let outerX = side * size.width * 0.53
+        let innerX = side * size.width * 0.35
+        let outerY = size.height * 0.07
+        let innerY = size.height * 0.035
+        let control1 = CGPoint(x: outerX - side * size.width * 0.08,
+                               y: outerY + size.height * 0.08)
+        let control2 = CGPoint(x: innerX + side * size.width * 0.08,
+                               y: innerY + size.height * 0.07)
+        let cliffPath = CGMutablePath()
+        let bottomY = -size.height * 0.5
+        cliffPath.move(to: CGPoint(x: outerX, y: bottomY))
+        cliffPath.addCurve(to: CGPoint(x: outerX, y: outerY),
+                           control1: CGPoint(x: outerX - side * size.width * 0.015,
+                                             y: -size.height * 0.32),
+                           control2: CGPoint(x: outerX + side * size.width * 0.01,
+                                             y: -size.height * 0.04))
+        cliffPath.addCurve(to: CGPoint(x: innerX, y: innerY),
+                           control1: control1, control2: control2)
+        cliffPath.addCurve(to: CGPoint(x: innerX, y: bottomY),
+                           control1: CGPoint(x: innerX + side * size.width * 0.025,
+                                             y: -size.height * 0.08),
+                           control2: CGPoint(x: innerX + side * size.width * 0.01,
+                                             y: -size.height * 0.32))
+        cliffPath.closeSubpath()
+        let cliff = SKShapeNode(path: cliffPath)
+        cliff.fillColor = SKColor(red: 0.66, green: 0.40, blue: 0.23, alpha: 1)
+        cliff.strokeColor = .clear
+        addChild(cliff)
+
+        let lipPath = CGMutablePath()
+        lipPath.move(to: CGPoint(x: outerX, y: outerY))
+        lipPath.addCurve(to: CGPoint(x: innerX, y: innerY),
+                         control1: control1, control2: control2)
+        lipPath.addLine(to: CGPoint(x: innerX - side * size.width * 0.018,
+                                    y: innerY - size.height * 0.035))
+        lipPath.addCurve(to: CGPoint(x: outerX + side * size.width * 0.018,
+                                     y: outerY - size.height * 0.035),
+                         control1: CGPoint(x: innerX + side * size.width * 0.08,
+                                           y: innerY - size.height * 0.05),
+                         control2: CGPoint(x: outerX - side * size.width * 0.08,
+                                           y: outerY - size.height * 0.05))
+        lipPath.closeSubpath()
+        let grass = SKShapeNode(path: lipPath)
+        grass.fillColor = SKColor(red: 0.37, green: 0.72, blue: 0.38, alpha: 1)
+        grass.strokeColor = .clear
+        addChild(grass)
+
+        for band in 0..<3 {
+            let y = -size.height * (0.04 + CGFloat(band) * 0.12)
+            let strataPath = CGMutablePath()
+            strataPath.move(to: CGPoint(x: outerX - side * size.width * 0.03, y: y))
+            strataPath.addQuadCurve(to: CGPoint(x: innerX + side * size.width * 0.02,
+                                                y: y - size.height * 0.015),
+                                    control: CGPoint(x: side * size.width * 0.39,
+                                                     y: y - size.height * 0.04))
+            let strata = SKShapeNode(path: strataPath)
+            strata.strokeColor = SKColor(red: 0.43, green: 0.27, blue: 0.18, alpha: 0.62)
+            strata.lineWidth = max(2, size.height * 0.012)
+            addChild(strata)
+        }
+        for (index, position) in [CGPoint(x: side * size.width * 0.36, y: -size.height * 0.12),
+                                  CGPoint(x: side * size.width * 0.43, y: -size.height * 0.29)].enumerated() {
+            let pebble = SKShapeNode(ellipseOf: CGSize(width: size.width * 0.018,
+                                                       height: size.height * 0.025))
+            pebble.position = position
+            pebble.fillColor = index == 0
+                ? SKColor(red: 0.48, green: 0.29, blue: 0.18, alpha: 0.85)
+                : SKColor(red: 0.76, green: 0.50, blue: 0.29, alpha: 0.9)
+            pebble.strokeColor = .clear
+            addChild(pebble)
         }
     }
 
@@ -266,11 +388,15 @@ final class BridgeScene: SKScene {
         gap.strokeColor = .clear
         gap.lineWidth = 5
         gap.glowWidth = 7
+        gap.childNode(withName: "gap-outline")?.removeFromParent()
         if let path = gap.path?.copy(dashingWithPhase: 0, lengths: [10, 7], transform: .identity) {
             let dashedOutline = SKShapeNode(path: path)
-            dashedOutline.strokeColor = SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
+            dashedOutline.name = "gap-outline"
+            dashedOutline.strokeColor = gapHighlighted
+                ? SKColor(red: 1, green: 0.88, blue: 0.36, alpha: 1)
+                : SKColor(red: 1, green: 0.69, blue: 0.12, alpha: 1)
             dashedOutline.lineWidth = 5
-            dashedOutline.glowWidth = 7
+            dashedOutline.glowWidth = gapHighlighted ? 13 : 7
             gap.addChild(dashedOutline)
         }
         if !reduceMotion {
@@ -304,6 +430,15 @@ final class BridgeScene: SKScene {
         node.addChild(shadowedLabel(text, size: size))
     }
 
+    private func stoneLabel(_ text: String, size: CGFloat) -> SKLabelNode {
+        let label = SKLabelNode(text: text)
+        label.fontName = "AvenirNext-Heavy"
+        label.fontSize = size
+        label.fontColor = SKColor(red: 0.13, green: 0.19, blue: 0.30, alpha: 1)
+        label.verticalAlignmentMode = .center
+        return label
+    }
+
     private func shadowedLabel(_ text: String, size: CGFloat) -> SKLabelNode {
         let label = SKLabelNode(text: text)
         label.fontName = "AvenirNext-Heavy"
@@ -329,6 +464,11 @@ final class BridgeScene: SKScene {
         sprite.zPosition = 12
         addChild(sprite)
         companionNode = sprite
+    }
+
+    private func addCompanionOnLeftCliff() {
+        let footY = size.height * 0.01
+        addCompanion(at: CGPoint(x: -size.width * 0.42, y: footY + 48))
     }
 
     private func gradientTexture(size: CGSize, colors: [SKColor]) -> SKTexture {

@@ -30,6 +30,26 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(en.format(1234567), "1,234,567")
     }
 
+    func testMinutesPluralization() {
+        let en = Localizer(language: .english)
+        XCTAssertEqual(en.minutes(1), "1 minute")
+        XCTAssertEqual(en.minutes(5), "5 minutes")
+
+        let de = Localizer(language: .german)
+        XCTAssertEqual(de.minutes(1), "1 Minute")
+        XCTAssertEqual(de.minutes(5), "5 Minuten")
+    }
+
+    func testRoundsPluralization() {
+        let en = Localizer(language: .english)
+        XCTAssertEqual(en.rounds(1), "1 round")
+        XCTAssertEqual(en.rounds(2), "2 rounds")
+
+        let de = Localizer(language: .german)
+        XCTAssertEqual(de.rounds(1), "1 Runde")
+        XCTAssertEqual(de.rounds(2), "2 Runden")
+    }
+
     func testMessageRenderingSubstitutesArgs() {
         let en = Localizer(language: .english)
         let s = en.string(.clueInverseAddSub, [.number(11), .number(8)])

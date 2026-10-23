@@ -61,7 +61,15 @@ struct CompanionView: View {
                     .frame(width: size * 0.14, height: size * 0.13)
                     .offset(y: size * 0.11)
             }
-            if accessory != "none" {
+            if accessory == "z" {
+                Text("Z")
+                    .font(.system(size: size * 0.16, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.white)
+                    .frame(width: size * 0.29, height: size * 0.29)
+                    .background(Theme.violet, in: Circle())
+                    .overlay(Circle().stroke(.white, lineWidth: max(1.5, size * 0.025)))
+                    .offset(x: size * 0.31, y: -size * 0.34)
+            } else if accessory == "star" || accessory == "heart" {
                 Image(systemName: accessory == "heart" ? "heart.fill" : "star.fill")
                     .font(.system(size: size * 0.20, weight: .heavy))
                     .foregroundStyle(Theme.sun)

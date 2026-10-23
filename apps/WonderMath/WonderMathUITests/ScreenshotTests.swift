@@ -7,8 +7,16 @@ final class ScreenshotTests: XCTestCase {
         app.launchArguments = ["-UITestInMemory"]
         app.launch()
 
-        XCTAssertTrue(app.buttons["start-adventure"].waitForExistence(timeout: 15))
+        let nameField = app.textFields["onboarding-name"]
+        XCTAssertTrue(nameField.waitForExistence(timeout: 15))
         attachScreenshot("onboarding", app: app)
+        nameField.tap()
+        nameField.typeText("Mia")
+        app.buttons["onboarding-next"].tap()
+        app.buttons["onboarding-next"].tap()
+        let startAdventure = app.buttons["start-adventure"]
+        XCTAssertTrue(startAdventure.waitForExistence(timeout: 10))
+        attachScreenshot("onboarding-buddy", app: app)
     }
 
     func testMainLearningAndParentScreenshots() throws {
@@ -61,6 +69,31 @@ final class ScreenshotTests: XCTestCase {
         lockedWorld.tap()
         XCTAssertTrue(app.buttons["close-coming-soon"].waitForExistence(timeout: 5))
         attachScreenshot("locked-world", app: app)
+    }
+
+    func testPlankDragCompletesPuzzle() {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = XCUIApplication()
+        app.launchArguments = ["-UITestInMemory", "-UITestProfile", "Mia"]
+        app.launch()
+
+        let map = app.buttons["world-numberKingdom"]
+        XCTAssertTrue(map.waitForExistence(timeout: 15))
+        map.tap()
+
+        let firstTopic = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "topic-")
+        ).firstMatch
+        XCTAssertTrue(firstTopic.waitForExistence(timeout: 10))
+        firstTopic.tap()
+
+        let plank = app.buttons["plank-correct"]
+        let dropArea = app.descendants(matching: .any)["bridge-drop-target"]
+        XCTAssertTrue(plank.waitForExistence(timeout: 10))
+        XCTAssertTrue(dropArea.waitForExistence(timeout: 10))
+        plank.press(forDuration: 0.05, thenDragTo: dropArea)
+        app.buttons["check-answer"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["reward-panel"].waitForExistence(timeout: 10))
     }
 
     private func attachScreenshot(_ name: String, app: XCUIApplication) {

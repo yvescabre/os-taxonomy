@@ -18,6 +18,7 @@ public enum L10n {
         case closeButton
         case doneButton
         case customizeBuddy
+        case minuteFormatOne
         case minutesFormat
         case parentAgeFormat
         case curriculumNotice
@@ -29,6 +30,7 @@ public enum L10n {
         case companionColorLabel
         case companionAccessoryLabel
         case xpFormat
+        case roundFormatOne
         case roundsFormat
 
         // Worlds
@@ -45,11 +47,19 @@ public enum L10n {
         case mapCompanionGreeting
         case scaffoldEncouragement
         case bridgeProgressFormat
+        case progressStars
+        case progressStarsValueFormat
 
         // Profile / onboarding
         case chooseName
         case chooseAge
         case chooseCompanion
+        case onboardingTitle
+        case onboardingBubbleName
+        case onboardingBubbleAge
+        case onboardingBubbleBuddy
+        case onboardingNext
+        case onboardingBack
         case startAdventure
         case childNamePlaceholder
 
@@ -160,6 +170,11 @@ public enum L10n {
         case perSkillTableAttempts
         case perSkillTableState
         case audioLabel, languageLabel, difficultyLabel
+        case voiceSectionTitle, voicePersonalToggle
+        case voiceStatusUsingPersonal, voiceStatusAvailable, voiceStatusNoLanguageVoice
+        case voiceStatusDenied, voiceStatusCreate, voicePreview
+        case voiceCurrentFormat, voiceNameDefault
+        case voiceQualityPremium, voiceQualityEnhanced, voiceQualityDefault
         case researchTipPrefix
         case teachingNoteForParents
 

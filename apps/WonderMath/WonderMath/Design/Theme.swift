@@ -64,6 +64,19 @@ struct ChunkyButtonStyle: ButtonStyle {
     let fill: LinearGradient
     let shadow: Color
     let foreground: Color
+    let border: Color?
+    let ledgeOpacity: Double
+    let ledgeOffset: CGFloat
+
+    init(fill: LinearGradient, shadow: Color, foreground: Color,
+         border: Color? = nil, ledgeOpacity: Double = 1, ledgeOffset: CGFloat = 7) {
+        self.fill = fill
+        self.shadow = shadow
+        self.foreground = foreground
+        self.border = border
+        self.ledgeOpacity = ledgeOpacity
+        self.ledgeOffset = ledgeOffset
+    }
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -74,9 +87,15 @@ struct ChunkyButtonStyle: ButtonStyle {
             .background(fill, in: RoundedRectangle(cornerRadius: 22))
             .background(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 22)
-                    .fill(shadow)
-                    .frame(height: configuration.isPressed ? 3 : 7)
-                    .offset(y: configuration.isPressed ? 2 : 7)
+                    .fill(shadow.opacity(ledgeOpacity))
+                    .frame(height: configuration.isPressed ? 3 : ledgeOffset)
+                    .offset(y: configuration.isPressed ? 2 : ledgeOffset)
+            }
+            .overlay {
+                if let border {
+                    RoundedRectangle(cornerRadius: 22)
+                        .stroke(border, lineWidth: 2)
+                }
             }
             .shadow(color: shadow.opacity(0.28),
                     radius: configuration.isPressed ? 4 : 11,
@@ -97,10 +116,13 @@ extension ButtonStyle where Self == ChunkyButtonStyle {
 
     static var ghost: ChunkyButtonStyle {
         ChunkyButtonStyle(
-            fill: LinearGradient(colors: [.white.opacity(0.9), .white.opacity(0.82)],
+            fill: LinearGradient(colors: [Color(red: 227 / 255, green: 244 / 255, blue: 1)],
                                  startPoint: .top, endPoint: .bottom),
-            shadow: Theme.ink.opacity(0.15),
-            foreground: Theme.ink
+            shadow: Theme.waterDeep,
+            foreground: Theme.ink,
+            border: Theme.sky,
+            ledgeOpacity: 0.35,
+            ledgeOffset: 4
         )
     }
 }

@@ -42,6 +42,15 @@ struct PuzzleView: View {
     }
 }
 
+private struct PlankDragState: Equatable {
+    let value: Int
+    let size: CGSize
+    let origin: CGPoint
+    var location: CGPoint
+    var isOverBridge: Bool
+    var isReturning: Bool
+}
+
 private struct PuzzlePlayScreen: View {
     @Environment(\.localizer) private var localizer
     @Environment(\.dismiss) private var dismiss
@@ -51,8 +60,11 @@ private struct PuzzlePlayScreen: View {
     @State private var showingWhy = false
     @State private var showReward = false
     @State private var speech = Speech()
+    @State private var activePlankDrag: PlankDragState?
+    @State private var bridgeDropFrame = CGRect.zero
     let profile: ChildProfile
     let appState: AppState
+    let progressService: ProgressService
     let recordsPracticeTime: Bool
     let onNext: (RecordResult) -> Void
     let onRoundFinished: (() -> Void)?
@@ -67,37 +79,53 @@ private struct PuzzlePlayScreen: View {
                                                            recordsPracticeTime: recordsPracticeTime))
         self.profile = profile
         self.appState = appState
+        self.progressService = progressService
         self.recordsPracticeTime = recordsPracticeTime
         self.onNext = onNext
         self.onRoundFinished = onRoundFinished
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                VStack(spacing: 0) {
-                    bridgeArea
-                        .frame(height: geometry.size.height * 0.59)
-                    tray
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .background(Theme.cream)
-                if showReward, let result = session.result {
-                    RewardOverlay(result: result, profile: profile, localizer: localizer,
-                                  reduceMotion: reduceMotion) {
-                        advance(result)
-                    }
-                    .transition(.opacity)
-                }
+        ZStack {
+            VStack(spacing: 0) {
+                bridgeArea
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                tray
+                    .frame(maxWidth: .infinity)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 24)
             }
-            .ignoresSafeArea()
+            .background(Theme.cream)
+            if let drag = activePlankDrag {
+                plankCard(drag.value)
+                    .frame(width: drag.size.width, height: drag.size.height)
+                    .scaleEffect(1.08)
+                    .shadow(color: Theme.ink.opacity(0.28), radius: 14, x: 0, y: 10)
+                    .position(drag.location)
+                    .zIndex(2)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
+            if showReward, let result = session.result {
+                RewardOverlay(result: result, profile: profile, localizer: localizer,
+                              reduceMotion: reduceMotion) {
+                    advance(result)
+                }
+                .transition(.opacity)
+            }
         }
+        .coordinateSpace(name: "puzzle")
+        .ignoresSafeArea()
         .fontDesign(.rounded)
         .toolbar(.hidden, for: .navigationBar)
         .onAppear(perform: preparePuzzle)
         .onChange(of: session.puzzle.id) { _, _ in preparePuzzle() }
         .onChange(of: session.feedback) { _, value in
             if let value { speech.speak(value, localizer: localizer, enabled: profile.audioEnabled) }
+        }
+        .onDisappear {
+            scene.setGapHighlighted(false)
+            activePlankDrag = nil
         }
         .sheet(isPresented: $showingWhy) { NavigationStack { WhyView(puzzle: session.puzzle) } }
     }
@@ -118,43 +146,53 @@ private struct PuzzlePlayScreen: View {
                     .accessibilityLabel(localizer.string(.closeButton))
                     .accessibilityIdentifier("back-from-puzzle")
                     Text(topicTitle).chip()
+                    if let stars = currentStarProgress {
+                        StarProgressMeter(progress: stars, localizer: localizer,
+                                          reduceMotion: reduceMotion)
+                    }
                     Spacer()
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 14)
                 Spacer()
             }
-            VStack {
-                Spacer()
-                Text(localizer.string(.dropPlankHere))
-                    .font(Theme.roundedFont(17, weight: .bold))
-                    .foregroundStyle(Theme.ink)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 10)
-                    .background(.white.opacity(0.94), in: Capsule())
-                    .padding(.bottom, 14)
+            if !session.isSolved {
+                VStack {
+                    Spacer()
+                    Text(localizer.string(.dropPlankHere))
+                        .font(Theme.roundedFont(17, weight: .bold))
+                        .foregroundStyle(Theme.ink)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 10)
+                        .background(.white.opacity(0.94), in: Capsule())
+                        .padding(.bottom, 14)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .allowsHitTesting(false)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(false)
         }
         .contentShape(Rectangle())
-        .dropDestination(for: String.self) { values, _ in
-            guard session.acceptsAnswers,
-                  let first = values.first, let number = Int(first) else { return false }
-            session.place(number)
-            scene.fill(gapWith: number)
-            return true
+        .background {
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        bridgeDropFrame = geometry.frame(in: .named("puzzle"))
+                    }
+                    .onChange(of: geometry.size) { _, _ in
+                        bridgeDropFrame = geometry.frame(in: .named("puzzle"))
+                    }
+            }
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("bridge-drop-target")
     }
 
     private var tray: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             helperBubble
             HStack(spacing: 12) {
                 ForEach(Array(session.choices.enumerated()), id: \.offset) { _, value in
-                    plankButton(value)
+                    plankView(value)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -199,8 +237,9 @@ private struct PuzzlePlayScreen: View {
                 .accessibilityIdentifier(session.isRetry ? "retry-button" : "check-answer")
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(.horizontal, 22)
-        .padding(.vertical, 16)
+        .padding(.top, 8)
         .background(Theme.cream)
     }
 
@@ -254,31 +293,102 @@ private struct PuzzlePlayScreen: View {
         }
     }
 
-    private func plankButton(_ value: Int) -> some View {
+    private func plankView(_ value: Int) -> some View {
         let isCorrect = session.correctValueForUITesting == value
-        return Button {
-            guard session.acceptsAnswers else { return }
-            session.place(value)
-            scene.fill(gapWith: value)
-        } label: {
-            Text(localizer.format(value))
-                .font(Theme.roundedFont(28, weight: .heavy))
-                .frame(maxWidth: .infinity, minHeight: 68)
-                .foregroundStyle(.white)
-                .background(Theme.woodGradient, in: RoundedRectangle(cornerRadius: 15))
-                .overlay(RoundedRectangle(cornerRadius: 15).stroke(Theme.woodDark, lineWidth: 3))
-                .overlay(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 5).fill(Theme.woodDark)
-                        .frame(height: 6).padding(.horizontal, 5).offset(y: 4)
-                }
-                .shadow(color: Theme.ink.opacity(0.16), radius: 4, x: 0, y: 6)
+        return GeometryReader { geometry in
+            plankCard(value)
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .contentShape(Rectangle())
+                .onTapGesture { placePlank(value) }
+                .gesture(
+                    DragGesture(minimumDistance: 6, coordinateSpace: .named("puzzle"))
+                        .onChanged { drag in
+                            let frame = geometry.frame(in: .named("puzzle"))
+                            updatePlankDrag(value, size: geometry.size,
+                                            origin: CGPoint(x: frame.midX, y: frame.midY),
+                                            location: drag.location)
+                        }
+                        .onEnded { drag in
+                            endPlankDrag(value, location: drag.location)
+                        }
+                )
+                .opacity(activePlankDrag?.value == value && activePlankDrag?.isReturning == false ? 0.35 : 1)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(localizer.format(value))
+                .accessibilityIdentifier(isCorrect && appState.isUITesting ? "plank-correct" : "plank-\(value)")
+                .accessibilityValue(appState.isUITesting && isCorrect ? String(value) : "")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { placePlank(value) }
+                .disabled(!session.acceptsAnswers)
         }
-        .buttonStyle(.plain)
-        .draggable(String(value))
-        .disabled(!session.acceptsAnswers)
-        .accessibilityLabel(localizer.format(value))
-        .accessibilityIdentifier(isCorrect && appState.isUITesting ? "plank-correct" : "plank-\(value)")
-        .accessibilityValue(appState.isUITesting && isCorrect ? String(value) : "")
+        .frame(maxWidth: .infinity, minHeight: 68, maxHeight: 68)
+    }
+
+    private func plankCard(_ value: Int) -> some View {
+        Text(localizer.format(value))
+            .font(Theme.roundedFont(28, weight: .heavy))
+            .frame(maxWidth: .infinity, minHeight: 68)
+            .foregroundStyle(.white)
+            .background(Theme.woodGradient, in: RoundedRectangle(cornerRadius: 15))
+            .overlay(RoundedRectangle(cornerRadius: 15).stroke(Theme.woodDark, lineWidth: 3))
+            .overlay(alignment: .bottom) {
+                RoundedRectangle(cornerRadius: 5).fill(Theme.woodDark)
+                    .frame(height: 6).padding(.horizontal, 5).offset(y: 4)
+            }
+            .shadow(color: Theme.ink.opacity(0.16), radius: 4, x: 0, y: 6)
+    }
+
+    private func placePlank(_ value: Int) {
+        guard session.acceptsAnswers else { return }
+        scene.setGapHighlighted(false)
+        session.place(value)
+        scene.fill(gapWith: value)
+    }
+
+    private func updatePlankDrag(_ value: Int, size: CGSize, origin: CGPoint, location: CGPoint) {
+        guard session.acceptsAnswers else { return }
+        let isOverBridge = bridgeDropFrame.contains(location)
+        let wasOverBridge = activePlankDrag?.isOverBridge == true
+        if var drag = activePlankDrag, drag.value == value {
+            drag.location = location
+            drag.isOverBridge = isOverBridge
+            activePlankDrag = drag
+        } else {
+            activePlankDrag = PlankDragState(value: value, size: size, origin: origin,
+                                             location: location, isOverBridge: isOverBridge,
+                                             isReturning: false)
+        }
+        if wasOverBridge != isOverBridge { scene.setGapHighlighted(isOverBridge) }
+    }
+
+    private func endPlankDrag(_ value: Int, location: CGPoint) {
+        guard session.acceptsAnswers, let drag = activePlankDrag, drag.value == value else {
+            scene.setGapHighlighted(false)
+            activePlankDrag = nil
+            return
+        }
+        scene.setGapHighlighted(false)
+        guard bridgeDropFrame.contains(location) else {
+            guard !reduceMotion else {
+                activePlankDrag = nil
+                return
+            }
+            var returningDrag = drag
+            returningDrag.location = drag.origin
+            returningDrag.isOverBridge = false
+            returningDrag.isReturning = true
+            withAnimation(.spring(response: 0.36, dampingFraction: 0.68)) {
+                activePlankDrag = returningDrag
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                if activePlankDrag?.value == value, activePlankDrag?.isReturning == true {
+                    activePlankDrag = nil
+                }
+            }
+            return
+        }
+        placePlank(value)
+        activePlankDrag = nil
     }
 
     private var helperColor: Color {
@@ -291,6 +401,13 @@ private struct PuzzlePlayScreen: View {
         appState.store.topic(session.topicId).map {
             TaxonomyLocalization.displayName(of: $0, language: appState.language)
         } ?? localizer.string(.appName)
+    }
+
+    private var currentStarProgress: StarProgress? {
+        guard let criteria = appState.registry.generator(for: session.topicId)?.mastery else { return nil }
+        let progress = progressService.progress(for: session.topicId) ?? SkillProgress()
+        let stars = StarProgress(criteria: criteria, progress: progress)
+        return stars.total > 0 ? stars : nil
     }
 
     private var instructionMessage: LocalizedMessage {
@@ -337,6 +454,97 @@ private struct PuzzlePlayScreen: View {
     }
 }
 
+private struct StarProgressMeter: View {
+    let progress: StarProgress
+    let localizer: Localizer
+    let reduceMotion: Bool
+    @State private var poppingIndex: Int?
+    @State private var popScale: CGFloat = 1
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Text(localizer.string(.progressStars))
+                .font(Theme.roundedFont(15, weight: .heavy))
+                .foregroundStyle(Theme.ink)
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(red: 0.9373, green: 0.9020, blue: 0.8314))
+                        .overlay(alignment: .top) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(.white.opacity(0.7), lineWidth: 2)
+                                .padding(2)
+                        }
+                        .overlay(alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Theme.ink.opacity(0.14), lineWidth: 2)
+                                .padding(2)
+                        }
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Theme.sunGradient)
+                        .frame(width: geometry.size.width * progress.fillFraction)
+                        .overlay(alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Theme.sunDark)
+                                .frame(height: 4)
+                                .padding(.horizontal, 3)
+                                .offset(y: 2)
+                        }
+                        .animation(
+                            reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.78),
+                            value: progress.fillFraction
+                        )
+                    HStack(spacing: 0) {
+                        ForEach(0..<progress.total, id: \.self) { index in
+                            checkpoint(at: index)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .frame(height: 38)
+            }
+            .frame(width: 228, height: 38)
+        }
+        .padding(.horizontal, 14)
+        .frame(height: 64)
+        .background(Theme.paper, in: RoundedRectangle(cornerRadius: 22))
+        .overlay(RoundedRectangle(cornerRadius: 22).stroke(.white, lineWidth: 2))
+        .shadow(color: Theme.ink.opacity(0.12), radius: 3, x: 0, y: 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(localizer.string(.progressStars))
+        .accessibilityValue(localizer.string(.progressStarsValueFormat, [
+            .number(progress.earned), .number(progress.total)
+        ]))
+        .accessibilityIdentifier("progress-stars")
+        .onChange(of: progress.earned) { oldValue, newValue in
+            guard !reduceMotion, newValue > oldValue else { return }
+            poppingIndex = newValue - 1
+            withAnimation(.spring(response: 0.2, dampingFraction: 0.48)) {
+                popScale = 1.25
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                withAnimation(.spring(response: 0.24, dampingFraction: 0.68)) {
+                    popScale = 1
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.42) {
+                poppingIndex = nil
+            }
+        }
+    }
+
+    private func checkpoint(at index: Int) -> some View {
+        let earned = progress.isEarned(at: index)
+        return Image(systemName: earned ? "star.fill" : "star")
+            .font(Theme.roundedFont(17, weight: .heavy))
+            .foregroundStyle(earned ? Theme.ink : Theme.ink.opacity(0.28))
+            .frame(width: 38, height: 38)
+            .background(earned ? Theme.sun : .white, in: Circle())
+            .overlay(Circle().stroke(earned ? Theme.sunDark : Theme.sand, lineWidth: 2))
+            .scaleEffect(poppingIndex == index ? popScale : 1)
+    }
+}
+
 private struct RewardOverlay: View {
     let result: RecordResult
     let profile: ChildProfile
@@ -348,19 +556,14 @@ private struct RewardOverlay: View {
 
     var body: some View {
         ZStack {
-            RadialGradient(colors: [Theme.sun, Theme.sunDark], center: .center,
-                           startRadius: 20, endRadius: 650)
-            Rays()
-                .fill(.white.opacity(0.13))
-                .frame(width: 1000, height: 1000)
-                .rotationEffect(.degrees(rotateRays ? 360 : 0))
-                .animation(reduceMotion ? nil : .linear(duration: 34).repeatForever(autoreverses: false),
-                           value: rotateRays)
+            Color.black.opacity(0.35).ignoresSafeArea()
             VStack(spacing: 15) {
                 Text(localizer.string(.wellDone))
-                    .font(Theme.roundedFont(42, weight: .black)).foregroundStyle(Theme.ink)
+                    .font(Theme.roundedFont(42, weight: .black))
+                    .foregroundStyle(.white)
+                    .shadow(color: Theme.ink.opacity(0.25), radius: 3, x: 0, y: 3)
                 if result.chestOpened {
-                    chest
+                    chest.padding(.top, 40)
                 } else {
                     starMedallion
                 }
@@ -393,8 +596,33 @@ private struct RewardOverlay: View {
                     .buttonStyle(.leaf)
                     .accessibilityIdentifier("next-puzzle")
             }
-            .padding(26)
+            .padding(.horizontal, 26)
+            .padding(.vertical, 22)
             .frame(maxWidth: 620)
+            .background {
+                RoundedRectangle(cornerRadius: 32)
+                    .fill(RadialGradient(colors: [Theme.sun, Theme.sunDark], center: .center,
+                                         startRadius: 20, endRadius: 650))
+            }
+            .overlay {
+                GeometryReader { geometry in
+                    let raySize = max(geometry.size.width, geometry.size.height) * 2
+                    Rays()
+                        .fill(.white.opacity(0.14))
+                        .frame(width: raySize, height: raySize)
+                        .rotationEffect(.degrees(rotateRays ? 360 : 0))
+                        .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                        .animation(reduceMotion ? nil :
+                            .linear(duration: 34).repeatForever(autoreverses: false),
+                            value: rotateRays)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 32))
+                .allowsHitTesting(false)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 32))
+            .overlay(RoundedRectangle(cornerRadius: 32)
+                .stroke(.white.opacity(0.58), lineWidth: 3))
+            .shadow(color: Theme.ink.opacity(0.28), radius: 18, x: 0, y: 10)
         }
         .ignoresSafeArea()
         .accessibilityElement(children: .contain)
@@ -408,13 +636,27 @@ private struct RewardOverlay: View {
     private var chest: some View {
         ZStack {
             if result.chestOpened {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 42, weight: .bold))
-                    .foregroundStyle(.white)
-                    .offset(y: -47)
+                HStack(spacing: 10) {
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 25, weight: .black))
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 34, weight: .black))
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 22, weight: .black))
+                }
+                .foregroundStyle(.white)
+                .shadow(color: Theme.ink.opacity(0.3), radius: 3, x: 0, y: 2)
+                .offset(y: -55)
                 HStack(spacing: 8) {
-                    ForEach(0..<4) { _ in Circle().fill(Theme.sun).frame(width: 20, height: 20) }
-                }.offset(y: -35)
+                    ForEach(0..<3) { index in
+                        Circle()
+                            .fill(Theme.sun)
+                            .frame(width: 22, height: 22)
+                            .overlay(Circle().stroke(Theme.sunDark, lineWidth: 3))
+                            .offset(y: index == 1 ? -8 : 0)
+                    }
+                }
+                .offset(y: -32)
             }
             RoundedRectangle(cornerRadius: 15)
                 .fill(Theme.woodGradient)

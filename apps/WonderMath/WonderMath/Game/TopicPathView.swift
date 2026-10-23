@@ -18,15 +18,27 @@ struct TopicPathView: View {
                 let nodeCount = appState.playableOrder.count
                 let lastNodeX = 110 + CGFloat(max(nodeCount - 1, 0)) * 158
                 let contentWidth = max(geometry.size.width - 300,
-                                       lastNodeX + 200)
+                                       lastNodeX + 300)
                 let trailHeight = max(geometry.size.height - 105, 400)
                 let points = trailPoints(count: nodeCount, height: trailHeight)
 
                 ZStack(alignment: .topLeading) {
-                    MeadowBackground()
                     ScrollView(.horizontal) {
                         ZStack(alignment: .topLeading) {
+                            MeadowBackground()
+                                .frame(width: contentWidth, height: trailHeight)
                             WindingTrail(points: points)
+                            ForEach(0..<max(points.count - 1, 0), id: \.self) { index in
+                                let current = points[index]
+                                let next = points[index + 1]
+                                let middleX = (current.x + next.x) / 2
+                                let middleY = (current.y + next.y) / 2
+                                let side: CGFloat = index.isMultiple(of: 2) ? 1 : -1
+                                MeadowTree()
+                                    .position(x: middleX - 18, y: middleY + side * 82)
+                                MeadowFlowers()
+                                    .position(x: middleX + 28, y: middleY - side * 65)
+                            }
                             ForEach(Array(appState.playableOrder.enumerated()), id: \.element) { index, topicId in
                                 if let topic = appState.store.topic(topicId) {
                                     let progress = service.progress(for: topicId)
@@ -59,7 +71,9 @@ struct TopicPathView: View {
                                 }
                             }
                             if let last = points.last {
-                                TrailCastle().position(x: last.x + 105, y: last.y - 12)
+                                CastleIsland()
+                                    .frame(width: 216, height: 136)
+                                    .position(x: last.x + 150, y: last.y - 12)
                             }
                         }
                         .frame(width: contentWidth, height: trailHeight)
@@ -200,22 +214,17 @@ struct TopicPathView: View {
     }
 
     private func starCount(topicId: String, progress: SkillProgress?) -> Int {
-        guard let progress,
-              let criteria = appState.registry.generator(for: topicId)?.mastery else { return 0 }
-        let assessable = criteria.evidenceForms.enumerated().filter { $0.element != nil }
-        guard !assessable.isEmpty else { return 0 }
-        let earned = assessable.filter {
-            (progress.evidenceCredits[$0.offset] ?? 0) >= criteria.creditsPerEvidence
-        }.count
-        return min(3, earned)
+        min(3, starProgress(topicId: topicId, progress: progress)?.earned ?? 0)
     }
 
     private func evidenceEarned(topicId: String, index: Int, progress: SkillProgress?) -> Bool {
-        guard let progress,
-              let criteria = appState.registry.generator(for: topicId)?.mastery,
-              criteria.evidenceForms.indices.contains(index),
-              criteria.evidenceForms[index] != nil else { return false }
-        return (progress.evidenceCredits[index] ?? 0) >= criteria.creditsPerEvidence
+        starProgress(topicId: topicId, progress: progress)?.isEarned(at: index) ?? false
+    }
+
+    private func starProgress(topicId: String, progress: SkillProgress?) -> StarProgress? {
+        guard let criteria = appState.registry.generator(for: topicId)?.mastery else { return nil }
+        let stars = StarProgress(criteria: criteria, progress: progress ?? SkillProgress())
+        return stars.total > 0 ? stars : nil
     }
 
     private func trailPoints(count: Int, height: CGFloat) -> [CGPoint] {
@@ -248,19 +257,75 @@ private struct MeadowBackground: View {
             ZStack(alignment: .top) {
                 LinearGradient(colors: [Theme.sky, Theme.skyPale],
                                startPoint: .top, endPoint: .bottom)
-                    .frame(height: geometry.size.height * 0.50)
+                    .frame(height: geometry.size.height * 0.56)
+                    .frame(maxHeight: .infinity, alignment: .top)
                 LinearGradient(colors: [Color(red: 0.59, green: 0.87, blue: 0.49),
                                         Color(red: 0.29, green: 0.66, blue: 0.36)],
                                startPoint: .top, endPoint: .bottom)
+                    .frame(height: geometry.size.height * 0.70)
                     .frame(maxHeight: .infinity, alignment: .bottom)
-                Ellipse()
-                    .fill(Color.white.opacity(0.23))
-                    .frame(width: geometry.size.width * 0.9, height: 170)
-                    .offset(x: -geometry.size.width * 0.18, y: geometry.size.height * 0.30)
+                DistantHill()
+                    .fill(LinearGradient(colors: [Color(red: 0.75, green: 0.90, blue: 0.67).opacity(0.75),
+                                                  Color(red: 0.63, green: 0.83, blue: 0.54).opacity(0.72)],
+                                         startPoint: .top, endPoint: .bottom))
+                    .frame(height: geometry.size.height * 0.28)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .offset(y: geometry.size.height * 0.20)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
-        .ignoresSafeArea()
+        .accessibilityHidden(true)
+    }
+}
+
+private struct DistantHill: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            path.move(to: CGPoint(x: rect.minX, y: rect.height * 0.48))
+            path.addCurve(to: CGPoint(x: rect.width * 0.52, y: rect.height * 0.40),
+                          control1: CGPoint(x: rect.width * 0.18, y: rect.height * 0.02),
+                          control2: CGPoint(x: rect.width * 0.34, y: rect.height * 0.18))
+            path.addCurve(to: CGPoint(x: rect.maxX, y: rect.height * 0.45),
+                          control1: CGPoint(x: rect.width * 0.70, y: rect.height * 0.63),
+                          control2: CGPoint(x: rect.width * 0.84, y: rect.height * 0.12))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.closeSubpath()
+        }
+    }
+}
+
+private struct MeadowTree: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color(red: 0.54, green: 0.32, blue: 0.19))
+                .frame(width: 7, height: 19)
+                .offset(y: 14)
+            Circle().fill(Theme.leafDark).frame(width: 28, height: 28).offset(x: -9, y: -4)
+            Circle().fill(Theme.leaf).frame(width: 31, height: 31).offset(x: 8, y: -5)
+            Circle().fill(Theme.leaf).frame(width: 25, height: 25).offset(y: -16)
+        }
+        .frame(width: 48, height: 54)
+        .accessibilityHidden(true)
+    }
+}
+
+private struct MeadowFlowers: View {
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 5) {
+            flower(Theme.coral)
+            flower(Theme.violet)
+            flower(Theme.sun)
+        }
+        .accessibilityHidden(true)
+    }
+
+    private func flower(_ color: Color) -> some View {
+        VStack(spacing: 1) {
+            Circle().fill(color).frame(width: 9, height: 9)
+            Capsule().fill(Theme.leafDark).frame(width: 2, height: 8)
+        }
     }
 }
 
@@ -392,34 +457,5 @@ private struct LockedTopicNode: View {
         }
         .frame(width: 86, height: 96)
         .accessibilityLabel("\(number)")
-    }
-}
-
-private struct TrailCastle: View {
-    var body: some View {
-        VStack(spacing: -4) {
-            HStack(alignment: .bottom, spacing: 2) {
-                MapTower().fill(Theme.coral).frame(width: 30, height: 58)
-                MapTower().fill(Theme.violet).frame(width: 42, height: 82)
-                MapTower().fill(Theme.coral).frame(width: 30, height: 60)
-            }
-            Rectangle().fill(Color(red: 1, green: 0.93, blue: 0.78))
-                .frame(width: 104, height: 34)
-                .overlay(RoundedRectangle(cornerRadius: 7).stroke(Theme.woodDark, lineWidth: 3))
-        }
-        .accessibilityHidden(true)
-    }
-}
-
-private struct MapTower: Shape {
-    func path(in rect: CGRect) -> Path {
-        Path { path in
-            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.maxX, y: rect.height * 0.28))
-            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-            path.addLine(to: CGPoint(x: rect.minX, y: rect.height * 0.28))
-            path.closeSubpath()
-        }
     }
 }
